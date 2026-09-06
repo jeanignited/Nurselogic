@@ -412,27 +412,27 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Frecuencia Card&iacute;aca (lpm)</label>
-                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" max="300" oninput="if(this.value.length > 3) this.value = this.value.slice(0,3); evaluarVitales()">
+                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" oninput="if(typeof formatearFC === 'function') formatearFC(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
                             <div id="atender_fc_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Presi&oacute;n Arterial (Sist/Diast)</label>
-                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" pattern="\d{2,3}/\d{2,3}" title="Formato XXX/YYY" maxlength="7" oninput="this.value = this.value.replace(/[^0-9/]/g, ''); evaluarVitales()">
+                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" onkeyup="if(typeof formatearPresion === 'function') formatearPresion(this);" oninput="if(typeof evaluarVitales === 'function') evaluarVitales();">
                             <div id="atender_pa_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Frecuencia Respiratoria</label>
-                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" max="100" oninput="if(this.value.length > 3) this.value = this.value.slice(0,3); evaluarVitales()">
+                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" oninput="if(typeof formatearFR === 'function') formatearFR(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
                             <div id="atender_fr_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Saturaci&oacute;n O2 (%)</label>
-                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" max="100" oninput="if(this.value.length > 3) this.value = this.value.slice(0,3); evaluarVitales()">
+                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" oninput="if(typeof formatearSat === 'function') formatearSat(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
                             <div id="atender_sat_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Temperatura (&deg;C)</label>
-                            <input type="number" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="20" max="45" step="0.1" oninput="if(this.value.length > 4) this.value = this.value.slice(0,4); evaluarVitales()">
+                            <input type="number" step="0.1" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="0" oninput="if(typeof formatearTemperatura === 'function') formatearTemperatura(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
                             <div id="atender_temp_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                     </div>
@@ -603,7 +603,7 @@
 
                 <th>CANT</th>
 
-                <th>DESCRIPCIÃ“N</th>
+                <th>DESCRIPCIÓN</th>
 
                 <th style="text-align:right;">SUBT</th>
 

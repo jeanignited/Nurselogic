@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
 <%@ page import="com.nurselogic.model.*" %>
 <%
@@ -19,7 +19,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
 
-                <h3 class="m-0 fw-bold"><i class="bi bi-capsule me-2" style="color: #10b981;"></i>Inventario FarmacolÃ³gico Viva</h3>
+                <h3 class="m-0 fw-bold"><i class="bi bi-capsule me-2" style="color: #10b981;"></i>Inventario Farmacológico Viva</h3>
 
                 <div class="d-flex gap-2 align-items-center">
 
@@ -207,13 +207,13 @@
 
                                         String badgeClass = "bg-success";
 
-                                        String estadoText = "ÃÓptimo";
+                                        String estadoText = "Óptimo";
 
                                         String icon = "bi-check-circle";
 
                                         if (st <= 0) { badgeClass = "bg-danger text-white"; estadoText = "AGOTADO"; icon = "bi-x-octagon-fill"; }
 
-                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CRÃTICO"; icon = "bi-exclamation-triangle-fill"; }
+                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CRÍTICO"; icon = "bi-exclamation-triangle-fill"; }
 
                                         else if (st <= 25) { badgeClass = "bg-warning text-dark"; estadoText = "Bajo"; icon = "bi-exclamation-circle"; }
 

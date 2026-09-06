@@ -590,15 +590,15 @@
 
 
 
-        function filtrarMÃ©dicamentos() {
+        function filtrarMedicamentos() {
 
 
 
-            let input = document.getElementById("buscadorMÃ©dicamentos").value.toLowerCase();
+            let input = document.getElementById("buscadorMedicamentos").value.toLowerCase();
 
 
 
-            let table = document.getElementById("tablaMÃ©dicamentos");
+            let table = document.getElementById("tablaMedicamentos");
 
 
 
@@ -754,7 +754,7 @@
 
 
 
-            badge.innerText = edad + " aÃ±os";
+            badge.innerText = edad + " años";
 
 
 
@@ -902,7 +902,7 @@
 
 
 
-        // AJAX para autocompletar Paciente por cÃ©dula
+        // AJAX para autocompletar Paciente por cedula
 
 
 
@@ -1346,7 +1346,7 @@
 
 
 
-            // Validar Saturaci n
+            // Validar Saturación
 
 
 
@@ -1570,7 +1570,7 @@
 
 
 
-            if(confirm(' Â¿EstÃ¡s seguro de que deseas eliminar este ' + tipo + '? Esta acciÃ³n no se puede deshacer.')) {
+            if(confirm(' ¿Estas seguro de que deseas eliminar este ' + tipo + '? Esta acción no se puede deshacer.')) {
 
 
 
@@ -1778,7 +1778,7 @@
 
 
 
-                document.getElementById('inputDescRol').value = 'GestiÃ³n y control de cuentas de usuarios';
+                document.getElementById('inputDescRol').value = 'Gestión y control de cuentas de usuarios';
 
 
 
@@ -1814,11 +1814,11 @@
 
 
 
-                document.getElementById('inputNombreRol').value = 'mÃ©dico Triage';
+                document.getElementById('inputNombreRol').value = 'medico Triage';
 
 
 
-                document.getElementById('inputDescRol').value = 'Atenci n a pacientes, triage y citas mÃ©dicas';
+                document.getElementById('inputDescRol').value = 'Atención a pacientes, triage y citas medicas';
 
 
 
@@ -1918,11 +1918,11 @@
 
 
 
-        function abrirModalMÃ©dicamento() {
+        function abrirModalMedicamento() {
 
 
 
-            var mEl = document.getElementById('modalMÃ©dicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+            var mEl = document.getElementById('modalMedicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
 
 
 
@@ -1934,11 +1934,11 @@
 
 
 
-        function cerrarModalMÃ©dicamento() {
+        function cerrarModalMedicamento() {
 
 
 
-            var mEl = document.getElementById('modalMÃ©dicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
+            var mEl = document.getElementById('modalMedicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
 
 
 
@@ -2142,7 +2142,7 @@
 
 
 
-                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-heart-pulse text-danger me-2"></i>Registrar Nueva Patolog a';
+                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-heart-pulse text-danger me-2"></i>Registrar Nueva Patología';
 
 
 
@@ -2170,7 +2170,7 @@
 
 
 
-                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-exclamation-diamond text-warning me-2"></i>Registrar Nuevo Al rgeno';
+                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-exclamation-diamond text-warning me-2"></i>Registrar Nuevo Alergeno';
 
 
 
@@ -2214,7 +2214,7 @@
 
 
 
-            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-danger me-2"></i>Editar Patolog a / Enfermedad';
+            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-danger me-2"></i>Editar Patología / Enfermedad';
 
 
 
@@ -2266,7 +2266,7 @@
 
 
 
-            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-warning me-2"></i>Editar Al rgeno';
+            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-warning me-2"></i>Editar Alergeno';
 
 
 
@@ -2318,7 +2318,7 @@
 
 
 
-            if (confirm(' Â¿EstÃ¡s seguro de eliminar "' + nombre + '" del catÃ¡logo clÃ­nico?')) {
+            if (confirm('¿Estás seguro de eliminar "' + nombre + '" del catálogo clínico?')) {
 
 
 
@@ -2478,7 +2478,7 @@
 
 
 
-                        // c lculo de DiagnÃ³stico Inteligente (Task 4)
+                        // calculo de Diagnostico Inteligente (Task 4)
 
 
 
@@ -2506,15 +2506,15 @@
 
 
 
-                            if (IMC < 18.5) { imcColor = 'bg-info'; imcTxt = 'Bajo Peso (Riesgo de desnutriciÃ³n)  '; }
+                            if (IMC < 18.5) { imcColor = 'bg-info'; imcTxt = 'Bajo Peso (Riesgo de desnutrición)  '; }
 
 
 
-                            else if (IMC >= 25 && IMC < 30) { imcColor = 'bg-warning text-dark'; imcTxt = 'Sobrepeso (RecomendaciÃ³n dietÃ©tica)  '; }
+                            else if (IMC >= 25 && IMC < 30) { imcColor = 'bg-warning text-dark'; imcTxt = 'Sobrepeso (Recomendación dietética)  '; }
 
 
 
-                            else if (IMC >= 30) { imcColor = 'bg-danger'; imcTxt = 'Obesidad clÃ­nica (AtenciÃ³n mÃ©dica)  '; }
+                            else if (IMC >= 30) { imcColor = 'bg-danger'; imcTxt = 'Obesidad clínica (Atención médica)  '; }
 
 
 
@@ -2526,7 +2526,7 @@
 
 
 
-                                <div><span class="text-secondary small d-block">EvaluaciÃ³n AntropomÃ©trica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
+                                <div><span class="text-secondary small d-block">Evaluación Antropométrica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
 
 
 
@@ -2554,7 +2554,7 @@
 
 
 
-                                <div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA T RMICA cR TICA: Fiebre Alta / Hipertermia (${temp} c)</strong><br><small class="text-theme">Protocolo de reducci n t rmica inmediata y monitoreo antit rmico sugerido.</small></div>
+                                <div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA TÉRMICA CRÍTICA: Fiebre Alta / Hipertermia (${temp} c)</strong><br><small class="text-theme">Protocolo de reducción térmica inmediata y monitoreo antitérmico sugerido.</small></div>
 
 
 
@@ -2574,11 +2574,11 @@
 
 
 
-                                <div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febr cula detectada (${temp} c)</strong><br><small class="text-secondary">Monitoreo peri dico cada 2 horas.</small></div>
+                                <div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febrícula detectada (${temp} c)</strong><br><small class="text-secondary">Monitoreo periódico cada 2 horas.</small></div>
 
 
 
-                                <span class="badge bg-warning text-dark px-3 py-2">  Febr cula</span>
+                                <span class="badge bg-warning text-dark px-3 py-2">  Febrícula</span>
 
 
 
@@ -2602,7 +2602,7 @@
 
 
 
-                                <div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ${sat}%)</strong><br><small class="text-theme">Administraci n urgente de ox geno suplementario requerida.</small></div>
+                                <div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ${sat}%)</strong><br><small class="text-theme">Administración urgente de oxígeno suplementario requerida.</small></div>
 
 
 
@@ -2630,7 +2630,7 @@
 
 
 
-                                <i class="bi bi-check-circle-fill text-success me-2"></i><strong class="text-theme">Par metros vitales dentro de rangos clinicos estables y normales.</strong>
+                                <i class="bi bi-check-circle-fill text-success me-2"></i><strong class="text-theme">Parámetros vitales dentro de rangos clinicos estables y normales.</strong>
 
 
 
@@ -2986,7 +2986,7 @@ function configurarMinFechaCita() {
 
 
 
-                List<Map<String, String>> medsGraf = (List<Map<String, String>>) request.getAttribute("listaMÃ©dicamentos");
+                List<Map<String, String>> medsGraf = (List<Map<String, String>>) request.getAttribute("listaMedicamentos");
 
 
 
@@ -3050,7 +3050,7 @@ function configurarMinFechaCita() {
 
 
 
-                    labels: ['Medicina General', 'PediatrÃ­a', 'CardiologÃ­a', 'GinecologÃ­a', 'DermatologÃ­a', 'Otras'],
+                    labels: ['Medicina General', 'Pediatría', 'Cardiología', 'Ginecología', 'Dermatología', 'Otras'],
 
 
 
@@ -3134,7 +3134,7 @@ function configurarMinFechaCita() {
 
 
 
-                        label: 'NÃºmero de Turnos',
+                        label: 'Número de Turnos',
 
 
 
@@ -3504,4 +3504,41 @@ function removerMedicamentoReceta(id) {
         document.getElementById("msgRecetaVacia").style.display = "block";
     }
 }
+
+function abrirModalAtenderCita(idCita, pacienteNombre) {
+    document.getElementById("atenderIdCita").value = idCita;
+    document.getElementById("atenderPacNombre").value = pacienteNombre;
+
+    var pacienteLabel = document.getElementById("atenderCitaPaciente");
+    if (pacienteLabel) {
+        pacienteLabel.innerText = pacienteNombre;
+    }
+
+    var form = document.getElementById("formAtenderCita");
+    if (form) {
+        form.reset();
+    }
+
+    var firstTab = document.querySelector("#modalAtenderCita .nav-link");
+    if (firstTab) {
+        var tab = new bootstrap.Tab(firstTab);
+        tab.show();
+    }
+
+    var modalEl = document.getElementById("modalAtenderCita");
+    var modal = bootstrap.Modal.getInstance(modalEl);
+    if (!modal) {
+        modal = new bootstrap.Modal(modalEl);
+    }
+    modal.show();
+}
+
+function formatearFR(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length > 2) {
+        valor = valor.slice(0, 2);
+    }
+    input.value = valor;
+}
+
 </script>
