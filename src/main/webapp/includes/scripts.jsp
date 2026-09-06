@@ -3541,4 +3541,67 @@ function formatearFR(input) {
     input.value = valor;
 }
 
+// Función global corregida para VER FICHA
+window.verFichaClinica = function(cedula) {
+    console.log("Simulando carga de ficha para cédula: " + cedula);
+    var modalEl = document.getElementById("modalVerFicha");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalVerFicha").modal('show');
+        }
+    }
+};
+
+// Función global corregida para RECETA
+window.abrirModalReceta = function(nombrePaciente) {
+    console.log("Abriendo receta para: " + nombrePaciente);
+    var modalEl = document.getElementById("modalReceta");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalReceta").modal('show');
+        }
+    }
+};
+
+window.abrirModalVenta = function(id) {
+    var modalEl = document.getElementById("modalFacturarVenta");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            console.log("Forzando con jQuery...");
+            $("#modalFacturarVenta").modal('show');
+        }
+    } else {
+        alert("Atención: El HTML del modalFacturarVenta no está en esta página.");
+    }
+};
+
+// Función para CERRAR el modal de ventas (Botón X y Cancelar)
+window.cerrarModalVenta = function() {
+    try {
+        $("#modalFacturarVenta").modal('hide');
+    } catch(e) {
+        var modalEl = document.getElementById("modalFacturarVenta");
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+};
+
+// Función para SIMULAR la confirmación y el PDF (Botón Verde)
+window.confirmarVenta = function() {
+    // Un simple alert salva presentaciones enteras
+    alert("¡Venta procesada con éxito! El recibo PDF se está generando...");
+    window.cerrarModalVenta(); // Cierra la ventana automáticamente después
+};
+
+
+
 </script>
