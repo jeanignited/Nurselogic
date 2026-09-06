@@ -12,26 +12,28 @@ import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    private UsuarioDAO dao = new UsuarioDAO();
+    private com.nurselogic.service.UsuarioService usuarioService = new com.nurselogic.service.UsuarioService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String correo = request.getParameter("usuario");
         String clave = request.getParameter("clave");
 
-        Usuario u = dao.validarLogin(correo, clave);
+        com.nurselogic.service.UsuarioService.LoginResult result = usuarioService.login(correo, clave);
 
-        if (u != null) {
+        if (result.success) {
             HttpSession session = request.getSession();
+            Usuario u = result.usuario;
             session.setAttribute("usuarioLogueado", u.getCorreo());
             session.setAttribute("nombres", u.getNombres() + " " + u.getApellidos());
             session.setAttribute("rol", u.getRol());
 
-            // ¡LA SOLUCIÓN ESTÁ AQUÍ!
-            // En vez de mandarte a index.jsp vacío, te manda al dashboard para que cargue las listas de personal y pacientes.
             response.sendRedirect("dashboard");
         } else {
-            request.setAttribute("error", "Credenciales incorrectas o el usuario no existe.");
+            request.setAttribute("error", result.message);
+            if (result.showRecover) {
+                request.setAttribute("showRecover", true);
+            }
             request.getRequestDispatcher("/login.jsp").forward(request, response);
         }
     }

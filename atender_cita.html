@@ -1,0 +1,505 @@
+<div class="modal fade" id="modalAtenderCita" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+
+
+
+              
+
+<div class="modal-dialog modal-dialog-centered modal-lg">
+
+
+
+                  
+
+<div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+
+<div class="modal-header border-0">
+
+<h5 class="modal-title fw-bold">
+
+<i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Consulta MÃ©dica Avanzada - <span id="atenderCitaPaciente" class="text-info"></span></h5>
+
+
+
+                          <button type="button" class="btn-close btn-close-white" onclick="cerrarModalAtenderCita()"></button>
+
+
+
+                      </div>
+
+
+
+                      
+
+
+
+                      <!-- Tabs Navigation -->
+
+
+
+                      <ul class="nav nav-tabs border-bottom-0 px-3 mt-3" id="consultaTabs" role="tablist">
+
+
+
+                          <li class="nav-item" role="presentation">
+
+
+
+                              <button class="nav-link active text-theme" id="vitales-tab" data-bs-toggle="tab" data-bs-target="#vitales" type="button" role="tab" style="background: rgba(255,255,255,0.1); border: var(--glass-border);"> <i class="bi bi-activity me-1"></i> Signos Vitales</button>
+
+
+
+                          </li>
+
+
+
+                          <li class="nav-item" role="presentation">
+
+
+
+                              <button class="nav-link text-theme ms-1" id="glasgow-tab" data-bs-toggle="tab" data-bs-target="#glasgow" type="button" role="tab" style="background: rgba(255,255,255,0.05); border-color:transparent;"> <i class="bi bi-eye me-1"></i> Glasgow</button>
+
+
+
+                          </li>
+
+
+
+                          <li class="nav-item" role="presentation">
+
+
+
+                              <button class="nav-link text-theme ms-1" id="diag-tab" data-bs-toggle="tab" data-bs-target="#diag" type="button" role="tab" style="background: rgba(255,255,255,0.05); border-color:transparent;"> <i class="bi bi-journal-medical me-1"></i> DiagnÃ³stico & Receta</button>
+
+
+
+                          </li>
+
+
+
+                      </ul>
+
+
+
+
+
+
+
+                      <form action="adminAction" method="POST" id="formAtenderCita" onsubmit="prepararGuardadoConsulta(event)">
+
+
+
+                          
+
+<div class="modal-body pt-3" style="background: rgba(0,0,0,0.2); border-radius: 0 0 15px 15px;">
+
+
+
+                              <input type="hidden" name="action" value="atenderCita">
+
+
+
+                              <input type="hidden" name="idCita" id="atenderIdCita">
+
+
+
+                              
+
+
+
+                              
+
+<div class="tab-content" id="consultaTabsContent">
+
+
+
+                                  
+
+
+
+                                  <!-- Tab Signos Vitales -->
+
+
+
+                                  
+
+<div class="tab-pane fade show active" id="vitales" role="tabpanel">
+
+
+
+                                      
+
+<div class="row g-3">
+
+
+
+                                          
+
+<div class="col-md-4">
+
+
+
+                                              <label class="form-label small text-secondary">Frecuencia CardÃ­aca (lpm)</label>
+
+
+
+                                              <input type="number" id="fc_input" class="form-control form-control-sm" placeholder="Ej: 80" oninput="evaluarFC(this.value)">
+
+
+
+                                              <span id="fc_badge" class="badge bg-secondary mt-1 w-100">Esperando...</span>
+
+
+
+                                          
+
+</div>
+
+<div class="col-md-4">
+
+
+
+                                              <label class="form-label small text-secondary">PresiÃ³n Arterial (Sist/Diast)</label>
+
+
+
+                                              <input type="text" id="pa_input" class="form-control form-control-sm" placeholder="Ej: 120/80" oninput="evaluarPA(this.value)">
+
+
+
+                                              <span id="pa_badge" class="badge bg-secondary mt-1 w-100">Esperando...</span>
+
+
+
+                                          
+
+</div>
+
+<div class="col-md-4">
+
+
+
+                                              <label class="form-label small text-secondary">Frecuencia Respiratoria</label>
+
+
+
+                                              <input type="number" id="fr_input" class="form-control form-control-sm" placeholder="Ej: 18" oninput="evaluarFR(this.value)">
+
+
+
+                                              <span id="fr_badge" class="badge bg-secondary mt-1 w-100">Esperando...</span>
+
+
+
+                                          
+
+</div>
+
+<div class="col-md-6">
+
+
+
+                                              <label class="form-label small text-secondary">SaturaciÃƒÂ³n O2 (%)</label>
+
+
+
+                                              <input type="number" id="sat_input" class="form-control form-control-sm" placeholder="Ej: 98" oninput="evaluarSat(this.value)">
+
+
+
+                                              <span id="sat_badge" class="badge bg-secondary mt-1 w-100">Esperando...</span>
+
+
+
+                                          
+
+</div>
+
+<div class="col-md-6">
+
+
+
+                                              <label class="form-label small text-secondary">Temperatura (Ã‚Â°C)</label>
+
+
+
+                                              <input type="number" step="0.1" id="temp_input" class="form-control form-control-sm" placeholder="Ej: 37.0" oninput="evaluarTemp(this.value)">
+
+
+
+                                              <span id="temp_badge" class="badge bg-secondary mt-1 w-100">Esperando...</span>
+
+
+
+                                          </div>
+
+
+
+                                      </div>
+
+
+
+                                  </div>
+
+
+
+
+
+
+
+                                  <!-- Tab Escala glasgow -->
+
+
+
+                                  
+
+<div class="tab-pane fade" id="glasgow" role="tabpanel">
+
+
+
+                                      
+
+<div class="alert alert-info py-2 mb-3" style="background: rgba(13, 202, 240, 0.1); border-color: #0dcaf0;">
+
+
+
+                                          
+
+<div class="d-flex justify-content-between align-items-center">
+
+
+
+                                              <span><strong>Puntaje Total Glasgow:</strong></span>
+
+
+
+                                              <span id="glasgowTotal" class="badge bg-primary fs-5">15 / 15</span>
+
+
+
+                                          <span id="glasgowInterpretacion" class="text-end small fw-bold mt-1 text-success">Trauma Leve / Normal</span>
+
+</div>
+
+<div class="mb-3">
+
+
+
+                                          <label class="form-label small text-secondary fw-bold">Apertura Ocular (1-4)</label>
+
+
+
+                                          <select id="g_ocular" class="formÃ¡select formÃ¡select-sm" onchange="calcularGlasgow()">
+
+
+
+                                              <option value="4" selected>4 - EspontÃƒÂ¡nea</option>
+
+
+
+                                              <option value="3">3 - A la orden verbal</option>
+
+
+
+                                              <option value="2">2 - Al estÃƒÂ­mulo doloroso</option>
+
+
+
+                                              <option value="1">1 - Sin respuesta</option>
+
+
+
+                                          </select>
+
+
+
+                                      
+
+</div>
+
+<div class="mb-3">
+
+
+
+                                          <label class="form-label small text-secondary fw-bold">Respuesta Verbal (1-5)</label>
+
+
+
+                                          <select id="g_verbal" class="formÃ¡select formÃ¡select-sm" onchange="calcularGlasgow()">
+
+
+
+                                              <option value="5" selected>5 - Orientado y conversando</option>
+
+
+
+                                              <option value="4">4 - Desorientado y hablando</option>
+
+
+
+                                              <option value="3">3 - Palabras inapropiad&iacute;as</option>
+
+
+
+                                              <option value="2">2 - Sonidos incomprensibles</option>
+
+
+
+                                              <option value="1">1 - Sin respuesta</option>
+
+
+
+                                          </select>
+
+
+
+                                      
+
+</div>
+
+<div class="mb-3">
+
+
+
+                                          <label class="form-label small text-secondary fw-bold">Respuesta Motora (1-6)</label>
+
+
+
+                                          <select id="g_motora" class="formÃ¡select formÃ¡select-sm" onchange="calcularGlasgow()">
+
+
+
+                                              <option value="6" selected>6 - Obedece ÃƒÂ³&oacute;rdenes</option>
+
+
+
+                                              <option value="5">5 - Localiza el dolor</option>
+
+
+
+                                              <option value="4">4 - Retirada y flexiÃƒÂ³n normal</option>
+
+
+
+                                              <option value="3">3 - FlexiÃƒÂ³n anormal (DecorticaciÃƒÂ³n)</option>
+
+
+
+                                              <option value="2">2 - ExtensiÃƒÂ³n (DescerebraciÃƒÂ³n)</option>
+
+
+
+                                              <option value="1">1 - Sin respuesta</option>
+
+
+
+                                          </select>
+
+
+
+                                      </div>
+
+
+
+                                  </div>
+
+
+
+
+
+
+
+                                  <!-- Tab DiagnÃ³stico Final -->
+
+
+
+                                  
+
+<div class="tab-pane fade" id="diag" role="tabpanel">
+
+
+
+                                      
+
+<div class="mb-3">
+
+
+
+                                          <label class="form-label small text-secondary">DiagnÃ³stico Cl&iacute;nico (Se añadirán los signos vitales automÃƒÂ¡ticamente al guardar)</label>
+
+
+
+                                          <textarea name="diagnostico" id="diagnosticoFinal" class="form-control" rows="4" placeholder="Describa el diagnóstico, síntomas y observaciones..." required></textarea>
+
+
+
+                                      
+
+</div>
+
+<div class="mb-3">
+
+
+
+                                          <label class="form-label small text-secondary">Indicaciones y Receta MÃ©dica</label>
+
+
+
+                                          <textarea name="recetaCita" class="form-control" rows="3" placeholder="Medicamentos, dosis y recomendaciones..."></textarea>
+
+
+
+                                      
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="modal-footer border-0">
+
+<button class="btn btn-secondary px-4" onclick="cerrarModalAtenderCita()">Cancelar</button>
+
+
+
+                              <button type="submit" class="btn btn-danger px-4 fw-bold">
+
+<i class="bi bi-check-circle me-2"></i>Finalizar Consulta</button>
+
+
+
+                          </div>
+
+
+
+                      </form>
+
+
+
+                  </div>
+
+
+
+              </div>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+<!-- Modal Facturar Venta -->
+
+
+
+<div class="modal fade" id="modalFacturarVenta"

@@ -1,298 +1,133 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
+<%@ page import="com.nurselogic.model.*" %>
 <%
     String rolUsuario = (String) session.getAttribute("rol");
     if(rolUsuario == null) {
         response.sendRedirect("login.jsp");
         return;
     }
-
     rolUsuario = rolUsuario.trim();
+    String correoLogueado = (String) session.getAttribute("correo");
     boolean isAdmin = "Admin".equalsIgnoreCase(rolUsuario);
+    boolean isPaciente = "Paciente".equalsIgnoreCase(rolUsuario);
+    boolean isFarmaceutico = "Farmaceutico".equalsIgnoreCase(rolUsuario);
+
+    boolean permPac = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Enfermero".equalsIgnoreCase(rolUsuario);
+    boolean permMed = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || isFarmaceutico || "Bodeguero".equalsIgnoreCase(rolUsuario);
+    boolean permCat = isAdmin || "Medico".equalsIgnoreCase(rolUsuario);
+    boolean canSellStock = isAdmin || isFarmaceutico || "Recepcionista".equalsIgnoreCase(rolUsuario);
+    boolean canManageStock = isAdmin || isFarmaceutico || "Bodeguero".equalsIgnoreCase(rolUsuario);
+    boolean permCitas = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Recepcionista".equalsIgnoreCase(rolUsuario);
+    boolean permUsuarios = isAdmin;
 
     if("Pendiente".equalsIgnoreCase(rolUsuario)) {
-        out.println("<div style='background:#0f172a; color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; font-family:sans-serif;'><div style='text-align:center;'><h2>Acceso Restringido</h2><p>Su cuenta está pendiente de revisión.</p><a href='login.jsp' style='color:#3b82f6;'>Volver</a></div></div>");
+        out.println("<div style='background:#0f172a; color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; font-family:sans-serif;'><div style='text-align:center;'><h2>Acceso Restringido</h2><p>Su cuenta est&aacute; pendiente de revisi&oacute;n.</p><a href='login.jsp' style='color:#3b82f6;'>Volver</a></div></div>");
         return;
     }
+
+    // Store permission flags in request scope for dynamically-included JSPs
+    request.setAttribute("isAdmin", isAdmin);
+    request.setAttribute("isPaciente", isPaciente);
+    request.setAttribute("isFarmaceutico", isFarmaceutico);
+    request.setAttribute("permPac", permPac);
+    request.setAttribute("permMed", permMed);
+    request.setAttribute("permCat", permCat);
+    request.setAttribute("canSellStock", canSellStock);
+    request.setAttribute("canManageStock", canManageStock);
+    request.setAttribute("permCitas", permCitas);
+    request.setAttribute("permUsuarios", permUsuarios);
+    request.setAttribute("correoLogueado", correoLogueado);
+    request.setAttribute("rolUsuario", rolUsuario);
 %>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <title>NURSELOGIC - Workspace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --bg-main: #0f172a; --bg-panel: #1e293b; --text-color: #f8fafc; --accent: #3b82f6; --sidebar-w: 260px; }
-        body { background-color: var(--bg-main); color: var(--text-color); font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
-        .sidebar { width: var(--sidebar-w); height: 100vh; background: var(--bg-panel); position: fixed; transition: 0.3s; border-right: 1px solid #334155; z-index: 1000; }
-        .sidebar.contraida { width: 75px; }
-        .sidebar.contraida .texto-nav, .sidebar.contraida .brand-title { display: none; }
-        .nav-link { color: #94a3b8; padding: 15px 25px; transition: 0.2s; border-left: 3px solid transparent; cursor: pointer; display: flex; align-items: center; }
-        .nav-link:hover, .nav-link.active { color: #fff; background: #334155; border-left-color: var(--accent); }
-        .nav-link i { font-size: 1.3rem; margin-right: 15px; }
-        .sidebar.contraida .nav-link i { margin-right: 0; margin: 0 auto; }
-        .main-content { margin-left: var(--sidebar-w); transition: 0.3s; padding: 30px; }
-        .main-content.expandida { margin-left: 75px; }
-        .top-bar { display: flex; justify-content: space-between; margin-bottom: 30px; border-bottom: 1px solid #334155; padding-bottom: 15px; }
-        .btn-menu { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-        .kpi-card { background: var(--bg-panel); border: 1px solid #334155; border-radius: 8px; padding: 25px; transition: transform 0.2s; cursor: pointer; }
-        .kpi-card:hover { transform: translateY(-5px); }
-        .kpi-title { font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-        .kpi-number { font-size: 3rem; font-weight: bold; color: #fff; }
-        .form-section { background: var(--bg-panel); padding: 30px; border-radius: 8px; border: 1px solid #334155; margin-top: 30px; }
-        .form-control, .form-select { background: #0f172a; border: 1px solid #334155; color: #fff; }
-        .form-control:focus, .form-select:focus { background: #0f172a; color: #fff; border-color: var(--accent); box-shadow: none; }
-        .table-dark-custom { --bs-table-bg: #1e293b; --bs-table-color: #f8fafc; border-color: #334155; }
-        .imc-box { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 15px; display: flex; align-items: center; height: 100%; }
+        :root { --bg-main:#0f172a; --bg-panel:rgba(30,41,59,0.7); --text-color:#f8fafc; --accent:#3b82f6; --sidebar-w:260px; --glass-border:1px solid rgba(255,255,255,0.1); }
+        html[data-bs-theme="light"] { --bg-main:#f1f5f9; --bg-panel:rgba(255,255,255,0.9); --text-color:#0f172a; --glass-border:1px solid rgba(0,0,0,0.1); }
+        body { background-color:var(--bg-main); color:var(--text-color); font-family:'Segoe UI',system-ui,sans-serif; overflow-x:hidden; transition:background-color 0.3s,color 0.3s; }
+        .sidebar { width:var(--sidebar-w); height:100vh; background:var(--bg-panel); backdrop-filter:blur(12px); position:fixed; transition:0.3s; border-right:var(--glass-border); z-index:1000; box-shadow:4px 0 15px rgba(0,0,0,0.1); overflow-y:auto; }
+        .sidebar.contraida { width:75px; }
+        .sidebar.contraida .texto-nav, .sidebar.contraida .brand-title { display:none; }
+        .nav-link { color:#94a3b8; padding:12px 25px; margin:4px 12px; border-radius:8px; transition:0.2s; cursor:pointer; display:flex; align-items:center; }
+        html[data-bs-theme="light"] .nav-link { color:#64748b; }
+        .nav-link:hover, .nav-link.active { color:#fff; background:rgba(59,130,246,0.15); }
+        html[data-bs-theme="light"] .nav-link:hover, html[data-bs-theme="light"] .nav-link.active { color:var(--accent); background:rgba(59,130,246,0.1); }
+        .nav-link i { font-size:1.2rem; margin-right:15px; }
+        .sidebar.contraida .nav-link i { margin-right:0; margin:0 auto; }
+        .main-content { margin-left:var(--sidebar-w); transition:0.3s; padding:30px; }
+        .main-content.expandida { margin-left:75px; }
+        .top-bar { display:flex; justify-content:space-between; margin-bottom:30px; border-bottom:var(--glass-border); padding-bottom:15px; }
+        .btn-menu { background:none; border:none; color:var(--text-color); font-size:1.5rem; cursor:pointer; transition:0.3s; }
+        .btn-menu:hover { color:var(--accent); }
+        .dropdown-menu { background:var(--bg-panel); backdrop-filter:blur(15px); border:var(--glass-border); }
+        .dropdown-item { color:var(--text-color); transition:0.2s; }
+        .dropdown-item:hover { color:#fff; background-color:var(--accent); }
+        .glass-card { background:var(--bg-panel); backdrop-filter:blur(12px); border:var(--glass-border); border-radius:12px; box-shadow:0 4px 6px rgba(0,0,0,0.05); transition:transform 0.2s,box-shadow 0.2s; }
+        .kpi-card { background:var(--bg-panel); border:var(--glass-border); border-radius:12px; padding:25px; transition:transform 0.2s,box-shadow 0.2s; cursor:pointer; box-shadow:0 4px 6px rgba(0,0,0,0.05); }
+        .kpi-card:hover { transform:translateY(-5px); box-shadow:0 10px 20px rgba(0,0,0,0.1); }
+        .kpi-title { font-size:0.85rem; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; }
+        html[data-bs-theme="light"] .kpi-title { color:#64748b; }
+        .kpi-number { font-size:3rem; font-weight:bold; color:var(--text-color); }
+        .form-section { background:var(--bg-panel); padding:30px; border-radius:12px; border:var(--glass-border); margin-top:30px; box-shadow:0 10px 30px rgba(0,0,0,0.3); }
+        .form-control, .form-select { background:rgba(15,23,42,0.6); border:var(--glass-border); color:#fff; border-radius:8px; padding:12px 15px; transition:0.3s; }
+        .form-control:focus, .form-select:focus { background:rgba(15,23,42,0.9); color:#fff; border-color:var(--accent); box-shadow:0 0 0 4px rgba(59,130,246,0.15); }
+        html[data-bs-theme="light"] .form-control, html[data-bs-theme="light"] .form-select { background:#ffffff!important; border:1px solid #cbd5e1!important; color:#0f172a!important; box-shadow:0 1px 2px rgba(0,0,0,0.05)!important; }
+        html[data-bs-theme="light"] .form-control:focus, html[data-bs-theme="light"] .form-select:focus { background:#ffffff!important; color:#0f172a!important; border-color:#0284c7!important; box-shadow:0 0 0 3px rgba(14,165,233,0.2)!important; }
+        .table-dark-custom { --bs-table-bg:transparent; --bs-table-color:var(--text-color); --bs-table-hover-color:var(--text-color); --bs-table-hover-bg:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.05); }
+        html[data-bs-theme="light"] .table-dark-custom { --bs-table-bg:transparent; --bs-table-color:#0f172a; --bs-table-hover-color:#0f172a; --bs-table-hover-bg:rgba(0,0,0,0.05); border-color:rgba(0,0,0,0.05); }
+        .sub-box { background:rgba(0,0,0,0.2); border:var(--glass-border); border-radius:8px; padding:15px; }
+        html[data-bs-theme="light"] .sub-box { background:rgba(0,0,0,0.03); }
+        .imc-box { background:rgba(0,0,0,0.2); border:var(--glass-border); border-radius:8px; padding:15px; display:flex; align-items:center; height:100%; }
+        html[data-bs-theme="light"] .imc-box { background:rgba(0,0,0,0.03); }
+        .fade-in { animation:fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .text-theme { color:var(--text-color)!important; }
+        ::-webkit-scrollbar { width:8px; }
+        ::-webkit-scrollbar-track { background:var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background:#475569; border-radius:4px; }
+        ::-webkit-scrollbar-thumb:hover { background:#64748b; }
+        .modal-backdrop { z-index:1040!important; }
+        .modal { z-index:1050!important; }
+        [data-bs-theme="dark"] ::placeholder { color:#94a3b8!important; opacity:1; }
     </style>
 </head>
 <body>
+    <form id="formAdminAction" action="adminAction" method="POST" style="display:none;">
+        <input type="hidden" name="action" id="adminActionType">
+        <input type="hidden" name="target" id="adminActionTarget">
+        <input type="hidden" name="id" id="adminActionId">
+    </form>
 
-    <nav class="sidebar" id="sidebar">
-        <div class="p-4 d-flex align-items-center border-bottom border-secondary mb-3" style="border-color: #334155 !important;">
-            <i class="bi bi-activity text-primary fs-3 me-3"></i>
-            <span class="brand-title fw-bold fs-5 tracking-wide">NURSELOGIC</span>
-        </div>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a class="nav-link active" onclick="cambiarVista('dashboard')"><i class="bi bi-grid-1x2"></i><span class="texto-nav">Dashboard</span></a></li>
-            <li class="nav-item"><a class="nav-link" onclick="cambiarVista('pacientes')"><i class="bi bi-people"></i><span class="texto-nav">Directorio Pacientes</span></a></li>
-            <li class="nav-item"><a class="nav-link" onclick="cambiarVista('medicamentos')"><i class="bi bi-capsule"></i><span class="texto-nav">Inventario Fármacos</span></a></li>
+    <jsp:include page="includes/sidebar.jsp" />
 
-            <% if(isAdmin) { %>
-            <li class="nav-item"><a class="nav-link text-success" onclick="cambiarVista('personal')"><i class="bi bi-shield-lock"></i><span class="texto-nav">Personal Médico</span></a></li>
-            <% } %>
+    <div class="main-content" id="main-content">
+        <jsp:include page="includes/topbar.jsp" />
 
-            <li class="nav-item"><a class="nav-link text-warning" onclick="cambiarVista('reportes')"><i class="bi bi-bug"></i><span class="texto-nav">Soporte T.I.</span></a></li>
-            <li class="nav-item mt-5"><a class="nav-link text-danger" href="login.jsp"><i class="bi bi-box-arrow-left"></i><span class="texto-nav">Cerrar Sesión</span></a></li>
-        </ul>
-    </nav>
+        <!-- Vistas Modulares -->
+        <jsp:include page="views/dashboard.jsp" />
+        <jsp:include page="views/estadisticas.jsp" />
+        <jsp:include page="views/camas.jsp" />
+        <jsp:include page="views/pacientes.jsp" />
+        <jsp:include page="views/medicamentos.jsp" />
+        <jsp:include page="views/catalogos.jsp" />
+        <jsp:include page="views/facturas.jsp" />
+        <jsp:include page="views/personal.jsp" />
+        <jsp:include page="views/reportes.jsp" />
+        <jsp:include page="views/agenda.jsp" />
+    </div>
 
-    <main class="main-content" id="main-content">
-        <div class="top-bar">
-            <button class="btn-menu" onclick="toggleMenu()"><i class="bi bi-list"></i></button>
-            <div class="text-end">
-                <small class="text-secondary d-block">Módulo Activo</small>
-                <%
-                   // Seguro para que el nombre nunca se vea como "null" feo en pantalla
-                   String nombreTop = (String) session.getAttribute("nombres");
-                   if(nombreTop == null || nombreTop.trim().isEmpty() || nombreTop.contains("null")) {
-                       nombreTop = "Usuario del Sistema";
-                   }
-                %>
-                <span class="fw-bold"><%= nombreTop %> | <%= rolUsuario %></span>
-            </div>
-        </div>
+    <!-- Modales Globales -->
+    <jsp:include page="includes/modals.jsp" />
 
-        <div id="dashboard" class="vista-activa">
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="kpi-card shadow-sm" onclick="cambiarVista('pacientes')">
-                        <div class="kpi-title">Pacientes</div>
-                        <div class="kpi-number"><%= request.getAttribute("totalPacientes") != null ? request.getAttribute("totalPacientes") : "0" %></div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="kpi-card shadow-sm" onclick="cambiarVista('medicamentos')">
-                        <div class="kpi-title">Medicamentos</div>
-                        <div class="kpi-number"><%= request.getAttribute("totalMeds") != null ? request.getAttribute("totalMeds") : "0" %></div>
-                    </div>
-                </div>
-                <% if(isAdmin) { %>
-                <div class="col-md-4">
-                    <div class="kpi-card shadow-sm" onclick="cambiarVista('personal')">
-                        <div class="kpi-title">Personal</div>
-                        <div class="kpi-number"><%= request.getAttribute("totalUsers") != null ? request.getAttribute("totalUsers") : "0" %></div>
-                    </div>
-                </div>
-                <% } %>
-            </div>
-
-            <div class="form-section shadow-sm">
-                <h5 class="text-primary mb-4 fw-bold"><i class="bi bi-file-earmark-medical me-2"></i>Nueva Admisión y Triage</h5>
-                <form action="registroPaciente" method="post">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-3"><label class="form-label small text-secondary">Nombres</label><input type="text" name="nombres" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Apellidos</label><input type="text" name="apellidos" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Cédula</label><input type="text" name="cedula" class="form-control" required></div>
-                        <div class="col-md-1"><label class="form-label small text-secondary">Edad</label><input type="number" name="edad" class="form-control" required></div>
-                        <div class="col-md-2"><label class="form-label small text-secondary">Sexo</label><select name="sexo" class="form-select" required><option value="M">M</option><option value="F">F</option></select></div>
-                    </div>
-
-                    <div class="row g-3 mb-4">
-                        <div class="col-12"><label class="form-label small text-secondary">Enfermedad Preexistente (Ej: Diabetes, Hipertensión)</label><input type="text" name="enfermedad" class="form-control" placeholder="Ninguna o especificar..."></div>
-                    </div>
-
-                    <h6 class="text-secondary border-bottom border-secondary pb-2 mb-3">Evaluación Antropométrica (IMC)</h6>
-
-                    <div class="row g-3 mb-4 align-items-center">
-                        <div class="col-md-3"><label class="form-label small text-secondary">Estatura (m)</label><input type="number" step="0.01" id="estatura" name="estatura" class="form-control" oninput="calcularIMCTiempoReal()" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Peso (kg)</label><input type="number" step="0.1" id="peso" name="peso" class="form-control" oninput="calcularIMCTiempoReal()" required></div>
-                        <div class="col-md-6">
-                            <div class="imc-box">
-                                <i class="bi bi-calculator text-primary fs-3 me-3"></i>
-                                <div><div class="small text-secondary">Resultado IMC</div><span id="imcValor" class="fw-bold fs-4 text-white">0.0</span><span id="imcEstado" class="badge bg-secondary ms-2">Sin datos</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h6 class="text-secondary border-bottom border-secondary pb-2 mb-3">Signos Vitales</h6>
-
-                    <div class="row g-3">
-                        <div class="col-md-3"><label class="form-label small text-secondary">Temp (°C)</label><input type="number" step="0.1" name="temperatura" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Presión Arterial</label><input type="text" name="presion" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Frec. Cardiaca (LPM)</label><input type="number" name="fc" class="form-control" required></div>
-                        <div class="col-md-3"><label class="form-label small text-secondary">Saturación O2 (%)</label><input type="number" name="sat" class="form-control" required></div>
-                    </div>
-
-                    <div class="mt-4 text-end">
-                        <button type="submit" class="btn btn-primary px-5 fw-bold">Guardar Historia Clínica</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div id="pacientes" class="vista-activa d-none">
-            <h3 class="mb-3">Base de Datos: Pacientes</h3>
-            <div class="form-section p-0 overflow-hidden">
-                <table class="table table-dark-custom table-hover m-0">
-                    <thead><tr><th>Paciente</th><th>Cédula</th><th>Edad</th></tr></thead>
-                    <tbody>
-                        <%
-                            try {
-                                Object objP = request.getAttribute("listaPacientes");
-                                if(objP == null) {
-                                    out.print("<tr><td colspan='3' class='text-center py-4 text-warning'>No hay datos. Entra siempre desde /dashboard</td></tr>");
-                                } else if (objP instanceof List) {
-                                    List<Map<String, String>> pacientes = (List<Map<String, String>>) objP;
-                                    if(pacientes.isEmpty()) {
-                                        out.print("<tr><td colspan='3' class='text-center py-4 text-secondary'>Sin registros clínicos.</td></tr>");
-                                    } else {
-                                        for(Map<String, String> p : pacientes) {
-                                            out.print("<tr><td>" + p.get("nombres") + " " + p.get("apellidos") + "</td><td>" + p.get("cedula") + "</td><td>" + p.get("edad") + " años</td></tr>");
-                                        }
-                                    }
-                                }
-                            } catch(Exception e) {}
-                        %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="medicamentos" class="vista-activa d-none">
-            <h3 class="mb-3">Inventario Farmacológico</h3>
-            <div class="form-section p-0 overflow-hidden">
-                <table class="table table-dark-custom table-hover m-0">
-                    <thead><tr><th>Medicamento</th><th>Stock Disponible</th></tr></thead>
-                    <tbody>
-                        <tr><td colspan="2" class="text-center py-4 text-secondary">Bodega vacía.</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="personal" class="vista-activa d-none">
-            <h3 class="mb-3">Gestión de Personal Médico Registrado</h3>
-            <div class="form-section p-0 overflow-hidden">
-                <table class="table table-dark-custom table-hover m-0">
-                    <thead><tr><th>Nombres Completos</th><th>Correo</th><th>Rol Asignado</th></tr></thead>
-                    <tbody>
-                        <%
-                            try {
-                                Object objU = request.getAttribute("listaUsuarios");
-                                if(objU == null) {
-                                    out.print("<tr><td colspan='3' class='text-center py-4 text-warning'>No hay datos. Entra siempre desde /dashboard</td></tr>");
-                                } else if (objU instanceof List) {
-                                    List<Map<String, String>> usuarios = (List<Map<String, String>>) objU;
-                                    if(usuarios.isEmpty()) {
-                                        out.print("<tr><td colspan='3' class='text-center py-4 text-secondary'>No hay personal registrado.</td></tr>");
-                                    } else {
-                                        for(Map<String, String> u : usuarios) {
-                                            String r = u.get("rol");
-                                            String badge = "Admin".equalsIgnoreCase(r) ? "bg-success" : ("Pendiente".equalsIgnoreCase(r) ? "bg-warning text-dark" : "bg-primary");
-                                            out.print("<tr><td>" + u.get("nombres") + " " + u.get("apellidos") + "</td><td>" + u.get("correo") + "</td><td><span class='badge " + badge + "'>" + r + "</span></td></tr>");
-                                        }
-                                    }
-                                }
-                            } catch(Exception e) {}
-                        %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="reportes" class="vista-activa d-none">
-            <h3 class="mb-4">Soporte Técnico</h3>
-            <div class="form-section text-center">
-                <p class="mb-4">¿Encontraste un error en el sistema? Graba tu pantalla y muéstranos qué sucede.</p>
-                <button id="btnGrabar" class="btn btn-danger px-4" onclick="iniciarGrabacion()"><i class="bi bi-record-circle me-2"></i>Iniciar Grabación</button>
-                <button id="btnDetener" class="btn btn-secondary px-4 d-none" onclick="detenerGrabacion()"><i class="bi bi-stop-circle me-2"></i>Detener Grabación</button>
-                <video id="videoPreview" controls class="mt-4 w-100 d-none rounded" style="border: 1px solid #334155; background: #0f172a; max-height: 400px;"></video>
-            </div>
-        </div>
-
-    </main>
-
-    <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('contraida');
-            document.getElementById('main-content').classList.toggle('expandida');
-        }
-
-        function cambiarVista(id) {
-            document.querySelectorAll('.vista-activa').forEach(el => el.classList.add('d-none'));
-            document.getElementById(id).classList.remove('d-none');
-            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-            event.currentTarget.classList.add('active');
-        }
-
-        function calcularIMCTiempoReal() {
-            let p = parseFloat(document.getElementById('peso').value);
-            let a = parseFloat(document.getElementById('estatura').value);
-            let val = document.getElementById('imcValor');
-            let est = document.getElementById('imcEstado');
-
-            if(p > 0 && a > 0) {
-                let imc = p / (a * a);
-                val.innerText = imc.toFixed(1);
-                est.classList.remove('bg-secondary', 'bg-warning', 'bg-success', 'bg-danger');
-
-                if(imc < 18.5) { est.innerText = 'Bajo Peso'; est.classList.add('bg-warning'); }
-                else if(imc < 25) { est.innerText = 'Normal'; est.classList.add('bg-success'); }
-                else { est.innerText = 'Sobrepeso/Obesidad'; est.classList.add('bg-danger'); }
-            } else {
-                val.innerText = '0.0';
-                est.innerText = 'Sin datos';
-                est.className = 'badge bg-secondary ms-2';
-            }
-        }
-
-        let grabador;
-        let fragmentos = [];
-        async function iniciarGrabacion() {
-            try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-                grabador = new MediaRecorder(stream);
-                grabador.ondataavailable = (e) => { if (e.data.size > 0) fragmentos.push(e.data); };
-                grabador.onstop = () => {
-                    document.getElementById('videoPreview').src = URL.createObjectURL(new Blob(fragmentos, { type: 'video/webm' }));
-                    document.getElementById('videoPreview').classList.remove('d-none');
-                    fragmentos = [];
-                };
-                grabador.start();
-                document.getElementById('btnGrabar').classList.add('d-none');
-                document.getElementById('btnDetener').classList.remove('d-none');
-                stream.getVideoTracks()[0].onended = () => detenerGrabacion();
-            } catch(err) { console.error("Error al grabar: ", err); }
-        }
-
-        function detenerGrabacion() {
-            if(grabador && grabador.state !== "inactive") { grabador.stop(); grabador.stream.getTracks().forEach(t => t.stop()); }
-            document.getElementById('btnGrabar').classList.remove('d-none');
-            document.getElementById('btnDetener').classList.add('d-none');
-        }
-    </script>
+    <!-- Scripts -->
+    <jsp:include page="includes/scripts.jsp" />
 </body>
 </html>

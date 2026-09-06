@@ -11,7 +11,7 @@ import java.io.IOException;
 
 @WebServlet("/registroUsuario")
 public class RegistroServlet extends HttpServlet {
-    private UsuarioDAO dao = new UsuarioDAO();
+    private com.nurselogic.service.UsuarioService usuarioService = new com.nurselogic.service.UsuarioService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -22,18 +22,17 @@ public class RegistroServlet extends HttpServlet {
         u.setCedula(request.getParameter("cedula"));
         u.setTelefono(request.getParameter("telefono"));
         u.setDireccion(request.getParameter("direccion"));
-        u.setClave(request.getParameter("clave"));
-
-        // Intentamos registrar en la base de datos
-        if (dao.registrarUsuario(u)) {
-            // Si sale bien, mandamos mensaje de éxito (con formato de advertencia para que resalte)
-            request.setAttribute("error", "¡Cuenta creada! Espera la habilitación del Admin.");
-        } else {
-            // Si falla (ej. correo duplicado), mandamos error
-            request.setAttribute("error", "Error al crear la cuenta. Revisa los datos o el correo.");
+        
+        String plainPassword = request.getParameter("clave");
+        if (plainPassword != null && !plainPassword.trim().isEmpty()) {
+            u.setClave(com.nurselogic.util.SecurityUtil.hashPassword(plainPassword));
         }
 
-        // Te devuelve al login con el mensaje
+        String tipoUsuario = request.getParameter("tipoUsuario");
+
+        com.nurselogic.service.UsuarioService.RegistroResult result = usuarioService.registrarUsuario(u, tipoUsuario);
+        request.setAttribute("error", result.message); // Usamos "error" como variable genérica en el jsp actual para mensajes
+
         request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 }

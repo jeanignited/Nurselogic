@@ -1,25 +1,59 @@
 package com.nurselogic.dao;
 
-import com.nurselogic.config.ConnectionPool;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.nurselogic.config.JPAUtil;
 import com.nurselogic.model.Medicamento;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import java.util.List;
 
 public class MedicamentoDAO {
-    public List<Medicamento> listarTodos() throws SQLException {
-        List<Medicamento> lista = new ArrayList<>();
-        try (Connection conn = ConnectionPool.getConnection();
-             PreparedStatement ps = conn.prepareStatement("SELECT * FROM medicamentos")) {
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Medicamento m = new Medicamento();
-                m.setId(rs.getInt("id"));
-                m.setNombre(rs.getString("nombre"));
-                m.setStock(rs.getInt("stock"));
-                lista.add(m);
-            }
+
+    public List<Medicamento> listarTodos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT m FROM Medicamento m ORDER BY m.nombre ASC", Medicamento.class).getResultList();
+        } finally {
+            em.close();
         }
-        return lista;
+    }
+
+    public boolean guardarMedicamento(Medicamento m) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            em.persist(m);
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public boolean ajustarStock(int idMed, int cambio) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Medicamento m = em.find(Medicamento.class, idMed);
+            if (m != null) {
+                int nuevoStock = m.getStock() + cambio;
+                if (nuevoStock < 0) nuevoStock = 0;
+                m.setStock(nuevoStock);
+                em.merge(m);
+            }
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return false;
+        } finally {
+            em.close();
+        }
     }
 }

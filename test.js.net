@@ -1,0 +1,15 @@
+import System;
+import Microsoft.JScript;
+import Microsoft.JScript.Vsa;
+
+class Test {
+    static function Main() {
+        var engine = VsaEngine.CreateEngine();
+        try {
+            eval(System.IO.File.ReadAllText('temp_test.js'));
+            Console.WriteLine('Syntax OK');
+        } catch (e) {
+            Console.WriteLine('Syntax Error: ' + e.message);
+        }
+    }
+}
