@@ -3418,6 +3418,9 @@ window.buscarRecetaFarmacia = function() {
         .then(r => r.json())
         .then(data => {
             if (data.success) {
+                window.currentRecetaIdCita = data.idCita || '';
+                window.currentRecetaCedula = cedula;
+
                 if (container) container.classList.remove('d-none');
                 if (notFound) notFound.classList.add('d-none');
                 
@@ -3432,6 +3435,8 @@ window.buscarRecetaFarmacia = function() {
                     contentEl.innerHTML = '<strong>' + data.receta + '</strong>';
                 }
             } else {
+                window.currentRecetaIdCita = '';
+                window.currentRecetaCedula = '';
                 if (container) container.classList.add('d-none');
                 if (notFound) {
                     notFound.classList.remove('d-none');
@@ -3442,6 +3447,34 @@ window.buscarRecetaFarmacia = function() {
         .catch(err => {
             alert("Error al consultar receta en el servidor.");
         });
+};
+
+window.completarVentaReceta = function() {
+    var idCita = window.currentRecetaIdCita || '';
+    var cedula = window.currentRecetaCedula || (document.getElementById('cedulaFarmaciaBuscador') ? document.getElementById('cedulaFarmaciaBuscador').value.trim() : '');
+
+    var formData = new URLSearchParams();
+    formData.append("action", "completarVentaReceta");
+    formData.append("idCita", idCita);
+    formData.append("cedula", cedula);
+
+    fetch("adminAction", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+    }).then(function(res) {
+        alert("¡Venta completada exitosamente! La receta ha sido despachada y finalizada. Se ha transferido la factura al Reporte de Ventas.");
+        var container = document.getElementById('recetaFarmaciaContainer');
+        if (container) container.classList.add('d-none');
+        var notFound = document.getElementById('recetaFarmaciaNotFound');
+        if (notFound) {
+            notFound.classList.remove('d-none');
+            notFound.innerText = "La receta de este paciente ya ha sido despachada y facturada exitosamente.";
+        }
+        cambiarVista('facturas');
+    }).catch(function(err) {
+        alert("Error al finalizar la venta de la receta.");
+    });
 };
 
 // Función global corregida para RECETA
@@ -3592,19 +3625,52 @@ window.buscarPacienteReceta = function(cedula) {
     }
 };
 
-window.abrirModalVenta = function(id) {
+window.abrirModalVenta = function(id, nombre, precio, stock) {
     var modalEl = document.getElementById("modalFacturarVenta");
     if (modalEl) {
+        var idHidden = document.getElementById("ventaIdMed");
+        if (!idHidden) {
+            idHidden = document.createElement("input");
+            idHidden.type = "hidden";
+            idHidden.id = "ventaIdMed";
+            idHidden.name = "idMed";
+            var mBody = modalEl.querySelector(".modal-body");
+            if (mBody) mBody.appendChild(idHidden);
+        }
+        idHidden.value = id || "";
+
+        var nombreInput = document.getElementById("ventaNombreMed");
+        if (nombreInput) nombreInput.value = nombre || "Medicamento";
+
+        var stockSpan = document.getElementById("ventaMaxStock");
+        if (stockSpan) stockSpan.innerText = stock || 100;
+
+        var cantInput = document.getElementById("ventaCantidad");
+        if (cantInput) {
+            cantInput.value = 1;
+            cantInput.max = stock || 100;
+        }
+
+        window.currentPrecioVenta = parseFloat(precio) || 0.0;
+        window.calcTotalVenta();
+
         try {
             var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
             modal.show();
         } catch (e) {
-            console.log("Forzando con jQuery...");
             $("#modalFacturarVenta").modal('show');
         }
     } else {
         alert("Atención: El HTML del modalFacturarVenta no está en esta página.");
     }
+};
+
+window.calcTotalVenta = function() {
+    var cantInput = document.getElementById("ventaCantidad");
+    var totalInput = document.getElementById("ventaTotal");
+    var cant = cantInput ? (parseInt(cantInput.value) || 1) : 1;
+    var precio = window.currentPrecioVenta || 0.0;
+    if (totalInput) totalInput.value = "$" + (cant * precio).toFixed(2);
 };
 
 // Función para CERRAR el modal de ventas (Botón X y Cancelar)
@@ -3618,11 +3684,39 @@ window.cerrarModalVenta = function() {
     }
 };
 
-// Función para SIMULAR la confirmación y el PDF (Botón Verde)
+// Confirmación de Venta con Generación de Factura en BD
 window.confirmarVenta = function() {
-    // Un simple alert salva presentaciones enteras
-    alert("¡Venta procesada con éxito! El recibo PDF se está generando...");
-    window.cerrarModalVenta(); // Cierra la ventana automáticamente después
+    var idHidden = document.getElementById("ventaIdMed");
+    var idMed = idHidden ? idHidden.value : "";
+    var cliente = document.getElementById("ventaCliente") ? document.getElementById("ventaCliente").value.trim() : "Consumidor Final";
+    var cantidad = document.getElementById("ventaCantidad") ? document.getElementById("ventaCantidad").value : "1";
+
+    if (!idMed) {
+        alert("Por favor seleccione un medicamento válido.");
+        return;
+    }
+
+    var formData = new URLSearchParams();
+    formData.append("action", "facturarVenta");
+    formData.append("idMed", idMed);
+    formData.append("cantidad", cantidad);
+    formData.append("cliente", cliente || "Consumidor Final");
+
+    fetch("adminAction", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+    }).then(function(res) {
+        alert("¡Venta procesada exitosamente! Se generó la factura en el Reporte de Ventas.");
+        window.cerrarModalVenta();
+        window.location.href = "dashboard";
+    }).catch(function(err) {
+        alert("Error al procesar la factura de venta.");
+    });
+};
+
+window.irAReporteVentas = function() {
+    cambiarVista('facturas');
 };
 
 // CONEXIÓN A LA BASE DE DATOS Y MODAL PARA INTERNAR

@@ -1,4 +1,4 @@
-﻿<%@ page pageEncoding="UTF-8" %>
+<%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
 <%@ page import="com.nurselogic.model.*" %>
 <%
@@ -96,6 +96,18 @@
                             <small class="text-secondary fw-semibold">Detalle de la Receta (Medicamentos y Dosis):</small>
 
                             <div class="mt-2 p-3 rounded" style="background: rgba(0,0,0,0.2); white-space: pre-wrap;" id="farmaciaRecetaContenido"></div>
+
+                            <div class="mt-3 pt-3 border-top border-secondary d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                                <div>
+
+                                    <span class="badge bg-success rounded-pill px-3 py-2 fs-6"><i class="bi bi-check-circle-fill me-1"></i>Factura Registrada</span>
+
+                                </div>
+
+                                <button type="button" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" onclick="completarVentaReceta()"><i class="bi bi-receipt me-2"></i>Completar Venta y Ver en Reporte de Ventas</button>
+
+                            </div>
 
                         </div>
 

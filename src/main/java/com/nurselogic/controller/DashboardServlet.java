@@ -184,7 +184,7 @@ public class DashboardServlet extends HttpServlet {
             // Lista de Facturas
             List<Factura> listaFacturas = new ArrayList<>();
             try {
-                if ("Admin".equals(rolUsuario) || "Farmacéutico".equals(rolUsuario) || "Farmacéutico".equals(rolUsuario)) {
+                if (!"Paciente".equals(rolUsuario)) {
                     FacturaDAO fDao = new FacturaDAO();
                     listaFacturas = fDao.listarFacturas();
                 }

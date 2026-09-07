@@ -34,7 +34,7 @@ public class FarmaciaApiServlet extends HttpServlet {
             if (pac == null) {
                 resp.getWriter().write("{\"success\": false, \"message\": \"No existe paciente registrado con la cédula " + cleanCed + "\"}");
             } else {
-                List<Cita> citas = em.createQuery("SELECT c FROM Cita c WHERE c.paciente.id = :idPac AND c.receta IS NOT NULL AND LENGTH(TRIM(c.receta)) > 0 ORDER BY c.id DESC", Cita.class)
+                List<Cita> citas = em.createQuery("SELECT c FROM Cita c WHERE c.paciente.id = :idPac AND c.receta IS NOT NULL AND LENGTH(TRIM(c.receta)) > 0 AND (c.estado IS NULL OR c.estado != 'DESPACHADO') ORDER BY c.id DESC", Cita.class)
                         .setParameter("idPac", pac.getId())
                         .getResultList();
 
@@ -44,9 +44,9 @@ public class FarmaciaApiServlet extends HttpServlet {
                     String nombre = pac.getNombres() + " " + pac.getApellidos();
                     String receta = citaValida.getReceta().replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
                     String fecha = citaValida.getFecha() != null ? citaValida.getFecha().toString() : "Hoy";
-                    resp.getWriter().write(String.format("{\"success\": true, \"pacienteNombre\": \"%s\", \"fecha\": \"%s\", \"receta\": \"%s\"}", nombre, fecha, receta));
+                    resp.getWriter().write(String.format("{\"success\": true, \"idCita\": %d, \"pacienteNombre\": \"%s\", \"fecha\": \"%s\", \"receta\": \"%s\"}", citaValida.getId(), nombre, fecha, receta));
                 } else {
-                    resp.getWriter().write("{\"success\": false, \"message\": \"El paciente " + pac.getNombres() + " " + pac.getApellidos() + " no tiene recetas vigentes.\"}");
+                    resp.getWriter().write("{\"success\": false, \"message\": \"El paciente " + pac.getNombres() + " " + pac.getApellidos() + " no tiene recetas pendientes o ya fueron facturadas y despachadas.\"}");
                 }
             }
         } catch (Exception e) {

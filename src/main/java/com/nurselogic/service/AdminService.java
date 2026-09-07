@@ -346,6 +346,11 @@ public class AdminService {
                 boolean alMenosUno = false;
                 double totalVenta = 0.0;
                 
+                List<FacturaDetalle> detallesFactura = new ArrayList<>();
+                Factura fac = new Factura();
+                fac.setFechaEmision(LocalDateTime.now());
+                fac.setClienteNombre(pacNombre != null ? pacNombre : "Consumidor Final");
+
                 for (int i = 0; i < idsMedStr.length; i++) {
                     try {
                         int idMed = Integer.parseInt(idsMedStr[i]);
@@ -354,17 +359,30 @@ public class AdminService {
                         if (med != null) {
                             int nuevoStock = Math.max(0, med.getStock() - cantidad);
                             med.setStock(nuevoStock);
-                            double subtotal = (med.getPrecio() != null ? med.getPrecio() : 0.0) * cantidad;
+                            double precioUnit = (med.getPrecio() != null ? med.getPrecio() : 0.0);
+                            double subtotal = precioUnit * cantidad;
                             totalVenta += subtotal;
 
                             if (alMenosUno) nombres.append(", ");
                             nombres.append(med.getNombre()).append(" (x").append(cantidad).append(")");
                             alMenosUno = true;
+
+                            FacturaDetalle det = new FacturaDetalle();
+                            det.setFactura(fac);
+                            det.setMedicamento(med);
+                            det.setCantidad(cantidad);
+                            det.setPrecioUnitario(precioUnit);
+                            det.setSubtotal(subtotal);
+                            detallesFactura.add(det);
                         }
                     } catch (NumberFormatException ignored) {}
                 }
                 
                 if (alMenosUno) {
+                    fac.setTotal(totalVenta);
+                    fac.setDetalles(detallesFactura);
+                    em.persist(fac);
+
                     if (p != null) {
                         Cita c = new Cita();
                         c.setPaciente(p);
@@ -376,7 +394,7 @@ public class AdminService {
                         em.persist(c);
                     }
                     tx.commit();
-                    return new ActionResult(true, "Receta prescrita correctamente para " + (pacNombre != null ? pacNombre : "paciente") + ". Total: $" + String.format(Locale.US, "%.2f", totalVenta));
+                    return new ActionResult(true, "Receta y Factura FAC-" + String.format("%05d", fac.getId()) + " generadas correctamente para " + (pacNombre != null ? pacNombre : "paciente") + ". Total: $" + String.format(Locale.US, "%.2f", totalVenta));
                 }
                 
                 tx.rollback();
@@ -470,5 +488,43 @@ public class AdminService {
             } finally { em.close(); }
         }
         return new ActionResult(false, "Faltan datos.");
+    }
+
+    public ActionResult completarVentaReceta(String idCitaStr, String cedula) {
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Cita c = null;
+            if (idCitaStr != null && !idCitaStr.trim().isEmpty()) {
+                try {
+                    int idC = Integer.parseInt(idCitaStr.trim());
+                    c = em.find(Cita.class, idC);
+                } catch (Exception ignored) {}
+            }
+            if (c == null && cedula != null && !cedula.trim().isEmpty()) {
+                Paciente p = em.createQuery("SELECT p FROM Paciente p WHERE p.cedula = :cedula", Paciente.class)
+                        .setParameter("cedula", cedula.trim())
+                        .getResultStream().findFirst().orElse(null);
+                if (p != null) {
+                    c = em.createQuery("SELECT c FROM Cita c WHERE c.paciente.id = :idPac AND c.receta IS NOT NULL AND LENGTH(TRIM(c.receta)) > 0 AND (c.estado IS NULL OR c.estado != 'DESPACHADO') ORDER BY c.id DESC", Cita.class)
+                            .setParameter("idPac", p.getId())
+                            .getResultStream().findFirst().orElse(null);
+                }
+            }
+            if (c != null) {
+                c.setEstado("DESPACHADO");
+                tx.commit();
+                return new ActionResult(true, "Venta completada exitosamente. Receta despachada y archivada.");
+            }
+            tx.rollback();
+            return new ActionResult(false, "No se encontró receta pendiente de despacho para esta consulta.");
+        } catch(Exception ex) {
+            if (tx.isActive()) tx.rollback();
+            ex.printStackTrace();
+            return new ActionResult(false, "Error al finalizar el despacho de la receta.");
+        } finally {
+            em.close();
+        }
     }
 }

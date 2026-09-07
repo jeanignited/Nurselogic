@@ -99,6 +99,8 @@ public class AdminActionServlet extends HttpServlet {
                 result = adminService.darAltaCama(request.getParameter("idCama"));
             } else if ("cambiarEstadoCama".equals(action)) {
                 result = adminService.cambiarEstadoCama(request.getParameter("idCama"), request.getParameter("nuevoEstado"));
+            } else if ("completarVentaReceta".equals(action)) {
+                result = adminService.completarVentaReceta(request.getParameter("idCita"), request.getParameter("cedula"));
             }
 
             if (result != null) {
