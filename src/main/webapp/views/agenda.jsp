@@ -64,10 +64,10 @@
                                             out.print("<td>");
                                             if (!"ATENDIDO".equalsIgnoreCase(c.get("estado")) && !"CANCELADO".equalsIgnoreCase(c.get("estado"))) {
                                                 out.print("<div class='btn-group' role='group'>");
-                                                out.print("<button class='btn btn-sm btn-outline-info' title='Prescribir Receta' onclick=\"abrirModalReceta('" + c.get("paciente") + "', '" + c.get("cedula") + "')\"><i class='bi bi-prescription2'></i></button>");
-                                                out.print("<button class='btn btn-sm btn-outline-success' title='Realizar Consulta Médica' onclick=\"abrirModalAtenderCita(" + c.get("id") + ", '" + c.get("paciente") + "')\"><i class='bi bi-heart-pulse-fill'></i> Atender</button>");
-                                                out.print("<button class='btn btn-sm btn-outline-warning' title='Marcar en Sala' onclick=\"cambiarEstadoCita(" + c.get("id") + ", 'EN SALA')\"><i class='bi bi-person-badge'></i> En Sala</button>");
-                                                out.print("<button class='btn btn-sm btn-outline-danger' title='Cancelar Cita' onclick=\"cambiarEstadoCita(" + c.get("id") + ", 'CANCELADO')\"><i class='bi bi-x-lg'></i></button>");
+                                                out.print("<button type='button' class='btn btn-sm btn-outline-info' title='Prescribir Receta' onclick=\"abrirModalReceta('" + c.get("paciente") + "', '" + c.get("cedula") + "')\"><i class='bi bi-prescription2'></i></button>");
+                                                out.print("<button type='button' class='btn btn-sm btn-outline-success' title='Realizar Consulta Médica' onclick=\"abrirModalAtenderCita(" + c.get("id") + ", '" + c.get("paciente") + "')\"><i class='bi bi-heart-pulse-fill'></i> Atender</button>");
+                                                out.print("<button type='button' class='btn btn-sm btn-outline-warning' title='Marcar en Sala' onclick=\"cambiarEstadoCita(" + c.get("id") + ", 'EN SALA')\"><i class='bi bi-person-badge'></i> En Sala</button>");
+                                                out.print("<button type='button' class='btn btn-sm btn-outline-danger' title='Cancelar Cita' onclick=\"cambiarEstadoCita(" + c.get("id") + ", 'CANCELADO')\"><i class='bi bi-x-lg'></i></button>");
                                                 out.print("</div>");
                                             } else {
                                                 out.print("<span class='text-secondary small'><i class='bi bi-check-all me-1'></i>Cita Cerrada</span>");

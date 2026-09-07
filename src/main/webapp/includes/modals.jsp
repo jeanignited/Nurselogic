@@ -750,7 +750,7 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-capsule me-2 text-success"></i>Registrar Nuevo Medicamento</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalMedicamento()"></button>
       </div>
-      <form action="farmaciaApi" method="POST">
+      <form action="adminAction" method="POST">
         <div class="modal-body pb-0">
           <input type="hidden" name="action" value="crearMedicamento">
           <div class="mb-3">
@@ -787,7 +787,7 @@
         <h5 class="modal-title fw-bold" id="catModalTitulo"><i class="bi bi-folder-plus me-2 text-info"></i>Nuevo Elemento de Catálogo</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCatálogos()"></button>
       </div>
-      <form action="catálogosAction" method="POST">
+      <form action="adminAction" method="POST">
         <div class="modal-body pb-0">
           <input type="hidden" name="action" id="catActionInput" value="crearEnfermedad">
           <input type="hidden" name="id" id="catIdEnf">

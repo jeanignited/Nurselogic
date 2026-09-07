@@ -20,6 +20,11 @@ public class RecuperacionServlet extends HttpServlet {
     private com.nurselogic.service.UsuarioService usuarioService = new com.nurselogic.service.UsuarioService();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String correo = request.getParameter("correo");

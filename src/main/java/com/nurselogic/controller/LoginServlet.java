@@ -15,6 +15,11 @@ public class LoginServlet extends HttpServlet {
     private com.nurselogic.service.UsuarioService usuarioService = new com.nurselogic.service.UsuarioService();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendRedirect("login.jsp");
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String correo = request.getParameter("usuario");
         String clave = request.getParameter("clave");

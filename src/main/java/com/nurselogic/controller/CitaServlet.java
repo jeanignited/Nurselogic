@@ -22,6 +22,11 @@ public class CitaServlet extends HttpServlet {
     private PacienteDAO pacienteDAO = new PacienteDAO();
 
     @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        doPost(request, response);
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String fecha = request.getParameter("fecha");
         String hora = request.getParameter("hora");
