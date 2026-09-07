@@ -3687,4 +3687,40 @@ window.cambiarEstadoCama = function(id, estado) {
     });
 };
 
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("*").forEach(function(el) {
+        if (el.children.length === 0 && el.textContent.trim() === "null") {
+            el.textContent = "Sin registrar";
+        }
+    });
+});
+
+// CONEXIÓN INVISIBLE A BD PARA CREAR NUEVA CAMA
+window.crearNuevaCama = function() {
+    var numero = prompt("SISTEMA ACTIVO: Ingrese el código de la nueva cama (Ej: Cama H-305):");
+    if (!numero || numero.trim() === "") {
+        return; // Si el usuario cancela, no hacemos nada
+    }
+
+    var sala = prompt("Ingrese la sala (Opciones: Hospitalización General, Urgencias, UCI):", "Hospitalización General");
+    if (!sala || sala.trim() === "") {
+        return;
+    }
+
+    var formData = new URLSearchParams();
+    formData.append("action", "crear"); // La acción exacta que espera tu Java
+    formData.append("numero", numero);
+    formData.append("sala", sala);
+
+    fetch('camasAction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    }).then(function(response) {
+        alert("¡Éxito! La " + numero + " ha sido registrada correctamente en " + sala + ".");
+        window.location.href = "dashboard"; // Recarga para que aparezca la nueva tarjeta
+    }).catch(function(error) {
+        alert("Error al conectar con la base de datos.");
+    });
+};
 </script>

@@ -323,11 +323,8 @@
                     </div>
 
                     <div class="col-md-4">
-
                         <label class="text-secondary small">Fecha de Nacimiento</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getFechaNacimiento() %></div>
-
+                        <div class="fw-semibold fs-5"><%= (miHC.getFechaNacimiento() != null) ? miHC.getFechaNacimiento() : "Sin registrar" %></div>
                     </div>
 
                     <div class="col-md-3">
@@ -347,11 +344,8 @@
                     </div>
 
                     <div class="col-md-3">
-
                         <label class="text-secondary small">Presión Arterial</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getPresionArterial() %></div>
-
+                        <div class="fw-semibold fs-5"><%= (miHC.getPresionArterial() != null && !miHC.getPresionArterial().trim().isEmpty()) ? miHC.getPresionArterial() : "Sin evaluar" %></div>
                     </div>
 
                     <div class="col-md-3">

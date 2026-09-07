@@ -30,7 +30,7 @@
 
                     <% if(isAdmin) { %>
 
-                    <button class="btn btn-primary text-nowrap rounded-pill px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalAnadirCama"><i class="bi bi-plus-lg me-1"></i>Añadir Cama</button>
+                    <button class="btn btn-primary text-nowrap rounded-pill px-3 py-2 shadow-sm" onclick="crearNuevaCama()"><i class="bi bi-plus-lg me-1"></i>Añadir Cama</button>
 
                     <% } %>
 
