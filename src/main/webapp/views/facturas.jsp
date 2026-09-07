@@ -32,7 +32,7 @@
         </div>
     </div>
     
-    <div class="formÃ¡section p-0 overflow-hidden mt-3 shadow-lg" style="border: var(--glass-border);">
+    <div class="form-section p-0 overflow-hidden mt-3 shadow-lg" style="border: var(--glass-border);">
         <div class="table-responsive">
             <table class="table table-dark-custom table-hover m-0" id="tablaFacturas">
                 <thead style="background: rgba(255,255,255,0.02);">

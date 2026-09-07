@@ -514,8 +514,70 @@ public class AdminService {
             }
             if (c != null) {
                 c.setEstado("DESPACHADO");
+
+                String pacNombre = (c.getPaciente() != null) ? (c.getPaciente().getNombres() + " " + c.getPaciente().getApellidos()) : "Cliente Farmacia";
+                
+                Factura fac = new Factura();
+                fac.setFechaEmision(LocalDateTime.now());
+                fac.setClienteNombre(pacNombre);
+                
+                double total = 0.0;
+                String recText = c.getReceta() != null ? c.getReceta() : "";
+                
+                if (recText.contains("Total Venta: $")) {
+                    try {
+                        String tStr = recText.substring(recText.indexOf("Total Venta: $") + 14).trim();
+                        total = Double.parseDouble(tStr.split("\\s+")[0]);
+                    } catch(Exception ignored) {}
+                }
+                
+                List<FacturaDetalle> detalles = new ArrayList<>();
+                if (recText.contains("Medicamentos: ")) {
+                    try {
+                        String medSection = recText.substring(recText.indexOf("Medicamentos: ") + 14);
+                        if (medSection.contains("\n")) medSection = medSection.substring(0, medSection.indexOf("\n"));
+                        String[] items = medSection.split(",");
+                        for (String item : items) {
+                            String cleanItem = item.trim();
+                            if (!cleanItem.isEmpty()) {
+                                String medNombre = cleanItem.replaceAll("\\s*\\(x\\d+\\)", "").trim();
+                                int cant = 1;
+                                if (cleanItem.contains("(x")) {
+                                    try {
+                                        String cStr = cleanItem.substring(cleanItem.indexOf("(x") + 2).replace(")", "").trim();
+                                        cant = Integer.parseInt(cStr);
+                                    } catch(Exception ignored) {}
+                                }
+                                
+                                List<Medicamento> mList = em.createQuery("SELECT m FROM Medicamento m WHERE LOWER(m.nombre) LIKE :n", Medicamento.class)
+                                        .setParameter("n", "%" + medNombre.toLowerCase() + "%")
+                                        .getResultList();
+                                if (!mList.isEmpty()) {
+                                    Medicamento m = mList.get(0);
+                                    FacturaDetalle det = new FacturaDetalle();
+                                    det.setFactura(fac);
+                                    det.setMedicamento(m);
+                                    det.setCantidad(cant);
+                                    double pUnit = m.getPrecio() != null ? m.getPrecio() : 0.0;
+                                    det.setPrecioUnitario(pUnit);
+                                    det.setSubtotal(pUnit * cant);
+                                    detalles.add(det);
+                                    if (total == 0.0) total += (pUnit * cant);
+                                }
+                            }
+                        }
+                    } catch(Exception ignored) {}
+                }
+                
+                if (total == 0.0) total = 5.00;
+                fac.setTotal(total);
+                if (!detalles.isEmpty()) {
+                    fac.setDetalles(detalles);
+                }
+                em.persist(fac);
+
                 tx.commit();
-                return new ActionResult(true, "Venta completada exitosamente. Receta despachada y archivada.");
+                return new ActionResult(true, "Venta completada exitosamente. Factura FAC-" + String.format("%05d", fac.getId()) + " registrada en el Reporte de Ventas.");
             }
             tx.rollback();
             return new ActionResult(false, "No se encontró receta pendiente de despacho para esta consulta.");

@@ -3463,15 +3463,8 @@ window.completarVentaReceta = function() {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     }).then(function(res) {
-        alert("¡Venta completada exitosamente! La receta ha sido despachada y finalizada. Se ha transferido la factura al Reporte de Ventas.");
-        var container = document.getElementById('recetaFarmaciaContainer');
-        if (container) container.classList.add('d-none');
-        var notFound = document.getElementById('recetaFarmaciaNotFound');
-        if (notFound) {
-            notFound.classList.remove('d-none');
-            notFound.innerText = "La receta de este paciente ya ha sido despachada y facturada exitosamente.";
-        }
-        cambiarVista('facturas');
+        alert("¡Venta completada exitosamente! La receta ha sido despachada y la factura se encuentra registrada en el Reporte de Ventas.");
+        window.location.href = "dashboard?vista=facturas";
     }).catch(function(err) {
         alert("Error al finalizar la venta de la receta.");
     });
@@ -3709,14 +3702,14 @@ window.confirmarVenta = function() {
     }).then(function(res) {
         alert("¡Venta procesada exitosamente! Se generó la factura en el Reporte de Ventas.");
         window.cerrarModalVenta();
-        window.location.href = "dashboard";
+        window.location.href = "dashboard?vista=facturas";
     }).catch(function(err) {
         alert("Error al procesar la factura de venta.");
     });
 };
 
 window.irAReporteVentas = function() {
-    cambiarVista('facturas');
+    window.location.href = "dashboard?vista=facturas";
 };
 
 // CONEXIÓN A LA BASE DE DATOS Y MODAL PARA INTERNAR
@@ -3843,6 +3836,14 @@ document.addEventListener("DOMContentLoaded", function() {
             el.textContent = "Sin registrar";
         }
     });
+
+    try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var vista = urlParams.get('vista');
+        if (vista) {
+            cambiarVista(vista);
+        }
+    } catch(e) {}
 });
 
 // ABRIR MODAL PARA CREAR NUEVA CAMA
