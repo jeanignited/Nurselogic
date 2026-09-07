@@ -2522,95 +2522,29 @@
 
 
 
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.05); border-left: 4px solid #38bdf8;">
-
-
-
-                                <div><span class="text-secondary small d-block">Evaluación Antropométrica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
-
-
-
-                                <span class="badge ${imcColor} px-3 py-2">IMC ${IMC}</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.05); border-left: 4px solid #38bdf8;">' +
+                                '<div><span class="text-secondary small d-block">Evaluación Antropométrica (IMC)</span><strong>' + IMC + ' kg/m² &nbsp;&nbsp;' + imcTxt + '</strong></div>' +
+                                '<span class="badge ' + imcColor + ' px-3 py-2">IMC ' + IMC + '</span>' +
+                            '</div>';
                         }
-
-
-
-
-
-
 
                         if (temp >= 38.0) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between alert-danger" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">
-
-
-
-                                <div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA TÉRMICA CRÍTICA: Fiebre Alta / Hipertermia (${temp} c)</strong><br><small class="text-theme">Protocolo de reducción térmica inmediata y monitoreo antitérmico sugerido.</small></div>
-
-
-
-                                <span class="badge bg-danger pulse-animation px-3 py-2 fs-6">  HIPERTERMIA</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between alert-danger" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
+                                '<div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA TÉRMICA CRÍTICA: Fiebre Alta / Hipertermia (' + temp + ' °C)</strong><br><small class="text-theme">Protocolo de reducción térmica inmediata y monitoreo antitérmico sugerido.</small></div>' +
+                                '<span class="badge bg-danger pulse-animation px-3 py-2 fs-6">HIPERTERMIA</span>' +
+                            '</div>';
                         } else if (temp >= 37.3 && temp < 38.0) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b;">
-
-
-
-                                <div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febrícula detectada (${temp} c)</strong><br><small class="text-secondary">Monitoreo periódico cada 2 horas.</small></div>
-
-
-
-                                <span class="badge bg-warning text-dark px-3 py-2">  Febrícula</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b;">' +
+                                '<div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febrícula detectada (' + temp + ' °C)</strong><br><small class="text-secondary">Monitoreo periódico cada 2 horas.</small></div>' +
+                                '<span class="badge bg-warning text-dark px-3 py-2">Febrícula</span>' +
+                            '</div>';
                         }
 
-
-
-
-
-
-
                         if (sat > 0 && sat < 92) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">
-
-
-
-                                <div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ${sat}%)</strong><br><small class="text-theme">Administración urgente de oxígeno suplementario requerida.</small></div>
-
-
-
-                                <span class="badge bg-danger px-3 py-2 fs-6">  HIPOXIA</span>
-
-
-
-                            </div>`;
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
+                                '<div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ' + sat + '%)</strong><br><small class="text-theme">Administración urgente de oxígeno suplementario requerida.</small></div>' +
+                                '<span class="badge bg-danger px-3 py-2 fs-6">HIPOXIA</span>' +
+                            '</div>';
 
 
 
@@ -3446,14 +3380,13 @@ function agregarMedicamentoReceta() {
     div.className = "d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary";
     div.id = "med_row_" + idMed;
     
-    div.innerHTML = `
-        <div class="text-truncate me-2 fw-bold" style="max-width: 65%; color: #38bdf8 !important; font-size: 0.95rem;" title="${nombre}"><i class="bi bi-capsule me-2 text-warning fs-5"></i>${nombre}</div>
-        <div class="d-flex align-items-center">
-            <input type="hidden" name="idMedicamento" value="${idMed}">
-            <input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="${maxStock}" value="1" required>
-            <button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerMedicamentoReceta('${idMed}')"><i class="bi bi-x-circle-fill fs-5"></i></button>
-        </div>
-    `;
+    div.innerHTML = 
+        '<div class="text-truncate me-2 fw-bold" style="max-width: 65%; color: #38bdf8 !important; font-size: 0.95rem;" title="' + nombre + '"><i class="bi bi-capsule me-2 text-warning fs-5"></i>' + nombre + '</div>' +
+        '<div class="d-flex align-items-center">' +
+            '<input type="hidden" name="idMedicamento" value="' + idMed + '">' +
+            '<input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="' + maxStock + '" value="1" required>' +
+            '<button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerMedicamentoReceta(\'' + idMed + '\')"><i class="bi bi-x-circle-fill fs-5"></i></button>' +
+        '</div>';
     
     lista.appendChild(div);
     sel.selectedIndex = 0;
