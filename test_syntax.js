@@ -3230,8 +3230,8 @@ function evaluarVitales() {
         let parts = pa.value.split('/');
         let sist = parseInt(parts[0]);
         let b = document.getElementById('atender_pa_badge');
-        if (sist < 90) { b.innerText = "HipotensiÃ³n"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
-        else if (sist > 140) { b.innerText = "HipertensiÃ³n"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
+        if (sist < 90) { b.innerText = "Hipotensión"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
+        else if (sist > 140) { b.innerText = "Hipertensión"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
         else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
     }
     
@@ -3276,7 +3276,7 @@ function calcularGlasgow() {
     
     if (total <= 8) {
         el.className = "badge bg-danger fs-5 px-3";
-        desc.innerText = "Trauma Grave (IntubaciÃ³n requerida)";
+        desc.innerText = "Trauma Grave (Intubación requerida)";
         desc.className = "fw-bold text-danger";
     } else if (total <= 12) {
         el.className = "badge bg-warning text-dark fs-5 px-3";

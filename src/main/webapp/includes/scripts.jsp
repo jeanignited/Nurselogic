@@ -3602,54 +3602,83 @@ window.confirmarVenta = function() {
     window.cerrarModalVenta(); // Cierra la ventana automáticamente después
 };
 
-// CONEXIÓN REAL A LA BASE DE DATOS PARA INTERNAR
-window.abrirModalInternar = function(idCama) {
-    var paciente = prompt("SISTEMA ACTIVO: Ingrese el nombre del paciente a internar en esta cama:");
+// CONEXIÓN A LA BASE DE DATOS Y MODAL PARA INTERNAR
+window.abrirModalInternar = function(id, numero, sala) {
+    var idInput = document.getElementById('internarIdCama');
+    if (idInput) idInput.value = id;
+    
+    var numLabel = document.getElementById('internarCamaNumLabel');
+    if (numLabel) numLabel.innerText = (numero || id) + (sala ? " (" + sala + ")" : "");
+    
+    var cedulaInput = document.getElementById('camaCedula');
+    if (cedulaInput) cedulaInput.value = '';
+    
+    var infoDiv = document.getElementById('camaPacNombreInfo');
+    if (infoDiv) infoDiv.innerHTML = '';
+    
+    var quickReg = document.getElementById('camaQuickRegister');
+    if (quickReg) quickReg.classList.add('d-none');
+    
+    var esNuevo = document.getElementById('camaEsNuevoPac');
+    if (esNuevo) esNuevo.value = "false";
+    
+    var hiddenId = document.getElementById('camaPacienteIdHidden');
+    if (hiddenId) hiddenId.value = '';
 
-    if (paciente && paciente.trim() !== "") {
-        // Creamos un formulario invisible para enviar los datos al backend
-        var form = document.createElement("form");
-        form.method = "POST";
-        form.action = "camasAction"; // El nombre exacto de tu Servlet
-
-        form.innerHTML = `
-            <input type="hidden" name="action" value="asignar">
-            <input type="hidden" name="camaId" value="${idCama}">
-            <input type="hidden" name="pacienteNombre" value="${paciente}">
-            <input type="hidden" name="medicoNombre" value="Médico de Turno">
-            <input type="hidden" name="motivo" value="Ingreso registrado por sistema">
-        `;
-
-        document.body.appendChild(form);
-        form.submit(); // Dispara la petición a la BD
-    } else {
-        alert("Operación cancelada: No se ingresó un paciente.");
+    var modalEl = document.getElementById("modalInternarCama");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalInternarCama").modal('show');
+        }
     }
 };
 
-// CONEXIÓN INVISIBLE A BD PARA INTERNAR
-window.abrirModalInternar = function(id, numero, sala) {
-    var paciente = prompt("SISTEMA ACTIVO: Ingrese el nombre del paciente a internar en la " + numero + ":");
-
-    if (paciente && paciente.trim() !== "") {
-        var formData = new URLSearchParams();
-        formData.append("action", "asignar");
-        formData.append("camaId", id);
-        formData.append("pacienteNombre", paciente);
-        formData.append("medicoNombre", "Médico de Turno");
-        formData.append("motivo", "Ingreso registrado por sistema");
-
-        // Fetch envía los datos al Java (Servlet) sin cambiar de página
-        fetch('camasAction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
-        }).then(function(response) {
-            alert("¡Éxito! Paciente asignado a la " + numero + " en la base de datos.");
-            window.location.href = "dashboard"; // Recarga limpia del sistema
-        }).catch(function(error) {
-            alert("Error de conexión con el servidor.");
-        });
+window.buscarPacienteCama = function(cedula) {
+    const infoDiv = document.getElementById('camaPacNombreInfo');
+    const quickReg = document.getElementById('camaQuickRegister');
+    const esNuevo = document.getElementById('camaEsNuevoPac');
+    const btn = document.getElementById('btnInternarCama');
+    
+    if (cedula.length === 10) {
+        if (infoDiv) infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
+        if (btn) btn.disabled = true;
+        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if (data.id) {
+                    if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + data.nombres + ' ' + data.apellidos;
+                    if (quickReg) quickReg.classList.add('d-none');
+                    if (esNuevo) esNuevo.value = "false";
+                    var hiddenId = document.getElementById('camaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = data.id;
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('camaNuevoNombres'); if (nN) nN.required = false;
+                    var nA = document.getElementById('camaNuevoApellidos'); if (nA) nA.required = false;
+                } else {
+                    if (infoDiv) infoDiv.innerHTML = '';
+                    if (quickReg) quickReg.classList.remove('d-none');
+                    if (esNuevo) esNuevo.value = "true";
+                    var hiddenId = document.getElementById('camaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = '';
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('camaNuevoNombres'); if (nN) nN.required = true;
+                    var nA = document.getElementById('camaNuevoApellidos'); if (nA) nA.required = true;
+                }
+            })
+            .catch(err => {
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (btn) btn.disabled = false;
+            });
+    } else {
+        if (infoDiv) infoDiv.innerHTML = '';
+        if (quickReg) quickReg.classList.add('d-none');
+        if (esNuevo) esNuevo.value = "false";
+        if (btn) btn.disabled = false;
     }
 };
 
@@ -3671,19 +3700,23 @@ window.confirmarAltaCama = function(id, numero, paciente) {
     }
 };
 
-// CONEXIÓN INVISIBLE PARA ESTADOS EXTRAS (Mantenimiento a Disponible)
+// CONEXIÓN PARA CAMBIAR ESTADO DE CAMA (Mantenimiento / Disponible)
 window.cambiarEstadoCama = function(id, estado) {
+    var est = estado || "Mantenimiento";
     var formData = new URLSearchParams();
-    formData.append("action", "liberar"); // Tu Java usa "liberar" para ponerlas disponibles
+    formData.append("action", "cambiarEstado");
     formData.append("camaId", id);
+    formData.append("estado", est);
 
     fetch('camasAction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString()
     }).then(function(response) {
-        alert("El estado de la cama ha sido actualizado.");
+        alert("El estado de la cama ha sido actualizado a " + est + ".");
         window.location.href = "dashboard";
+    }).catch(function(err) {
+        alert("Error al actualizar el estado de la cama.");
     });
 };
 
@@ -3695,32 +3728,36 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// CONEXIÓN INVISIBLE A BD PARA CREAR NUEVA CAMA
+// ABRIR MODAL PARA CREAR NUEVA CAMA
 window.crearNuevaCama = function() {
-    var numero = prompt("SISTEMA ACTIVO: Ingrese el código de la nueva cama (Ej: Cama H-305):");
-    if (!numero || numero.trim() === "") {
-        return; // Si el usuario cancela, no hacemos nada
+    var modalEl = document.getElementById("modalAñadirCama") || document.getElementById("modalAnadirCama");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalAñadirCama").modal('show');
+        }
     }
+};
 
-    var sala = prompt("Ingrese la sala (Opciones: Hospitalización General, Urgencias, UCI):", "Hospitalización General");
-    if (!sala || sala.trim() === "") {
-        return;
+// CONEXIÓN PARA ELIMINAR CAMA
+window.confirmarBorradoCama = function(id, numero) {
+    if (confirm("¿Estás seguro de que deseas eliminar la " + (numero || "cama seleccionada") + "? Esta acción no se puede deshacer.")) {
+        var formData = new URLSearchParams();
+        formData.append("action", "eliminar");
+        formData.append("camaId", id);
+
+        fetch('camasAction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        }).then(function(response) {
+            alert("La cama ha sido eliminada del sistema.");
+            window.location.href = "dashboard";
+        }).catch(function(err) {
+            alert("Error al eliminar la cama.");
+        });
     }
-
-    var formData = new URLSearchParams();
-    formData.append("action", "crear"); // La acción exacta que espera tu Java
-    formData.append("numero", numero);
-    formData.append("sala", sala);
-
-    fetch('camasAction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: formData.toString()
-    }).then(function(response) {
-        alert("¡Éxito! La " + numero + " ha sido registrada correctamente en " + sala + ".");
-        window.location.href = "dashboard"; // Recarga para que aparezca la nueva tarjeta
-    }).catch(function(error) {
-        alert("Error al conectar con la base de datos.");
-    });
 };
 </script>

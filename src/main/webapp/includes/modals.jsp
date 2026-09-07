@@ -333,7 +333,7 @@
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Sala / &Aacute;rea Hospitalaria</label>
                         <select name="sala" class="form-select" style="border: var(--glass-border);" required>
-                            <option value="Sala General">Sala General</option>
+                            <option value="Hospitalizaci&oacute;n General">Hospitalizaci&oacute;n General</option>
                             <option value="Urgencias">Urgencias</option>
                             <option value="UCI">UCI</option>
                             <option value="Pediatr&iacute;a">Pediatr&iacute;a</option>
@@ -362,15 +362,46 @@
             <form action="camasAction" method="post">
                 <input type="hidden" name="action" value="asignar">
                 <input type="hidden" id="internarIdCama" name="camaId" value="">
+                <input type="hidden" id="camaEsNuevoPac" name="esNuevoPaciente" value="false">
+                <input type="hidden" id="camaPacienteIdHidden" name="pacienteId" value="">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label small text-secondary fw-semibold">Nombre del Paciente</label>
-                        <input type="text" name="pacienteNombre" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Juan P&eacute;rez" required>
+                        <label class="form-label small text-secondary fw-semibold">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
+                        <input type="text" id="camaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCama(this.value);" required>
+                        <div id="camaPacNombreInfo" class="form-text text-info mt-1"></div>
+                    </div>
+
+                    <!-- QUICK REGISTER FALLBACK -->
+                    <div id="camaQuickRegister" class="d-none p-3 mb-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2);">
+                        <p class="small text-warning fw-bold mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Paciente Nuevo. Complete datos:</p>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input type="text" id="camaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="camaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" id="camaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento">
+                            </div>
+                            <div class="col-md-6">
+                                <select id="camaNuevoSexo" name="nuevoSexo" class="form-select form-select-sm">
+                                    <option value="">-- Sexo --</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-semibold">Motivo de Internaci&oacute;n</label>
+                        <input type="text" id="camaMotivo" name="motivo" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Observaci&oacute;n Post-Quir&uacute;rgica / Tratamiento" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success rounded-pill"><i class="bi bi-check2-square me-2"></i>Asignar y Ocupar Cama</button>
+                    <button type="submit" id="btnInternarCama" class="btn btn-success rounded-pill"><i class="bi bi-check2-square me-2"></i>Asignar y Ocupar Cama</button>
                 </div>
             </form>
         </div>

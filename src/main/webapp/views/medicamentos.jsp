@@ -83,7 +83,7 @@
 
                                 <div class="col-md-6 mb-3">
 
-                                    <small class="text-secondary fw-semibold">Fecha de EmisiÃ³n:</small>
+                                    <small class="text-secondary fw-semibold">Fecha de Emisión:</small>
 
                                     <div id="farmaciaFechaCita"></div>
 
@@ -105,7 +105,7 @@
 
                 <div id="recetaFarmaciaNotFound" class="alert alert-warning d-none">
 
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontrÃ³ ninguna receta vigente para esta cédula.
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontró ninguna receta vigente para esta cédula.
 
                 </div>
 
@@ -141,7 +141,7 @@
 
                 <div>
 
-                    <strong>Alerta de Bodega Clínica:</strong> Se han detectado <b><%= medCriticos %></b> medicamento(s) con stock crítico (inferior a 10 unidades). Se requiere reposiciÃ³n urgente.
+                    <strong>Alerta de Bodega Clínica:</strong> Se han detectado <b><%= medCriticos %></b> medicamento(s) con stock crítico (inferior a 10 unidades). Se requiere reposición urgente.
 
                 </div>
 

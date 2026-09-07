@@ -138,7 +138,17 @@
 
                                 <span class="fw-bold fs-5 text-theme"><i class="bi bi-file-medical me-2 text-info"></i><%= c.get("numero") %></span>
 
-                                <span class="badge <%= textBadge %> rounded-pill px-3 py-1"><%= estado %></span>
+                                <div class="d-flex align-items-center gap-1">
+
+                                    <span class="badge <%= textBadge %> rounded-pill px-3 py-1"><%= estado %></span>
+
+                                    <% if(isAdmin) { %>
+
+                                        <button class="btn btn-sm btn-link text-danger p-0 ms-1" title="Eliminar Cama" onclick="confirmarBorradoCama('<%= c.get("id") %>', '<%= c.get("numero") %>')"><i class="bi bi-trash-fill"></i></button>
+
+                                    <% } %>
+
+                                </div>
 
                             </div>
 

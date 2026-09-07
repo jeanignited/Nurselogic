@@ -226,12 +226,17 @@ public class DashboardServlet extends HttpServlet {
 
             // Lista de Camas
             try {
-                List<com.nurselogic.model.Cama> camaList = em.createQuery("SELECT c FROM Cama c ORDER BY c.numero ASC", com.nurselogic.model.Cama.class).getResultList();
+                List<com.nurselogic.model.Cama> camaList = em.createQuery("SELECT c FROM Cama c ORDER BY c.sala ASC, c.numero ASC", com.nurselogic.model.Cama.class).getResultList();
                 for(com.nurselogic.model.Cama cam : camaList) {
                     Map<String, String> mapCam = new HashMap<>();
                     mapCam.put("id", String.valueOf(cam.getId()));
                     mapCam.put("numero", cam.getNumero());
-                    mapCam.put("sala", cam.getSala());
+                    
+                    String salaName = cam.getSala();
+                    if (salaName == null || salaName.trim().isEmpty() || "Sala General".equalsIgnoreCase(salaName)) {
+                        salaName = "Hospitalización General";
+                    }
+                    mapCam.put("sala", salaName);
                     mapCam.put("estado", cam.getEstado());
                     mapCam.put("paciente", cam.getPacienteNombre() != null ? cam.getPacienteNombre() : "");
                     mapCam.put("medico", cam.getMedicoNombre() != null ? cam.getMedicoNombre() : "");
