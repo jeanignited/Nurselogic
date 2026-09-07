@@ -570,15 +570,15 @@
 
 
 
-        function filtrarMÃƒÂ©dicamentos() {
+        function filtrarMédicamentos() {
 
 
 
-            let input = document.getElementById("buscadorMÃƒÂ©dicamentos").value.toLowerCase();
+            let input = document.getElementById("buscadorMédicamentos").value.toLowerCase();
 
 
 
-            let table = document.getElementById("tablaMÃƒÂ©dicamentos");
+            let table = document.getElementById("tablaMédicamentos");
 
 
 
@@ -882,7 +882,7 @@
 
 
 
-        // AJAX para autocompletar Paciente por cÃƒÂ©dula
+        // AJAX para autocompletar Paciente por cédula
 
 
 
@@ -1550,7 +1550,7 @@
 
 
 
-            if(confirm(' Ã‚Â¿EstÃƒÂ¡s seguro de que deseas eliminar este ' + tipo + '? Esta acciÃƒÂ³n no se puede deshacer.')) {
+            if(confirm(' Ã‚Â¿EstÃƒÂ¡s seguro de que deseas eliminar este ' + tipo + '? Esta acción no se puede deshacer.')) {
 
 
 
@@ -1758,7 +1758,7 @@
 
 
 
-                document.getElementById('inputDescRol').value = 'GestiÃƒÂ³n y control de cuentas de usuarios';
+                document.getElementById('inputDescRol').value = 'Gestión y control de cuentas de usuarios';
 
 
 
@@ -1794,11 +1794,11 @@
 
 
 
-                document.getElementById('inputNombreRol').value = 'mÃƒÂ©dico Triage';
+                document.getElementById('inputNombreRol').value = 'médico Triage';
 
 
 
-                document.getElementById('inputDescRol').value = 'Atenci n a pacientes, triage y citas mÃƒÂ©dicas';
+                document.getElementById('inputDescRol').value = 'Atenci n a pacientes, triage y citas médicas';
 
 
 
@@ -1898,11 +1898,11 @@
 
 
 
-        function abrirModalMÃƒÂ©dicamento() {
+        function abrirModalMédicamento() {
 
 
 
-            var mEl = document.getElementById('modalMÃƒÂ©dicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+            var mEl = document.getElementById('modalMédicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
 
 
 
@@ -1914,11 +1914,11 @@
 
 
 
-        function cerrarModalMÃƒÂ©dicamento() {
+        function cerrarModalMédicamento() {
 
 
 
-            var mEl = document.getElementById('modalMÃƒÂ©dicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
+            var mEl = document.getElementById('modalMédicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
 
 
 
@@ -2394,7 +2394,7 @@
 
 
 
-                        document.getElementById('fichaInfo').innerText = 'CÃƒÂ©dula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || 'N/D') + ' | Sexo: ' + (data.sexo || 'N/D');
+                        document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || 'N/D') + ' | Sexo: ' + (data.sexo || 'N/D');
 
 
 
@@ -2486,15 +2486,15 @@
 
 
 
-                            if (IMC < 18.5) { imcColor = 'bg-info'; imcTxt = 'Bajo Peso (Riesgo de desnutriciÃƒÂ³n)  '; }
+                            if (IMC < 18.5) { imcColor = 'bg-info'; imcTxt = 'Bajo Peso (Riesgo de desnutrición)  '; }
 
 
 
-                            else if (IMC >= 25 && IMC < 30) { imcColor = 'bg-warning text-dark'; imcTxt = 'Sobrepeso (RecomendaciÃƒÂ³n dietÃƒÂ©tica)  '; }
+                            else if (IMC >= 25 && IMC < 30) { imcColor = 'bg-warning text-dark'; imcTxt = 'Sobrepeso (Recomendación dietética)  '; }
 
 
 
-                            else if (IMC >= 30) { imcColor = 'bg-danger'; imcTxt = 'Obesidad clÃƒÂ­nica (AtenciÃƒÂ³n mÃƒÂ©dica)  '; }
+                            else if (IMC >= 30) { imcColor = 'bg-danger'; imcTxt = 'Obesidad clínica (Atención médica)  '; }
 
 
 
@@ -2506,7 +2506,7 @@
 
 
 
-                                <div><span class="text-secondary small d-block">EvaluaciÃƒÂ³n AntropomÃƒÂ©trica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
+                                <div><span class="text-secondary small d-block">EvaluaciÃƒÂ³n Antropométrica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
 
 
 
@@ -3175,7 +3175,7 @@ function configurarMinFechaCita() {
     const medText = medTexts.length > 0 ? medTexts.join(', ') : 'FÃ¡rmaco recetado';
     
     const indEl = document.getElementsByName('indicaciones')[0];
-    const ind = indEl ? indEl.value : 'Siga las indicaciones mÃ©dicas';
+    const ind = indEl ? indEl.value : 'Siga las indicaciones médicas';
 
     document.getElementById('printFecha').innerText = new Date().toLocaleDateString();
     document.getElementById('printPac').innerText = pac;

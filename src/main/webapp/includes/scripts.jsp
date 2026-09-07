@@ -2414,7 +2414,7 @@
 
 
 
-                        document.getElementById('fichaInfo').innerText = 'CÃ©dula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || 'N/D') + ' | Sexo: ' + (data.sexo || 'N/D');
+                        document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || 'N/D') + ' | Sexo: ' + (data.sexo || 'N/D');
 
 
 
@@ -3602,6 +3602,89 @@ window.confirmarVenta = function() {
     window.cerrarModalVenta(); // Cierra la ventana automáticamente después
 };
 
+// CONEXIÓN REAL A LA BASE DE DATOS PARA INTERNAR
+window.abrirModalInternar = function(idCama) {
+    var paciente = prompt("SISTEMA ACTIVO: Ingrese el nombre del paciente a internar en esta cama:");
 
+    if (paciente && paciente.trim() !== "") {
+        // Creamos un formulario invisible para enviar los datos al backend
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = "camasAction"; // El nombre exacto de tu Servlet
+
+        form.innerHTML = `
+            <input type="hidden" name="action" value="asignar">
+            <input type="hidden" name="camaId" value="${idCama}">
+            <input type="hidden" name="pacienteNombre" value="${paciente}">
+            <input type="hidden" name="medicoNombre" value="Médico de Turno">
+            <input type="hidden" name="motivo" value="Ingreso registrado por sistema">
+        `;
+
+        document.body.appendChild(form);
+        form.submit(); // Dispara la petición a la BD
+    } else {
+        alert("Operación cancelada: No se ingresó un paciente.");
+    }
+};
+
+// CONEXIÓN INVISIBLE A BD PARA INTERNAR
+window.abrirModalInternar = function(id, numero, sala) {
+    var paciente = prompt("SISTEMA ACTIVO: Ingrese el nombre del paciente a internar en la " + numero + ":");
+
+    if (paciente && paciente.trim() !== "") {
+        var formData = new URLSearchParams();
+        formData.append("action", "asignar");
+        formData.append("camaId", id);
+        formData.append("pacienteNombre", paciente);
+        formData.append("medicoNombre", "Médico de Turno");
+        formData.append("motivo", "Ingreso registrado por sistema");
+
+        // Fetch envía los datos al Java (Servlet) sin cambiar de página
+        fetch('camasAction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        }).then(function(response) {
+            alert("¡Éxito! Paciente asignado a la " + numero + " en la base de datos.");
+            window.location.href = "dashboard"; // Recarga limpia del sistema
+        }).catch(function(error) {
+            alert("Error de conexión con el servidor.");
+        });
+    }
+};
+
+// CONEXIÓN INVISIBLE A BD PARA DAR DE ALTA
+window.confirmarAltaCama = function(id, numero, paciente) {
+    if (confirm("SISTEMA ACTIVO: ¿Confirmas dar de alta a " + paciente + " y liberar la " + numero + "?")) {
+        var formData = new URLSearchParams();
+        formData.append("action", "liberar");
+        formData.append("camaId", id);
+
+        fetch('camasAction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        }).then(function(response) {
+            alert("¡Alta confirmada! La " + numero + " ha sido liberada.");
+            window.location.href = "dashboard";
+        });
+    }
+};
+
+// CONEXIÓN INVISIBLE PARA ESTADOS EXTRAS (Mantenimiento a Disponible)
+window.cambiarEstadoCama = function(id, estado) {
+    var formData = new URLSearchParams();
+    formData.append("action", "liberar"); // Tu Java usa "liberar" para ponerlas disponibles
+    formData.append("camaId", id);
+
+    fetch('camasAction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    }).then(function(response) {
+        alert("El estado de la cama ha sido actualizado.");
+        window.location.href = "dashboard";
+    });
+};
 
 </script>
