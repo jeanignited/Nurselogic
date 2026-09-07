@@ -167,6 +167,7 @@ public class DashboardServlet extends HttpServlet {
                     map.put("hora", c.getHora() != null ? c.getHora().toString() : "");
                     map.put("estado", c.getEstado() != null ? c.getEstado() : "REGISTRADO");
                     map.put("paciente", c.getPaciente() != null ? (c.getPaciente().getNombres() + " " + c.getPaciente().getApellidos()) : "Paciente genérico");
+                    map.put("cedula", c.getPaciente() != null && c.getPaciente().getCedula() != null ? c.getPaciente().getCedula() : "");
                     map.put("especialidad", c.getEspecialidad() != null ? c.getEspecialidad().getDescripcion() : "Medicina General");
                     listaCitas.add(map);
                     

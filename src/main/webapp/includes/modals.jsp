@@ -248,7 +248,7 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="adminAction" method="post">
+            <form action="adminAction" method="post" onsubmit="return validarFormularioReceta(event)">
                 <input type="hidden" name="action" value="prescribirReceta">
                 <input type="hidden" id="recetaEsNuevoPac" name="esNuevoPaciente" value="false">
                 <input type="hidden" id="recetaPacienteIdHidden" name="pacienteId" value="">
