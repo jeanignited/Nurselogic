@@ -74,7 +74,20 @@ public class AdminActionServlet extends HttpServlet {
             } else if ("borrarAlergia".equals(action)) {
                 result = adminService.borrarAlergia(request.getParameter("idAle"));
             } else if ("prescribirReceta".equals(action)) {
-                result = adminService.prescribirReceta(request.getParameterValues("idMedicamento"), request.getParameterValues("cantidad"), request.getParameter("pacienteNombre"));
+                String esNuevoStr = request.getParameter("esNuevoPaciente");
+                boolean esNuevo = "true".equals(esNuevoStr);
+                result = adminService.prescribirReceta(
+                    request.getParameterValues("idMedicamento"),
+                    request.getParameterValues("cantidad"),
+                    request.getParameter("pacienteNombre"),
+                    request.getParameter("cedula"),
+                    request.getParameter("indicaciones"),
+                    esNuevo,
+                    request.getParameter("nuevoNombres"),
+                    request.getParameter("nuevoApellidos"),
+                    request.getParameter("nuevoFechaNac"),
+                    request.getParameter("nuevoSexo")
+                );
             } else if ("internarPaciente".equals(action)) {
                 result = adminService.internarPaciente(request.getParameter("idCama"), request.getParameter("pacienteNombre"), request.getParameter("medicoNombre"), request.getParameter("motivo"));
             } else if ("darAltaCama".equals(action)) {

@@ -250,40 +250,75 @@
             </div>
             <form action="adminAction" method="post">
                 <input type="hidden" name="action" value="prescribirReceta">
+                <input type="hidden" id="recetaEsNuevoPac" name="esNuevoPaciente" value="false">
+                <input type="hidden" id="recetaPacienteIdHidden" name="pacienteId" value="">
                 <div class="modal-body">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label small text-secondary fw-semibold">Nombre del Paciente</label>
-                            <input type="text" id="recetaPacNombre" name="pacienteNombre" class="form-control" style="border: var(--glass-border);" placeholder="Nombre completo del paciente" required>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-12">
+                            <label class="form-label small text-secondary fw-semibold">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
+                            <input type="text" id="recetaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteReceta(this.value);" required>
+                            <input type="hidden" id="recetaPacNombre" name="pacienteNombre" value="">
+                            <div id="recetaPacNombreInfo" class="form-text text-info mt-1"></div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Seleccionar Medicamento (Bodega)</label>
-                            <select id="recetaIdMed" name="idMedicamento" class="form-select" multiple size="4" style="border: var(--glass-border); background: #0f172a; color: white;" required>
-                                <option value="">-- Mant&eacute;n presionado Ctrl para seleccionar varios --</option>
+                    </div>
+
+                    <!-- QUICK REGISTER FALLBACK -->
+                    <div id="recetaQuickRegister" class="d-none p-3 mb-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2);">
+                        <p class="small text-warning fw-bold mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Paciente Nuevo. Complete datos:</p>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <input type="text" id="recetaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="recetaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="date" id="recetaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento">
+                            </div>
+                            <div class="col-md-6">
+                                <select id="recetaNuevoSexo" name="nuevoSexo" class="form-select form-select-sm">
+                                    <option value="">-- Sexo --</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Seleccionar Medicamento (Bodega)</label>
+                        <div class="input-group">
+                            <select id="selectMedicamentoAdd" class="form-select" style="border: var(--glass-border); background: #0f172a; color: white;">
+                                <option value="">-- Seleccionar medicamento --</option>
                                 <%
                                     List<Map<String, String>> medsReceta = (List<Map<String, String>>) request.getAttribute("listaMedicamentos");
                                     if (medsReceta != null) {
                                         for (Map<String, String> mSel : medsReceta) {
-                                            out.print("<option value='" + mSel.get("id") + "'>" + mSel.get("nombre") + " (Stock: " + mSel.get("stock") + ")</option>");
+                                            String safeNombre = mSel.get("nombre") != null ? mSel.get("nombre").replace("'", "").replace("\"", "") : "Medicamento";
+                                            out.print("<option value='" + mSel.get("id") + "' data-nombre='" + safeNombre + "' data-stock='" + mSel.get("stock") + "'>" + safeNombre + " (Stock: " + mSel.get("stock") + ")</option>");
                                         }
                                     }
                                 %>
                             </select>
+                            <button type="button" class="btn btn-info px-3" onclick="agregarMedicamentoReceta()"><i class="bi bi-plus-lg me-1"></i> A&ntilde;adir</button>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label small text-secondary fw-semibold">Cantidad / Unidades</label>
-                            <input type="number" id="recetaCantidad" name="cantidad" class="form-control" style="border: var(--glass-border);" min="1" max="100" value="1" required>
-                        </div>
-                        <div class="col-md-8">
-                            <label class="form-label small text-secondary fw-semibold">Indicaciones Dosis y Frecuencia</label>
-                            <input type="text" name="indicaciones" class="form-control" placeholder="Ej: 1 tableta cada 8 horas por 5 d&iacute;as" required>
-                        </div>
+                    </div>
+
+                    <div class="p-3 mb-3 rounded" style="background: rgba(0,0,0,0.2); border: var(--glass-border); min-height: 80px;">
+                        <small class="text-secondary fw-semibold d-block mb-2"><i class="bi bi-list-check me-1"></i> Medicamentos a Prescribir y Unidades por F&aacute;rmaco:</small>
+                        <div id="msgRecetaVacia" class="text-secondary small text-center py-2">No hay medicamentos a&ntilde;adidos a&uacute;n.</div>
+                        <div id="listaMedicamentosReceta"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-semibold">Indicaciones Dosis y Frecuencia</label>
+                        <input type="text" name="indicaciones" class="form-control" placeholder="Ej: 1 tableta cada 8 horas por 5 d&iacute;as" required>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" class="btn btn-outline-info rounded-pill px-4 me-auto" onclick="imprimirRecetaPDF()"><i class="bi bi-printer-fill me-2"></i>Imprimir Receta PDF</button>
                     <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-success rounded-pill"><i class="bi bi-check-circle me-2"></i>Prescribir y Entregar</button>
+                    <button type="submit" id="btnPrescribirReceta" class="btn btn-success rounded-pill"><i class="bi bi-check-circle me-2"></i>Prescribir y Guardar</button>
                 </div>
             </form>
         </div>

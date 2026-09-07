@@ -26,35 +26,32 @@ public class FarmaciaApiServlet extends HttpServlet {
 
         EntityManager em = JPAUtil.getEntityManager();
         try {
+            String cleanCed = cedula.trim();
             Paciente pac = em.createQuery("SELECT p FROM Paciente p WHERE p.cedula = :cedula", Paciente.class)
-                    .setParameter("cedula", cedula)
+                    .setParameter("cedula", cleanCed)
                     .getResultStream().findFirst().orElse(null);
 
             if (pac == null) {
-                resp.getWriter().write("{\"success\": false, \"message\": \"Paciente no encontrado\"}");
+                resp.getWriter().write("{\"success\": false, \"message\": \"No existe paciente registrado con la cédula " + cleanCed + "\"}");
             } else {
-                List<Cita> citas = em.createQuery("SELECT c FROM Cita c WHERE c.paciente.id = :idPac AND c.estado = 'ATENDIDO' ORDER BY c.fecha DESC, c.hora DESC", Cita.class)
+                List<Cita> citas = em.createQuery("SELECT c FROM Cita c WHERE c.paciente.id = :idPac AND c.receta IS NOT NULL AND LENGTH(TRIM(c.receta)) > 0 ORDER BY c.id DESC", Cita.class)
                         .setParameter("idPac", pac.getId())
                         .getResultList();
 
-                Cita citaValida = null;
-                for (Cita c : citas) {
-                    if (c.getReceta() != null && !c.getReceta().trim().isEmpty()) {
-                        citaValida = c;
-                        break;
-                    }
-                }
+                Cita citaValida = citas.isEmpty() ? null : citas.get(0);
 
                 if (citaValida != null) {
                     String nombre = pac.getNombres() + " " + pac.getApellidos();
-                    String receta = citaValida.getReceta().replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
-                    resp.getWriter().write(String.format("{\"success\": true, \"pacienteNombre\": \"%s\", \"fecha\": \"%s\", \"receta\": \"%s\"}", nombre, citaValida.getFecha().toString(), receta));
+                    String receta = citaValida.getReceta().replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "");
+                    String fecha = citaValida.getFecha() != null ? citaValida.getFecha().toString() : "Hoy";
+                    resp.getWriter().write(String.format("{\"success\": true, \"pacienteNombre\": \"%s\", \"fecha\": \"%s\", \"receta\": \"%s\"}", nombre, fecha, receta));
                 } else {
-                    resp.getWriter().write("{\"success\": false, \"message\": \"El paciente no tiene recetas vigentes.\"}");
+                    resp.getWriter().write("{\"success\": false, \"message\": \"El paciente " + pac.getNombres() + " " + pac.getApellidos() + " no tiene recetas vigentes.\"}");
                 }
             }
         } catch (Exception e) {
-            resp.getWriter().write("{\"success\": false, \"message\": \"Error en el servidor\"}");
+            e.printStackTrace();
+            resp.getWriter().write("{\"success\": false, \"message\": \"Error al consultar la receta en el servidor\"}");
         } finally {
             em.close();
         }

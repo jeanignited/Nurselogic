@@ -3463,12 +3463,15 @@ function prepararYEnviarConsulta() {
 
 function agregarMedicamentoReceta() {
     const sel = document.getElementById("selectMedicamentoAdd");
-    if (sel.selectedIndex <= 0) return;
+    if (!sel || sel.selectedIndex <= 0) return;
     
     const opt = sel.options[sel.selectedIndex];
     const idMed = opt.value;
-    const nombre = opt.getAttribute("data-nombre");
-    const maxStock = opt.getAttribute("data-stock");
+    let nombre = opt.getAttribute("data-nombre");
+    if (!nombre || nombre === "null" || nombre.trim() === "") {
+        nombre = opt.text ? opt.text.split("(Stock:")[0].trim() : "Medicamento";
+    }
+    const maxStock = opt.getAttribute("data-stock") || 100;
     
     if (document.getElementById("med_row_" + idMed)) {
         alert("Este medicamento ya está en la lista.");
@@ -3476,18 +3479,19 @@ function agregarMedicamentoReceta() {
     }
     
     const lista = document.getElementById("listaMedicamentosReceta");
-    document.getElementById("msgRecetaVacia").style.display = "none";
+    const msgVacio = document.getElementById("msgRecetaVacia");
+    if (msgVacio) msgVacio.style.display = "none";
     
     const div = document.createElement("div");
     div.className = "d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary";
     div.id = "med_row_" + idMed;
     
     div.innerHTML = `
-        <div class="text-truncate me-2" style="max-width: 60%;" title="${nombre}"><i class="bi bi-capsule me-1 text-info"></i> ${nombre}</div>
+        <div class="text-truncate me-2 fw-bold" style="max-width: 65%;" title="${nombre}"><i class="bi bi-capsule me-2 text-info fs-5"></i>${nombre}</div>
         <div class="d-flex align-items-center">
             <input type="hidden" name="idMedicamento" value="${idMed}">
-            <input type="number" name="cantidad" class="form-control form-control-sm text-center" style="width: 70px;" min="1" max="${maxStock}" value="1" required>
-            <button type="button" class="btn btn-sm btn-link text-danger ms-2" onclick="removerMedicamentoReceta('${idMed}')"><i class="bi bi-x-circle-fill"></i></button>
+            <input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="${maxStock}" value="1" required>
+            <button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerMedicamentoReceta('${idMed}')"><i class="bi bi-x-circle-fill fs-5"></i></button>
         </div>
     `;
     
@@ -3555,9 +3559,111 @@ window.verFichaClinica = function(cedula) {
     }
 };
 
+// BUSQUEDA DE PACIENTE POR CEDULA EN RECETA
+window.buscarPacienteReceta = function(cedula) {
+    const infoDiv = document.getElementById('recetaPacNombreInfo');
+    const quickReg = document.getElementById('recetaQuickRegister');
+    const esNuevo = document.getElementById('recetaEsNuevoPac');
+    const btn = document.getElementById('btnPrescribirReceta');
+    const hiddenName = document.getElementById('recetaPacNombre');
+    
+    if (cedula.length === 10) {
+        if (infoDiv) infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
+        if (btn) btn.disabled = true;
+        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if (data.id) {
+                    var full = data.nombres + ' ' + data.apellidos;
+                    if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + full;
+                    if (hiddenName) hiddenName.value = full;
+                    if (quickReg) quickReg.classList.add('d-none');
+                    if (esNuevo) esNuevo.value = "false";
+                    var hiddenId = document.getElementById('recetaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = data.id;
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('recetaNuevoNombres'); if (nN) nN.required = false;
+                    var nA = document.getElementById('recetaNuevoApellidos'); if (nA) nA.required = false;
+                } else {
+                    if (infoDiv) infoDiv.innerHTML = '';
+                    if (hiddenName) hiddenName.value = '';
+                    if (quickReg) quickReg.classList.remove('d-none');
+                    if (esNuevo) esNuevo.value = "true";
+                    var hiddenId = document.getElementById('recetaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = '';
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('recetaNuevoNombres'); if (nN) nN.required = true;
+                    var nA = document.getElementById('recetaNuevoApellidos'); if (nA) nA.required = true;
+                }
+            })
+            .catch(err => {
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (btn) btn.disabled = false;
+            });
+    } else {
+        if (infoDiv) infoDiv.innerHTML = '';
+        if (hiddenName) hiddenName.value = '';
+        if (quickReg) quickReg.classList.add('d-none');
+        if (esNuevo) esNuevo.value = "false";
+        if (btn) btn.disabled = false;
+    }
+};
+
+// BUSQUEDA Y DESPACHO DE RECETA EN FARMACIA POR CEDULA
+window.buscarRecetaFarmacia = function() {
+    var cedulaInput = document.getElementById('cedulaFarmaciaBuscador');
+    var cedula = cedulaInput ? cedulaInput.value.trim() : '';
+    var container = document.getElementById('recetaFarmaciaContainer');
+    var notFound = document.getElementById('recetaFarmaciaNotFound');
+    
+    if (!cedula || cedula.length < 10) {
+        alert("Por favor ingrese una cédula válida de 10 dígitos.");
+        return;
+    }
+    
+    fetch('api/receta?cedula=' + cedula)
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                if (container) container.classList.remove('d-none');
+                if (notFound) notFound.classList.add('d-none');
+                
+                var nameEl = document.getElementById('farmaciaPacienteNombre');
+                if (nameEl) nameEl.innerText = data.pacienteNombre;
+                
+                var fechaEl = document.getElementById('farmaciaFechaCita');
+                if (fechaEl) fechaEl.innerText = data.fecha;
+                
+                var contentEl = document.getElementById('farmaciaRecetaContenido');
+                if (contentEl) {
+                    contentEl.innerHTML = '<strong>' + data.receta + '</strong>';
+                }
+            } else {
+                if (container) container.classList.add('d-none');
+                if (notFound) {
+                    notFound.classList.remove('d-none');
+                    notFound.innerText = data.message || "No se encontró ninguna receta vigente para esta cédula.";
+                }
+            }
+        })
+        .catch(err => {
+            alert("Error al consultar receta en el servidor.");
+        });
+};
+
 // Función global corregida para RECETA
 window.abrirModalReceta = function(nombrePaciente) {
-    console.log("Abriendo receta para: " + nombrePaciente);
+    var cedInput = document.getElementById("recetaCedula");
+    if (cedInput) cedInput.value = "";
+    
+    var infoDiv = document.getElementById("recetaPacNombreInfo");
+    if (infoDiv) infoDiv.innerHTML = "";
+    
+    var quickReg = document.getElementById("recetaQuickRegister");
+    if (quickReg) quickReg.classList.add("d-none");
+    
     var modalEl = document.getElementById("modalReceta");
     if (modalEl) {
         try {

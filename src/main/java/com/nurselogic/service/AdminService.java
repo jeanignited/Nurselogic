@@ -2,9 +2,11 @@ package com.nurselogic.service;
 
 import com.nurselogic.dao.*;
 import com.nurselogic.model.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import com.nurselogic.config.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -299,14 +301,50 @@ public class AdminService {
         } finally { em.close(); }
     }
 
-            public ActionResult prescribirReceta(String[] idsMedStr, String[] cantidadesStr, String pacNombre) {
+    public ActionResult prescribirReceta(String[] idsMedStr, String[] cantidadesStr, String pacNombre, String cedula, String indicaciones, boolean esNuevo, String nuevoNombres, String nuevoApellidos, String nuevoFechaNac, String nuevoSexo) {
         if (idsMedStr != null && cantidadesStr != null && idsMedStr.length == cantidadesStr.length) {
             EntityManager em = JPAUtil.getEntityManager();
             EntityTransaction tx = em.getTransaction();
             try {
                 tx.begin();
+                
+                Paciente p = null;
+                if (cedula != null && !cedula.trim().isEmpty()) {
+                    p = em.createQuery("SELECT p FROM Paciente p WHERE p.cedula = :cedula", Paciente.class)
+                          .setParameter("cedula", cedula.trim())
+                          .getResultStream().findFirst().orElse(null);
+                }
+
+                if (p == null && pacNombre != null && !pacNombre.trim().isEmpty()) {
+                    String pName = pacNombre.trim();
+                    try {
+                        p = em.createQuery("SELECT p FROM Paciente p WHERE LOWER(CONCAT(p.nombres, ' ', p.apellidos)) LIKE :nameVal OR LOWER(p.nombres) LIKE :nameVal", Paciente.class)
+                              .setParameter("nameVal", "%" + pName.toLowerCase() + "%")
+                              .getResultStream().findFirst().orElse(null);
+                    } catch(Exception ignored){}
+                }
+
+                if (p == null) {
+                    p = new Paciente();
+                    String cleanCed = (cedula != null && !cedula.trim().isEmpty()) ? cedula.trim() : String.valueOf(System.currentTimeMillis()).substring(0, 10);
+                    p.setCedula(cleanCed);
+                    String n = (nuevoNombres != null && !nuevoNombres.trim().isEmpty()) ? nuevoNombres.trim() : (pacNombre != null && !pacNombre.trim().isEmpty() ? pacNombre.trim() : "Paciente");
+                    String a = (nuevoApellidos != null && !nuevoApellidos.trim().isEmpty()) ? nuevoApellidos.trim() : "Registrado";
+                    p.setNombres(n);
+                    p.setApellidos(a);
+                    if (nuevoFechaNac != null && !nuevoFechaNac.isEmpty()) {
+                        try { p.setFechaNacimiento(LocalDate.parse(nuevoFechaNac)); } catch(Exception ignored){}
+                    }
+                    if (nuevoSexo != null && !nuevoSexo.isEmpty()) p.setSexo(nuevoSexo);
+                    em.persist(p);
+                    pacNombre = p.getNombres() + " " + p.getApellidos();
+                } else {
+                    pacNombre = p.getNombres() + " " + p.getApellidos();
+                }
+
                 StringBuilder nombres = new StringBuilder();
                 boolean alMenosUno = false;
+                double totalVenta = 0.0;
                 
                 for (int i = 0; i < idsMedStr.length; i++) {
                     try {
@@ -316,6 +354,9 @@ public class AdminService {
                         if (med != null) {
                             int nuevoStock = Math.max(0, med.getStock() - cantidad);
                             med.setStock(nuevoStock);
+                            double subtotal = (med.getPrecio() != null ? med.getPrecio() : 0.0) * cantidad;
+                            totalVenta += subtotal;
+
                             if (alMenosUno) nombres.append(", ");
                             nombres.append(med.getNombre()).append(" (x").append(cantidad).append(")");
                             alMenosUno = true;
@@ -324,18 +365,33 @@ public class AdminService {
                 }
                 
                 if (alMenosUno) {
+                    if (p != null) {
+                        Cita c = new Cita();
+                        c.setPaciente(p);
+                        c.setFecha(LocalDate.now());
+                        c.setHora(java.time.LocalTime.now());
+                        c.setEstado("ATENDIDO");
+                        String recetaFull = "Medicamentos: " + nombres.toString() + "\nIndicaciones: " + (indicaciones != null ? indicaciones : "Según criterio médico") + "\nTotal Venta: $" + String.format(Locale.US, "%.2f", totalVenta);
+                        c.setReceta(recetaFull);
+                        em.persist(c);
+                    }
                     tx.commit();
-                    return new ActionResult(true, "Receta prescrita y entregada a " + (pacNombre != null ? pacNombre : "paciente") + ". Stock de " + nombres.toString() + " actualizado.");
+                    return new ActionResult(true, "Receta prescrita correctamente para " + (pacNombre != null ? pacNombre : "paciente") + ". Total: $" + String.format(Locale.US, "%.2f", totalVenta));
                 }
                 
                 tx.rollback();
                 return new ActionResult(false, "Medicamento no encontrado en el inventario.");
             } catch(Exception ex) {
                 if (tx.isActive()) tx.rollback();
+                ex.printStackTrace();
                 return new ActionResult(false, "Error al procesar la prescripci&oacute;n m&eacute;dica.");
             } finally { em.close(); }
         }
         return new ActionResult(false, "Faltan par&aacute;metros para prescribir receta.");
+    }
+
+    public ActionResult prescribirReceta(String[] idsMedStr, String[] cantidadesStr, String pacNombre) {
+        return prescribirReceta(idsMedStr, cantidadesStr, pacNombre, null, null, false, null, null, null, null);
     }
 
     public ActionResult internarPaciente(String idCamaStr, String pacNombre, String medNombre, String motivo) {
