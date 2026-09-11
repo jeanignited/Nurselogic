@@ -15,13 +15,12 @@
     String correoLogueado  = (String) request.getAttribute("correoLogueado");
     String rolUsuario      = (String) request.getAttribute("rolUsuario");
 %>        <div id="personal" class="vista-activa d-none">
-
             <div class="d-flex justify-content-between align-items-center mb-4">
-
                 <h3 class="m-0 fw-bold"><i class="bi bi-shield-lock me-2 text-warning"></i>Gestión de Personal Médico Registrado</h3>
-
-                <button type="button" class="btn btn-warning" onclick="abrirModalNuevoRol()"><i class="bi bi-plus-circle text-dark me-2"></i><span class="text-dark fw-bold">Crear Nuevo Rol</span></button>
-
+                <div>
+                    <button type="button" class="btn btn-outline-info me-2" onclick="abrirModalNuevaEspecialidad()"><i class="bi bi-award text-info me-2"></i><span class="fw-bold">Crear Especialidad</span></button>
+                    <button type="button" class="btn btn-warning" onclick="abrirModalNuevoRol()"><i class="bi bi-plus-circle text-dark me-2"></i><span class="text-dark fw-bold">Crear Nuevo Rol</span></button>
+                </div>
             </div>
 
             <div class="form-section p-0">

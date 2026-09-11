@@ -21,6 +21,8 @@ public class AdminActionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("usuarioLogueado") == null) {
             response.sendRedirect("login.jsp");
@@ -43,6 +45,8 @@ public class AdminActionServlet extends HttpServlet {
                     result = adminService.eliminarPaciente(id, isAdmin);
                 } else if ("usuario".equals(tipo)) {
                     result = adminService.eliminarUsuario(id, isAdmin, correoActual);
+                } else if ("cita".equals(tipo)) {
+                    result = adminService.eliminarCita(id, isAdmin);
                 }
             } else if ("editarRol".equals(action) && "usuario".equals(tipo)) {
                 String nuevoRol = request.getParameter("nuevoRol");
@@ -50,6 +54,9 @@ public class AdminActionServlet extends HttpServlet {
             } else if ("editarEspecialidad".equals(action) && "usuario".equals(tipo)) {
                 String nuevaEsp = request.getParameter("nuevaEspecialidad");
                 result = adminService.editarEspecialidad(id, nuevaEsp);
+            } else if ("crearEspecialidad".equals(action)) {
+                String nombreEspecialidad = request.getParameter("nombreEspecialidad");
+                result = adminService.crearEspecialidad(nombreEspecialidad, isAdmin);
             } else if ("crearRol".equals(action)) {
                 String nombreRol      = request.getParameter("nombreRol");
                 String descRol        = request.getParameter("descRol");         // FIX

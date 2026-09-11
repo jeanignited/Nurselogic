@@ -104,6 +104,7 @@
         <input type="hidden" name="action" id="adminActionType">
         <input type="hidden" name="target" id="adminActionTarget">
         <input type="hidden" name="id" id="adminActionId">
+        <input type="hidden" name="nuevoRol" id="adminActionRol">
     </form>
 
     <jsp:include page="includes/sidebar.jsp" />

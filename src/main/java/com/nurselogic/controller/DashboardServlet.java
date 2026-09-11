@@ -169,6 +169,8 @@ public class DashboardServlet extends HttpServlet {
                     map.put("paciente", c.getPaciente() != null ? (c.getPaciente().getNombres() + " " + c.getPaciente().getApellidos()) : "Paciente genérico");
                     map.put("cedula", c.getPaciente() != null && c.getPaciente().getCedula() != null ? c.getPaciente().getCedula() : "");
                     map.put("especialidad", c.getEspecialidad() != null ? c.getEspecialidad().getDescripcion() : "Medicina General");
+                    map.put("diagnostico", c.getDiagnostico() != null ? c.getDiagnostico().replace("'", "\\'").replace("\n", " ") : "No registrado");
+                    map.put("receta", c.getReceta() != null ? c.getReceta().replace("'", "\\'").replace("\n", " ") : "Ninguna");
                     listaCitas.add(map);
 
                     if (!"Paciente".equals(rolUsuario) && ("REGISTRADO".equals(c.getEstado()) || "EN SALA".equals(c.getEstado()))) {

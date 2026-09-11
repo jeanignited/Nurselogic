@@ -1997,15 +1997,11 @@
 
 
 
-        function cerrarModalEspecialidad() {
+        function cerrarModalEspecialidad() { var mEl = document.getElementById('modalEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); } }
 
+        function abrirModalNuevaEspecialidad() { var mEl = document.getElementById('modalNuevaEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 
-
-            var mEl = document.getElementById('modalEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
-
-
-
-        }
+        function cerrarModalNuevaEspecialidad() { var mEl = document.getElementById('modalNuevaEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); } }
 
 
 
@@ -3799,4 +3795,23 @@ function aplicarPlantillaRol(tipo, el) {
     // Si es 'custom' / 'amedida', los checkboxes ya quedaron desmarcados en el paso 2
 }
 
+
+
+        function abrirModalVerDiagnostico(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta'); var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+
+
+
+        function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
+
+
+
+
+        function filtrarTicketsTI() { let select = document.getElementById('filtroNivelTI').value.toLowerCase(); let cards = document.querySelectorAll('.ticket-card'); cards.forEach(card => { let nivel = card.getAttribute('data-nivel'); if (select === 'todos' || nivel.includes(select)) { card.style.display = ''; } else { card.style.display = 'none'; } }); }
+
+
+        function filtrarFacturasAvanzado() { let input = document.getElementById('buscadorFacturas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaFacturas').value; let table = document.getElementById('tablaFacturas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('td')[1]; if(tdFecha) { let match = tdFecha.innerText.match(/(\d{4}-\d{2}-\d{2})/); if(match) dateValue = match[1]; } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; if (matchTexto && matchFecha) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } }
+
+        function abrirModalVerFactura(id, cliente, fecha, total, btnEl) { document.getElementById('verFacId').innerText = id; document.getElementById('verFacCliente').innerText = cliente; document.getElementById('verFacFecha').innerText = fecha; document.getElementById('verFacTotal').innerText = total; document.getElementById('verFacDetalles').innerHTML = btnEl.getAttribute('data-detalles'); var mEl = document.getElementById('modalVerFactura'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 </script>
+
+

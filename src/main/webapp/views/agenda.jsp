@@ -27,9 +27,20 @@
                         <% } %>
                     </div>
                 </div>
-                <div class="mb-3 position-relative" style="max-width: 400px;">
-                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-                    <input type="text" id="buscadorCitas" class="form-control ps-5 form-control-sm" placeholder="Buscar cita por paciente, especialidad o estado..." onkeyup="filtrarCitas()">
+                <div class="row mb-3 g-2 align-items-center">
+                    <div class="col-md-4 position-relative">
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                        <input type="text" id="buscadorCitas" class="form-control ps-5 form-control-sm" placeholder="Buscar cédula, paciente o estado..." onkeyup="filtrarCitasAvanzado()">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" id="filtroFechaCitas" class="form-control form-control-sm text-secondary" onchange="filtrarCitasAvanzado()">
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-check form-switch d-flex align-items-center gap-2 ms-2">
+                            <input class="form-check-input mt-0" type="checkbox" id="checkOcultarCerradas" checked onchange="filtrarCitasAvanzado()" style="cursor: pointer;">
+                            <label class="form-check-label text-secondary small mb-0" for="checkOcultarCerradas" style="cursor: pointer; padding-top: 2px;">Ocultar Historial (Atendidos / Cancelados)</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="table-responsive">
                     <table id="tablaCitas" class="table table-dark-custom table-hover m-0">
@@ -70,7 +81,16 @@
                                                 out.print("<button type='button' class='btn btn-sm btn-outline-danger' title='Cancelar Cita' onclick=\"cambiarEstadoCita(" + c.get("id") + ", 'CANCELADO')\"><i class='bi bi-x-lg'></i></button>");
                                                 out.print("</div>");
                                             } else {
-                                                out.print("<span class='text-secondary small'><i class='bi bi-check-all me-1'></i>Cita Cerrada</span>");
+                                                out.print("<div class='d-flex align-items-center gap-2'>");
+                                                if ("ATENDIDO".equalsIgnoreCase(c.get("estado"))) {
+                                                    out.print("<button type='button' class='btn btn-sm btn-outline-info' title='Ver Diagnóstico' onclick=\"abrirModalVerDiagnostico('" + c.get("paciente") + "', this)\" data-diagnostico=\"" + c.get("diagnostico").replace("\"", "&quot;") + "\" data-receta=\"" + c.get("receta").replace("\"", "&quot;") + "\"><i class='bi bi-file-medical'></i> Diagnóstico</button>");
+                                                }
+                                                if (isAdmin) {
+                                                    out.print("<button type='button' class='btn btn-sm btn-outline-danger' title='Eliminar Cita del Historial' onclick=\"confirmarBorrado('cita', '" + c.get("id") + "')\"><i class='bi bi-trash'></i> Eliminar</button>");
+                                                } else if ("CANCELADO".equalsIgnoreCase(c.get("estado"))) {
+                                                    out.print("<span class='text-secondary small'><i class='bi bi-x-circle me-1'></i>Cancelado</span>");
+                                                }
+                                                out.print("</div>");
                                             }
                                             out.print("</td>");
                                         }
