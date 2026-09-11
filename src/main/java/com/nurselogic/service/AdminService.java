@@ -29,6 +29,27 @@ public class AdminService {
         return new ActionResult(false, "No se pudo eliminar el paciente.");
     }
 
+    public ActionResult eliminarCita(String id, boolean isAdmin) {
+        if (!isAdmin) return new ActionResult(false, "Solo los administradores pueden eliminar citas.");
+        try {
+            EntityManager em = JPAUtil.getEntityManager();
+            em.getTransaction().begin();
+            com.nurselogic.model.Cita cita = em.find(com.nurselogic.model.Cita.class, Integer.parseInt(id));
+            if (cita != null) {
+                em.remove(cita);
+                em.getTransaction().commit();
+                em.close();
+                return new ActionResult(true, "Cita eliminada correctamente del registro.");
+            }
+            em.getTransaction().rollback();
+            em.close();
+            return new ActionResult(false, "Cita no encontrada.");
+        } catch(Exception e) {
+            e.printStackTrace();
+            return new ActionResult(false, "Error al eliminar la cita médica.");
+        }
+    }
+
     public ActionResult eliminarUsuario(String id, boolean isAdmin, String correoActual) {
         if (!isAdmin) return new ActionResult(false, "Solo los administradores pueden eliminar registros.");
         if (id != null && id.equalsIgnoreCase(correoActual)) return new ActionResult(false, "No puedes eliminar tu propia cuenta de administrador.");
@@ -55,6 +76,32 @@ public class AdminService {
             return new ActionResult(false, "No se pudo actualizar la especialidad.");
         }
         return new ActionResult(false, "Especialidad o ID inválido.");
+    }
+
+    public ActionResult crearEspecialidad(String nombre, boolean isAdmin) {
+        if (!isAdmin) return new ActionResult(false, "Solo administradores pueden crear especialidades.");
+        if (nombre == null || nombre.trim().isEmpty()) return new ActionResult(false, "Nombre inválido.");
+        try {
+            EntityManager em = JPAUtil.getEntityManager();
+            em.getTransaction().begin();
+            // check exists
+            Long count = em.createQuery("SELECT COUNT(e) FROM Especialidad e WHERE e.descripcion = :desc", Long.class)
+                    .setParameter("desc", nombre.trim())
+                    .getSingleResult();
+            if (count > 0) {
+                em.getTransaction().rollback();
+                return new ActionResult(false, "La especialidad ya existe.");
+            }
+            com.nurselogic.model.Especialidad nueva = new com.nurselogic.model.Especialidad();
+            nueva.setDescripcion(nombre.trim());
+            em.persist(nueva);
+            em.getTransaction().commit();
+            em.close();
+            return new ActionResult(true, "Especialidad creada exitosamente.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ActionResult(false, "Error al crear especialidad.");
+        }
     }
 
     public ActionResult crearRol(String nombreRol, String descRol, String permisosStr,

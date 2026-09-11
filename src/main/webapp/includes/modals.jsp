@@ -422,6 +422,31 @@
     </div>
 </div>
 
+<!-- Modal Ver Diagnóstico -->
+<div class="modal fade" id="modalVerDiagnostico" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-file-medical-fill me-2 text-info"></i>Historial Clínico - <span id="verDiagPaciente" class="text-info"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+          <div class="mb-4">
+              <h6 class="fw-bold text-secondary"><i class="bi bi-journal-medical me-2"></i>Diagnóstico</h6>
+              <div class="p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); white-space: pre-wrap;" id="verDiagTexto"></div>
+          </div>
+          <div>
+              <h6 class="fw-bold text-secondary"><i class="bi bi-capsule me-2"></i>Receta Médica</h6>
+              <div class="p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); white-space: pre-wrap;" id="verDiagReceta"></div>
+          </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Atender Cita (Smart UI) -->
 <div class="modal fade" id="modalAtenderCita" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -622,21 +647,53 @@
       </div>
       <form action="adminAction" method="POST">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" value="asignarEspecialidad">
-          <input type="hidden" name="correo" id="espUserEmail">
+          <input type="hidden" name="action" value="editarEspecialidad">
+          <input type="hidden" name="target" value="usuario">
+          <input type="hidden" name="id" id="espUserEmail">
           <p class="text-secondary small mb-3">Selecciona la especialidad médica para <span id="espUserDisplay" class="fw-bold text-theme"></span></p>
-          <select name="nuevaEspecialidad" id="selectEspecialidadModal" class="form-select form-select-lg mb-3">
-             <option value="Medicina General">Medicina General</option>
-             <option value="Pediatría">Pediatría</option>
-             <option value="Cardiología">Cardiología</option>
-             <option value="Neurología">Neurología</option>
-             <option value="Ginecología">Ginecología</option>
-             <option value="Traumatología">Traumatología</option>
+          <select name="nuevaEspecialidad" id="selectEspecialidadModal" class="form-select form-select-lg mb-3" style="max-height: 200px; overflow-y: auto;" size="5">
+              <%
+                  List<String> dynamicEsps = (List<String>) request.getAttribute("listaEspecialidades");
+                  if (dynamicEsps != null && !dynamicEsps.isEmpty()) {
+                      for(String de : dynamicEsps) {
+                          out.print("<option value='" + de + "'>" + de + "</option>");
+                      }
+                  } else {
+                      out.print("<option value='Medicina General'>Medicina General</option>");
+                      out.print("<option value='Pediatría'>Pediatría</option>");
+                      out.print("<option value='Cardiología'>Cardiología</option>");
+                  }
+              %>
           </select>
         </div>
         <div class="modal-footer border-0 pt-0">
           <button type="button" class="btn btn-secondary px-4" onclick="cerrarModalEspecialidad()">Cancelar</button>
           <button type="submit" class="btn btn-warning px-4 text-dark fw-bold">Guardar Cambios</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nueva Especialidad -->
+<div class="modal fade" id="modalNuevaEspecialidad" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-award-fill me-2 text-info"></i>Crear Nueva Especialidad</h5>
+        <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevaEspecialidad()"></button>
+      </div>
+      <form action="adminAction" method="POST">
+        <div class="modal-body pb-0">
+          <input type="hidden" name="action" value="crearEspecialidad">
+          <div class="mb-3">
+             <label class="form-label small text-secondary">Nombre de la Especialidad</label>
+             <input type="text" name="nombreEspecialidad" class="form-control" placeholder="Ej: Pediatría, Cardiología" required>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-secondary px-4" onclick="cerrarModalNuevaEspecialidad()">Cancelar</button>
+          <button type="submit" class="btn btn-info px-4 text-white fw-bold">Crear Especialidad</button>
         </div>
       </form>
     </div>
@@ -861,3 +918,30 @@
     </div>
   </div>
 </div>
+<!-- Modal Ver Factura -->
+<div class="modal fade" id="modalVerFactura" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2 text-info"></i>Detalle de Venta <span id="verFacId" class="text-info"></span></h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+          <div class="mb-3 d-flex justify-content-between">
+              <div><small class="text-secondary">Cliente:</small><br><span class="fw-bold" id="verFacCliente"></span></div>
+              <div class="text-end"><small class="text-secondary">Fecha:</small><br><span id="verFacFecha"></span></div>
+          </div>
+          <hr style="border-color: rgba(255,255,255,0.1);">
+          <h6 class="fw-bold text-secondary mb-3">Art�culos</h6>
+          <div class="p-3 rounded mb-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);" id="verFacDetalles"></div>
+          <div class="text-end fs-5">
+              <span class="text-secondary">Total Pagado:</span> <strong class="text-success">$<span id="verFacTotal"></span></strong>
+          </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+

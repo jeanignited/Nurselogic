@@ -2894,7 +2894,7 @@ function configurarMinFechaCita() {
 
 
 
-                    labels: ['Medicina General', 'PediatrÃƒÂ­a', 'CardiologÃƒÂ­a', 'GinecologÃƒÂ­a', 'DermatologÃƒÂ­a', 'Otras'],
+                    labels: ['Medicina General', 'Pediatría', 'Cardiología', 'Ginecología', 'Dermatología', 'Otras'],
 
 
 
@@ -3315,7 +3315,7 @@ function agregarMedicamentoReceta() {
     const maxStock = opt.getAttribute("data-stock");
     
     if (document.getElementById("med_row_" + idMed)) {
-        alert("Este medicamento ya estÃ¡ en la lista.");
+        alert("Este medicamento ya está¡ en la lista.");
         return;
     }
     
