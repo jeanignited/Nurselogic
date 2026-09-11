@@ -759,14 +759,14 @@
           <input type="hidden" name="id" id="catIdEnf">
           <input type="hidden" name="idAle" id="catIdAle">
 
-          <div id="formEnfermedad" class="mb-3">
+          <div id="catEnfermedadCampos" class="mb-3">
              <label class="form-label small text-secondary">Nombre de la Patología</label>
              <input type="text" name="nombreEnf" id="catNombreEnf" class="form-control">
              <label class="form-label small text-secondary mt-2">Descripción</label>
              <textarea name="descEnf" id="catDescEnf" class="form-control" rows="2"></textarea>
           </div>
 
-          <div id="formAlergia" class="mb-3 d-none">
+          <div id="catAlergiaCampos" class="mb-3 d-none">
              <label class="form-label small text-secondary">Nombre del Alérgeno</label>
              <input type="text" name="nombreAle" id="catNombreAle" class="form-control">
              <label class="form-label small text-secondary mt-2">Gravedad</label>
@@ -859,63 +859,53 @@
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0 pb-0">
         <div>
-          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Médica Integral</h4>
+          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Mdica Integral</h4>
           <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
-          <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
+          <small class="text-secondary" id="fichaInfo">Cdula: -- | Nacimiento: -- | Sexo: --</small>
         </div>
         <button type="button" class="btn-close btn-close-white align-self-start" onclick="cerrarModalFicha()"></button>
       </div>
       <div class="modal-body p-4">
-        <!-- Signos Vitales y Antropometría -->
-        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-activity me-1"></i>Signos Vitales y Datos Físicos</h6>
-        <div class="row g-3 mb-4">
-          <div class="col-md-3 col-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1">Estatura / Peso</small>
-              <span class="fw-bold fs-6 text-theme" id="fichaEstPeso">-- / --</span>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1">Temperatura</small>
-              <span class="fw-bold fs-6 text-warning" id="fichaTemp">-- °C</span>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1">Presión Arterial</small>
-              <span class="fw-bold fs-6 text-info" id="fichaPresion">--</span>
-            </div>
-          </div>
-          <div class="col-md-3 col-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1">Pulso / Sat. O2</small>
-              <span class="fw-bold fs-6 text-success" id="fichaFcSat">-- / --</span>
-            </div>
-          </div>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluación Clínica (Última)</h6>
+            <span class="badge bg-secondary py-2 px-3" id="fichaFechaActualizacion"><i class="bi bi-calendar3 me-1"></i> Fecha: --</span>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-dark-custom mb-4" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
+                <tbody>
+                    <tr>
+                        <td class="fw-bold text-secondary" style="width: 25%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometría</td>
+                        <td id="fichaEstPeso" class="fw-semibold text-light">-- / --</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
+                        <td id="fichaTemp" class="fw-bold text-warning">-- C</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presión Arterial</td>
+                        <td id="fichaPresion" class="fw-bold text-info">--</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
+                        <td id="fichaFcSat" class="fw-bold text-success">-- / --</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-virus me-2" style="color: #c084fc;"></i>Enfermedades</td>
+                        <td id="fichaEnfermedades" class="text-light">Ninguna</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Alergias</td>
+                        <td id="fichaAlergias" class="fw-bold text-danger">Ninguna</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <!-- Antecedentes Clínicos -->
-        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-journal-medical me-1"></i>Antecedentes y Alergias</h6>
-        <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1"><i class="bi bi-virus me-1"></i>Enfermedades Preexistentes</small>
-              <span class="fw-semibold text-theme" id="fichaEnfermedades">Ninguna</span>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-              <small class="text-secondary d-block mb-1"><i class="bi bi-exclamation-triangle me-1"></i>Alergias Conocidas</small>
-              <span class="fw-semibold text-danger" id="fichaAlergias">Ninguna</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Evaluaciones e Inteligencia Clínica -->
-        <h6 class="fw-bold text-info mb-3"><i class="bi bi-cpu me-1"></i>Evaluación Clínica e Alertas Inteligentes</h6>
+        <h6 class="fw-bold text-info mb-3"><i class="bi bi-cpu me-1"></i>Inteligencia Clínica</h6>
         <div id="fichaAlertasContenedor">
-          <!-- Contenido generado dinámicamente -->
+          <!-- Contenido generado dinmicamente -->
         </div>
       </div>
 

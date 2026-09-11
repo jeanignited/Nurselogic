@@ -295,3 +295,36 @@
 
 
 
+
+<script>
+function filtrarTicketsTI() {
+    let select = document.getElementById('filtroUrgencia');
+    if(!select) return;
+    let filter = select.value;
+    let table = document.getElementById('tablaTicketsTI');
+    if(!table) return;
+    let trs = table.getElementsByTagName('tr');
+    
+    for (let i = 1; i < trs.length; i++) {
+        let tdUrgencia = trs[i].getElementsByTagName('td')[3];
+        if (tdUrgencia) {
+            let txtValue = tdUrgencia.textContent || tdUrgencia.innerText;
+            if (filter === "Todos" || txtValue.indexOf(filter) > -1) {
+                trs[i].style.display = "";
+            } else {
+                trs[i].style.display = "none";
+            }
+        }
+    }
+}
+function expandirDescTI(btn) {
+    let div = btn.previousElementSibling;
+    if (div.style.maxHeight === "none") {
+        div.style.maxHeight = "40px";
+        btn.innerHTML = "Ver ms";
+    } else {
+        div.style.maxHeight = "none";
+        btn.innerHTML = "Ver menos";
+    }
+}
+</script>

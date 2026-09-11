@@ -2362,6 +2362,7 @@
 
 
                         document.getElementById('fichaFcSat').innerText = (fc > 0 ? fc + ' lpm' : '--') + ' / ' + (sat > 0 ? sat + '%' : '--');
+                        document.getElementById('fichaFechaActualizacion').innerHTML = '<i class="bi bi-calendar3 me-1"></i> Fecha: ' + new Date().toLocaleDateString();
 
 
 

@@ -2557,7 +2557,7 @@
 
 
 
-                        // c lculo de Diagnóstico Inteligente (Task 4)
+                        // cálculo de Diagnóstico Inteligente (Task 4)
 
 
 
