@@ -15,129 +15,43 @@
     String rolUsuario      = (String) request.getAttribute("rolUsuario");
 %><%@ page import="java.util.List, java.util.Map, java.util.ArrayList, com.nurselogic.model.*" %>
 
-
-
-
         <!-- Modal Cambio de Rol -->
-
 <div class="modal fade" id="modalRol" tabindex="-1" aria-hidden="true">
-
-<div class="modal-dialog modal-dialog-centered">
-
-<div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
-
-<div class="modal-header border-0">
-
-<h5 class="modal-title fw-bold">
-
-<i class="bi bi-shield-lock me-2 text-primary"></i>Cambiar Rol de Usuario</h5>
-
-
-
-                        <button type="button" class="btn-close btn-close-white" onclick="cerrarModalRol()"></button>
-
-
-
-                    
-
-</div>
-
-<div class="modal-body">
-
-<p class="text-secondary small mb-3">Selecciona el nuevo nivel de acceso para <span id="rolUserEmail" class="fw-bold text-theme"></span></p>
-
-
-
-                        <select id="rolSelectModal" class="formÃ¡select formÃ¡select-lg mb-3">
-
-
-
-                            <% 
-
-
-
-                                List<String> dynamicRoles = (List<String>) request.getAttribute("listaRoles");
-
-
-
-                                if (dynamicRoles != null) {
-
-
-
-                                    for(String dr : dynamicRoles) {
-
-
-
-                                        out.print("<option value='" + dr + "'>" + dr + "</option>");
-
-
-
-                                    }
-
-
-
-                                } else {
-
-
-
-                                    out.print("<option value='Admin'>Admin</option>");
-
-
-
-                                    out.print("<option value='M&eacute;dico'>M&eacute;dico</option>");
-
-
-
-                                    out.print("<option value='Paciente'>Paciente</option>");
-
-
-
-                                    out.print("<option value='Pendiente'>Pendiente</option>");
-
-}
-
-%>
-
-</select>
-
-</div>
-
-<div class="modal-footer border-0">
-
-<button class="btn btn-secondary px-4" onclick="cerrarModalRol()">Cancelar</button>
-
-
-
-                        <button type="button" class="btn btn-primary px-4 fw-bold" onclick="guardarCambioRol()">Guardar Cambios</button>
-
-
-
-                    </div>
-
-
-
-                </div>
-
-
-
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-shield-lock me-2 text-primary"></i>Cambiar Rol de Usuario
+                </h5>
+                <button type="button" class="btn-close btn-close-white" onclick="cerrarModalRol()"></button>
             </div>
-
-
-
+            <div class="modal-body">
+                <p class="text-secondary small mb-3">Selecciona el nuevo nivel de acceso para <span id="rolUserEmail" class="fw-bold text-theme"></span></p>
+                <select id="rolSelectModal" class="form-select form-select-lg mb-3" style="max-height: 200px; overflow-y: auto;" size="5">
+                    <%
+                        List<String> dynamicRoles = (List<String>) request.getAttribute("listaRoles");
+                        if (dynamicRoles != null) {
+                            for(String dr : dynamicRoles) {
+                                out.print("<option value='" + dr + "'>" + dr + "</option>");
+                            }
+                        } else {
+                            out.print("<option value='Admin'>Admin</option>");
+                            out.print("<option value='M&eacute;dico'>M&eacute;dico</option>");
+                            out.print("<option value='Paciente'>Paciente</option>");
+                            out.print("<option value='Pendiente'>Pendiente</option>");
+                        }
+                    %>
+                </select>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-secondary px-4" onclick="cerrarModalRol()">Cancelar</button>
+                <button type="button" class="btn btn-primary px-4 fw-bold" onclick="guardarCambioRol()">Guardar Cambios</button>
+            </div>
         </div>
+    </div>
+</div>
 
-
-
-
-
-
-
-        <!-- Modal Nuevo Rol (Asistente con Plantillas) -->
-
-
-
-        
-
+<!-- Modal Nuevo Rol (Asistente con Plantillas) -->
 <div class="modal fade" id="modalNuevoRol" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
@@ -150,7 +64,7 @@
             <form action="adminAction" method="POST">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="crearRol">
-                    
+
                     <p class="text-secondary small mb-2 fw-semibold">Paso 1: Elige un Molde / Plantilla base</p>
                     <div class="row g-2 mb-4">
                         <div class="col-md-3">
@@ -194,7 +108,7 @@
                             <input type="text" name="descRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required>
                         </div>
                     </div>
-                    
+
                     <div class="mt-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05);">
                         <label class="form-label small text-secondary fw-bold mb-3">Asignación de Permisos (Checkboxes)</label>
                         <div class="row g-2">
@@ -348,7 +262,9 @@
             <small>Nurselogic Sistema de Gesti&oacute;n Hospitalaria</small>
         </div>
     </div>
-</div><!-- Modal Añadir Cama -->
+</div>
+
+<!-- Modal Añadir Cama -->
 <div class="modal fade" id="modalAñadirCama" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(20px); border: var(--glass-border); box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);">
@@ -442,6 +358,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal Atender Cita (Smart UI) -->
 <div class="modal fade" id="modalAtenderCita" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -450,12 +367,12 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Consulta M&eacute;dica Avanzada - <span id="atenderCitaPaciente" class="text-info"></span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      
+
       <form action="adminAction" method="post" id="formAtenderCita">
         <input type="hidden" name="action" value="atenderCita">
         <input type="hidden" name="idCita" id="atenderIdCita">
         <input type="hidden" name="pacienteNombre" id="atenderPacNombre">
-        
+
         <div class="modal-body p-0">
             <!-- Pestañas (Tabs) -->
             <ul class="nav nav-pills nav-justified p-3" id="consultaTabs" role="tablist">
@@ -472,7 +389,7 @@
 
             <!-- Contenido de Pestañas -->
             <div class="tab-content px-4 pb-4" id="consultaTabsContent" style="min-height: 250px;">
-                
+
                 <!-- Tab Signos Vitales -->
                 <div class="tab-pane fade show active" id="vitales" role="tabpanel">
                     <div class="row g-3">
@@ -549,14 +466,14 @@
                 <div class="tab-pane fade" id="diag" role="tabpanel">
                     <label class="form-label small text-secondary">Diagn&oacute;stico Cl&iacute;nico</label>
                     <textarea name="diagnostico" id="diagnosticoFinal" class="form-control mb-3" rows="4" placeholder="Describa el diagn&oacute;stico, s&iacute;ntomas y observaciones..." required></textarea>
-                    
+
                     <label class="form-label small text-secondary">Receta M&eacute;dica / Prescripci&oacute;n (Opcional)</label>
                     <textarea name="receta" id="recetaFinal" class="form-control" rows="3" placeholder="Medicamentos, dosis y recomendaciones..."></textarea>
                 </div>
-                
+
             </div>
         </div>
-        
+
         <div class="modal-footer border-0 p-3" style="background: rgba(0,0,0,0.1);">
             <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-danger px-4 rounded-pill fw-bold" onclick="prepararYEnviarConsulta()"><i class="bi bi-check-circle me-2"></i>Finalizar Consulta</button>
@@ -565,151 +482,72 @@
     </div>
   </div>
 </div>
+
 <!-- Modal Facturar Venta -->
-
-
-
 <div class="modal fade" id="modalFacturarVenta" tabindex="-1" aria-hidden="true">
-
-<div class="modal-dialog">
-
-        
-
-<div class="modal-content text-theme" style="background-color: #1a2235; border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
-
-            
-
-<div class="modal-header border-0">
-
-<h5 class="modal-title fw-bold">
-
-<i class="bi bi-receipt me-2"></i>Facturaci&oacute;n de Venta de Farmacia</h5>
-
+    <div class="modal-dialog">
+        <div class="modal-content text-theme" style="background-color: #1a2235; border: 1px solid #2d3748; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-receipt me-2"></i>Facturaci&oacute;n de Venta de Farmacia
+                </h5>
                 <button type="button" class="btn-close btn-close-white" aria-label="Close" onclick="cerrarModalVenta()"></button>
-
-            
-
-</div>
-
-<div class="modal-body">
-
-<div class="mb-3">
-
-                    <label class="form-label fw-semibold">Nombre del Cliente / Paciente</label>
-
-                    <input type="text" id="ventaCliente" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" placeholder="Consumidor Final" required></div><div class="mb-3">
-
-                    <label class="form-label fw-semibold">Medicamento a Vender</label>
-
-                    <input type="text" id="ventaNombreMed" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" disabled>
-
-</div>
-
-<div class="row">
-
-                    
-
-<div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-semibold">Cantidad (Max: <span id="ventaMaxStock"></span>)</label>
-
-                        <input type="number" id="ventaCantidad" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" min="1" value="1" oninput="calcTotalVenta()">
-
-                    
-
-</div>
-
-<div class="col-md-6 mb-3">
-
-                        <label class="form-label fw-semibold">Total a Pagar</label>
-
-                        <input type="text" id="ventaTotal" class="form-control text-success fw-bold" style="background-color:#0b0f19; border:1px solid #374151;" disabled>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="modal-footer border-0">
-
-<button class="btn btn-secondary" style="background-color:#4b5563; border:none; border-radius:8px;" onclick="cerrarModalVenta()">Cancelar</button>
-
-                <button type="button" class="btn btn-primary" style="background-color:#10b981; border:none; border-radius:8px;" onclick="confirmarVenta()">Confirmar y Generar PDF</button>
-
             </div>
-
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Nombre del Cliente / Paciente</label>
+                    <input type="text" id="ventaCliente" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" placeholder="Consumidor Final" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Medicamento a Vender</label>
+                    <input type="text" id="ventaNombreMed" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" disabled>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Cantidad (Max: <span id="ventaMaxStock"></span>)</label>
+                        <input type="number" id="ventaCantidad" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" min="1" value="1" oninput="calcTotalVenta()">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Total a Pagar</label>
+                        <input type="text" id="ventaTotal" class="form-control text-success fw-bold" style="background-color:#0b0f19; border:1px solid #374151;" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button class="btn btn-secondary" style="background-color:#4b5563; border:none; border-radius:8px;" onclick="cerrarModalVenta()">Cancelar</button>
+                <button type="button" class="btn btn-primary" style="background-color:#10b981; border:none; border-radius:8px;" onclick="confirmarVenta()">Confirmar y Generar PDF</button>
+            </div>
         </div>
-
     </div>
-
 </div>
-
-
 
 <div id="areaImpresionFactura" style="display:none; font-family: monospace; color:#000; background:#fff; padding:20px; width:400px;">
-
     <h2 style="text-align:center; font-family:sans-serif; margin-bottom:5px;">NURSELOGIC FARMACIA</h2>
-
-    <p style="text-align:center; font-size:12px; margin-top:0;">FACTURA DE VENTA ELECTRÃ“NICA</p>
-
+    <p style="text-align:center; font-size:12px; margin-top:0;">FACTURA DE VENTA ELECTRÓNICA</p>
     <hr style="border: 1px dashed #000;">
-
     <p><strong>Fecha: </strong> <span id="facFecha"></span></p>
-
     <p><strong>Cliente: </strong> <span id="facCliente"></span></p>
-
     <hr style="border: 1px dashed #000;">
-
     <table style="width:100%; text-align:left;">
-
         <thead>
-
             <tr>
-
                 <th>CANT</th>
-
                 <th>DESCRIPCIÓN</th>
-
                 <th style="text-align:right;">SUBT</th>
-
             </tr>
-
         </thead>
-
         <tbody>
-
             <tr>
-
                 <td id="facCant"></td>
-
                 <td id="facDesc"></td>
-
                 <td id="facSubt" style="text-align:right;"></td>
-
             </tr>
-
         </tbody>
-
     </table>
-
     <hr style="border: 1px dashed #000;">
-
     <h3 style="text-align:right;">TOTAL: $<span id="facTotal"></span></h3>
-
     <p style="text-align:center; font-size:10px; margin-top:30px;">Gracias por su compra. Conserve esta factura.</p>
-
 </div>
-
-
-
-
-
-
-
-
-
-
 
 <!-- Modal Especialidad -->
 <div class="modal fade" id="modalEspecialidad" tabindex="-1" aria-hidden="true">
@@ -792,14 +630,14 @@
           <input type="hidden" name="action" id="catActionInput" value="crearEnfermedad">
           <input type="hidden" name="id" id="catIdEnf">
           <input type="hidden" name="idAle" id="catIdAle">
-          
+
           <div id="formEnfermedad" class="mb-3">
              <label class="form-label small text-secondary">Nombre de la Patología</label>
              <input type="text" name="nombreEnf" id="catNombreEnf" class="form-control">
              <label class="form-label small text-secondary mt-2">Descripción</label>
              <textarea name="descEnf" id="catDescEnf" class="form-control" rows="2"></textarea>
           </div>
-          
+
           <div id="formAlergia" class="mb-3 d-none">
              <label class="form-label small text-secondary">Nombre del Alérgeno</label>
              <input type="text" name="nombreAle" id="catNombreAle" class="form-control">
@@ -832,10 +670,11 @@
         <div class="modal-body pb-0">
           <input type="hidden" name="action" value="crearCitaAdmin">
           <input type="hidden" id="citaEsNuevoPac" name="esNuevoPaciente" value="false">
-          
+
           <div class="mb-3">
              <label class="form-label small text-secondary">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
-             <input type="hidden" id="citaPacienteIdHidden" name="pacienteId">`n             <input type="text" id="citaCedula" name="cedula" class="form-control" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCita(this.value);" required>
+             <input type="hidden" id="citaPacienteIdHidden" name="pacienteId">
+             <input type="text" id="citaCedula" name="cedula" class="form-control" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCita(this.value);" required>
              <div id="citaPacNombre" class="form-text text-info mt-1"></div>
           </div>
           
@@ -882,6 +721,80 @@
           <button type="submit" id="btnAgendarCita" class="btn btn-info px-4 text-dark fw-bold">Agendar</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Ficha Clinica y Diagnostico Inteligente -->
+<div class="modal fade" id="modalFichaClinica" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
+      <div class="modal-header border-0 pb-0">
+        <div>
+          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Médica Integral</h4>
+          <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
+          <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
+        </div>
+        <button type="button" class="btn-close btn-close-white align-self-start" onclick="cerrarModalFicha()"></button>
+      </div>
+      <div class="modal-body p-4">
+        <!-- Signos Vitales y Antropometría -->
+        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-activity me-1"></i>Signos Vitales y Datos Físicos</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-3 col-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1">Estatura / Peso</small>
+              <span class="fw-bold fs-6 text-theme" id="fichaEstPeso">-- / --</span>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1">Temperatura</small>
+              <span class="fw-bold fs-6 text-warning" id="fichaTemp">-- °C</span>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1">Presión Arterial</small>
+              <span class="fw-bold fs-6 text-info" id="fichaPresion">--</span>
+            </div>
+          </div>
+          <div class="col-md-3 col-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1">Pulso / Sat. O2</small>
+              <span class="fw-bold fs-6 text-success" id="fichaFcSat">-- / --</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Antecedentes Clínicos -->
+        <h6 class="fw-bold text-primary mb-3"><i class="bi bi-journal-medical me-1"></i>Antecedentes y Alergias</h6>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1"><i class="bi bi-virus me-1"></i>Enfermedades Preexistentes</small>
+              <span class="fw-semibold text-theme" id="fichaEnfermedades">Ninguna</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="p-3 rounded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+              <small class="text-secondary d-block mb-1"><i class="bi bi-exclamation-triangle me-1"></i>Alergias Conocidas</small>
+              <span class="fw-semibold text-danger" id="fichaAlergias">Ninguna</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Evaluaciones e Inteligencia Clínica -->
+        <h6 class="fw-bold text-info mb-3"><i class="bi bi-cpu me-1"></i>Evaluación Clínica e Alertas Inteligentes</h6>
+        <div id="fichaAlertasContenedor">
+          <!-- Contenido generado dinámicamente -->
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-warning rounded-pill px-4" onclick="editarPacienteDesdeFicha()"><i class="bi bi-pencil-square me-1"></i>Editar Paciente</button>
+        <button type="button" class="btn btn-secondary rounded-pill px-4" onclick="cerrarModalFicha()">Cerrar</button>
+      </div>
     </div>
   </div>
 </div>

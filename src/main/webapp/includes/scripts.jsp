@@ -1719,129 +1719,32 @@
 
 
         function aplicarPlantillaRol(tipo, el) {
-
-
-
             document.querySelectorAll('.plantilla-card').forEach(c => {
-
-
-
-                c.style.background = gridCol;
-
-
-
+                c.style.background = 'rgba(255,255,255,0.05)';
                 c.style.borderColor = 'rgba(255,255,255,0.2)';
-
-
-
             });
-
-
-
             if (el) {
-
-
-
                 el.style.background = 'rgba(255, 193, 7, 0.15)';
-
-
-
                 el.style.borderColor = '#ffc107';
-
-
-
             }
 
-
-
-
-
-
-
-            document.querySelectorAll('.chk-permiso').forEach(chk => chk.checked = false);
-
-
-
-
-
-
-
-            if (tipo === 'moderador') {
-
-
-
-                document.getElementById('perm_usr').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'Moderador de Personal';
-
-
-
-                document.getElementById('inputDescRol').value = 'Gestión y control de cuentas de usuarios';
-
-
-
-            } else if (tipo === 'bodeguero') {
-
-
-
-                document.getElementById('perm_med').checked = true;
-
-
-
-                document.getElementById('perm_cat').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'Gestor de Bodega';
-
-
-
-                document.getElementById('inputDescRol').value = 'Control de inventario de farmacia y catalogos';
-
-
-
-            } else if (tipo === 'medico') {
-
-
-
-                document.getElementById('perm_pac').checked = true;
-
-
-
-                document.getElementById('perm_cit').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'medico Triage';
-
-
-
-                document.getElementById('inputDescRol').value = 'Atención a pacientes, triage y citas medicas';
-
-
-
-            } else if (tipo === 'custom') {
-
-
-
-                document.getElementById('inputNombreRol').value = '';
-
-
-
-                document.getElementById('inputDescRol').value = '';
-
-
-
-                document.getElementById('inputNombreRol').focus();
-
-
-
+            document.querySelectorAll('.perm-checkbox').forEach(chk => chk.checked = false);
+
+            const t = (tipo || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (t === 'moderador') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Usuarios') chk.checked = true;
+                });
+            } else if (t === 'bodeguero') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Inventario') chk.checked = true;
+                });
+            } else if (t === 'medico') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Citas' || chk.value === 'Admision') chk.checked = true;
+                });
             }
-
-
-
         }
 
 
@@ -2454,7 +2357,7 @@
 
 
 
-                        document.getElementById('fichaTemp').innerText = temp > 0 ? temp + ' Â°C' : '-- Â°C';
+                        document.getElementById('fichaTemp').innerText = temp > 0 ? temp + ' °C' : '-- °C';
 
 
 
@@ -3552,19 +3455,7 @@ function formatearFR(input) {
     input.value = valor;
 }
 
-// Función global corregida para VER FICHA
-window.verFichaClinica = function(cedula) {
-    console.log("Simulando carga de ficha para cédula: " + cedula);
-    var modalEl = document.getElementById("modalVerFicha");
-    if (modalEl) {
-        try {
-            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-            modal.show();
-        } catch (e) {
-            $("#modalVerFicha").modal('show');
-        }
-    }
-};
+
 
 // BUSQUEDA DE PACIENTE POR CEDULA EN RECETA
 window.buscarPacienteReceta = function(cedula) {
@@ -3878,4 +3769,34 @@ window.confirmarBorradoCama = function(id, numero) {
         });
     }
 };
+
+function aplicarPlantillaRol(tipo, el) {
+    // 1. Resaltar la tarjeta seleccionada y desmarcar las demás
+    document.querySelectorAll('.plantilla-card').forEach(card => {
+        card.style.background = 'rgba(255, 255, 255, 0.05)';
+        card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    });
+    if (el) {
+        el.style.background = 'rgba(255, 193, 7, 0.15)';
+        el.style.borderColor = '#ffc107';
+    }
+
+    // 2. Desmarcar todos los checkboxes
+    const checkboxes = document.querySelectorAll('.perm-checkbox');
+    checkboxes.forEach(chk => chk.checked = false);
+
+    // 3. Normalizar el parámetro (evita problemas con mayúsculas y tildes)
+    const t = (tipo || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    // 4. Activar los permisos según la tarjeta seleccionada
+    if (t === 'moderador') {
+        checkboxes.forEach(chk => { if (chk.value === 'Usuarios') chk.checked = true; });
+    } else if (t === 'bodeguero') {
+        checkboxes.forEach(chk => { if (chk.value === 'Inventario') chk.checked = true; });
+    } else if (t === 'medico') {
+        checkboxes.forEach(chk => { if (chk.value === 'Citas' || chk.value === 'Admision') chk.checked = true; });
+    }
+    // Si es 'custom' / 'amedida', los checkboxes ya quedaron desmarcados en el paso 2
+}
+
 </script>
