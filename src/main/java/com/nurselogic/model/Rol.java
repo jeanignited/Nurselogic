@@ -16,8 +16,26 @@ public class Rol {
     @Column(name = "descripcion")
     private String descripcion;
 
+    /** Campo legacy CSV — se mantiene por compatibilidad con el código existente. */
     @Column(name = "permisos", length = 500)
     private String permisos;
+
+    // ── Nuevos permisos granulares (columnas booleanas) ──────────────────────
+    @Column(name = "perm_hospitalizacion_camas")
+    private boolean permHospitalizacionCamas;
+
+    @Column(name = "perm_reporte_ventas")
+    private boolean permReporteVentas;
+
+    @Column(name = "perm_directorio_pacientes")
+    private boolean permDirectorioPacientes;
+
+    @Column(name = "perm_catalogos_clinicos")
+    private boolean permCatalogosPersonal;
+
+    @Column(name = "perm_soporte_ti")
+    private boolean permSoporteTI;
+    // ─────────────────────────────────────────────────────────────────────────
 
     public Rol() {}
 
@@ -33,6 +51,7 @@ public class Rol {
         this.permisos = permisos;
     }
 
+    // ── Getters / Setters existentes ─────────────────────────────────────────
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -44,4 +63,20 @@ public class Rol {
 
     public String getPermisos() { return permisos; }
     public void setPermisos(String permisos) { this.permisos = permisos; }
+
+    // ── Getters / Setters nuevos ─────────────────────────────────────────────
+    public boolean isPermHospitalizacionCamas() { return permHospitalizacionCamas; }
+    public void setPermHospitalizacionCamas(boolean v) { this.permHospitalizacionCamas = v; }
+
+    public boolean isPermReporteVentas() { return permReporteVentas; }
+    public void setPermReporteVentas(boolean v) { this.permReporteVentas = v; }
+
+    public boolean isPermDirectorioPacientes() { return permDirectorioPacientes; }
+    public void setPermDirectorioPacientes(boolean v) { this.permDirectorioPacientes = v; }
+
+    public boolean isPermCatalogosPersonal() { return permCatalogosPersonal; }
+    public void setPermCatalogosPersonal(boolean v) { this.permCatalogosPersonal = v; }
+
+    public boolean isPermSoporteTI() { return permSoporteTI; }
+    public void setPermSoporteTI(boolean v) { this.permSoporteTI = v; }
 }

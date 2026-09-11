@@ -128,7 +128,7 @@ public class DashboardServlet extends HttpServlet {
                             .getResultStream()
                             .findFirst()
                             .orElse(null);
-                    
+
                     if (miPaciente == null) {
                         try {
                             em.getTransaction().begin();
@@ -158,7 +158,7 @@ public class DashboardServlet extends HttpServlet {
                 if ("Paciente".equals(rolUsuario) && loggedPacienteId != null) {
                     citaQuery = "SELECT c FROM Cita c WHERE c.paciente.id = " + loggedPacienteId + " ORDER BY c.fecha DESC, c.hora ASC";
                 }
-                
+
                 List<com.nurselogic.model.Cita> cList = em.createQuery(citaQuery, com.nurselogic.model.Cita.class).getResultList();
                 for(com.nurselogic.model.Cita c : cList) {
                     Map<String, String> map = new HashMap<>();
@@ -170,7 +170,7 @@ public class DashboardServlet extends HttpServlet {
                     map.put("cedula", c.getPaciente() != null && c.getPaciente().getCedula() != null ? c.getPaciente().getCedula() : "");
                     map.put("especialidad", c.getEspecialidad() != null ? c.getEspecialidad().getDescripcion() : "Medicina General");
                     listaCitas.add(map);
-                    
+
                     if (!"Paciente".equals(rolUsuario) && ("REGISTRADO".equals(c.getEstado()) || "EN SALA".equals(c.getEstado()))) {
                         if (c.getFecha() != null && c.getFecha().isEqual(LocalDate.now())) {
                             alertasCitas++;
@@ -180,7 +180,7 @@ public class DashboardServlet extends HttpServlet {
             } catch(Exception ex) {}
             request.setAttribute("listaCitas", listaCitas);
 
-            
+
             // Lista de Facturas
             List<Factura> listaFacturas = new ArrayList<>();
             try {
@@ -196,7 +196,7 @@ public class DashboardServlet extends HttpServlet {
             List<Map<String, String>> listaEspecialidadesMap = new ArrayList<>();
             try {
                 List<com.nurselogic.model.Especialidad> espList = em.createQuery("SELECT e FROM Especialidad e", com.nurselogic.model.Especialidad.class).getResultList();
-                
+
                 // Seed if empty to prevent Foreign Key constraints failing
                 if (espList.isEmpty()) {
                     em.getTransaction().begin();
@@ -232,7 +232,7 @@ public class DashboardServlet extends HttpServlet {
                     Map<String, String> mapCam = new HashMap<>();
                     mapCam.put("id", String.valueOf(cam.getId()));
                     mapCam.put("numero", cam.getNumero());
-                    
+
                     String salaName = cam.getSala();
                     if (salaName == null || salaName.trim().isEmpty() || "Sala General".equalsIgnoreCase(salaName)) {
                         salaName = "Hospitalización General";
@@ -243,7 +243,7 @@ public class DashboardServlet extends HttpServlet {
                     mapCam.put("medico", cam.getMedicoNombre() != null ? cam.getMedicoNombre() : "");
                     mapCam.put("motivo", cam.getMotivo() != null ? cam.getMotivo() : "");
                     listaCamas.add(mapCam);
-                    
+
                     if ("Ocupada".equalsIgnoreCase(cam.getEstado())) {
                         alertasCamas++;
                     }
@@ -251,23 +251,80 @@ public class DashboardServlet extends HttpServlet {
             } catch(Exception ex) {}
             request.setAttribute("listaCamas", listaCamas);
 
-            // Permisos de Usuario
-            String permisosUsuario = "";
-            if ("Admin".equalsIgnoreCase(rolUsuario)) {
-                permisosUsuario = "GESTION_USUARIOS,GESTION_MEDICAMENTOS,GESTION_CATALOGOS,REGISTRO_PACIENTES,AGENDAR_CITAS";
-            } else if (rolUsuario != null && !"Paciente".equals(rolUsuario)) {
+            // ── Permisos de Usuario ──────────────────────────────────────────────────────
+            boolean isAdmin        = "Admin".equalsIgnoreCase(rolUsuario);
+            boolean isPaciente     = "Paciente".equalsIgnoreCase(rolUsuario);
+            boolean isFarmaceutico = "Farmacéutico".equalsIgnoreCase(rolUsuario)
+                    || "Farmaceutico".equalsIgnoreCase(rolUsuario);
+
+// Defaults para Admin (acceso total)
+            boolean permPac         = isAdmin;
+            boolean permMed         = isAdmin;
+            boolean permCat         = isAdmin;
+            boolean canSellStock    = isAdmin;
+            boolean canManageStock  = isAdmin;
+            boolean permCitas       = isAdmin;
+            boolean permUsuarios    = isAdmin;
+            boolean permHosp        = isAdmin;
+            boolean permRepVentas   = isAdmin;
+            boolean permDirPac      = isAdmin;
+            boolean permCatClinicos = isAdmin;
+            boolean permSoporteTI   = isAdmin;
+
+// Para roles dinámicos: leer del objeto Rol en BD
+            if (!isAdmin && !isPaciente && rolUsuario != null) {
                 try {
-                    com.nurselogic.model.Rol rolObj = em.createQuery("SELECT r FROM Rol r WHERE r.nombre = :nombre", com.nurselogic.model.Rol.class)
+                    com.nurselogic.model.Rol rolObj = em
+                            .createQuery("SELECT r FROM Rol r WHERE r.nombre = :nombre",
+                                    com.nurselogic.model.Rol.class)
                             .setParameter("nombre", rolUsuario)
                             .getResultStream()
                             .findFirst()
                             .orElse(null);
-                    if (rolObj != null && rolObj.getPermisos() != null) {
-                        permisosUsuario = rolObj.getPermisos();
+
+                    if (rolObj != null) {
+                        // Permisos booleanos granulares (columnas nuevas)
+                        permHosp        = rolObj.isPermHospitalizacionCamas();
+                        permRepVentas   = rolObj.isPermReporteVentas();
+                        permDirPac      = rolObj.isPermDirectorioPacientes();
+                        permCatClinicos = rolObj.isPermCatalogosPersonal();
+                        permSoporteTI   = rolObj.isPermSoporteTI();
+
+                        // Compatibilidad con string CSV legacy
+                        String p = rolObj.getPermisos() != null ? rolObj.getPermisos() : "";
+                        permPac        = p.contains("Admision")   || permDirPac;
+                        permMed        = p.contains("Inventario") || isFarmaceutico;
+                        permCat        = p.contains("Catálogos")  || permCatClinicos;
+                        canSellStock   = p.contains("Reportes")   || isFarmaceutico || permRepVentas;
+                        canManageStock = p.contains("Inventario") || isFarmaceutico;
+                        permCitas      = p.contains("Citas");
+                        permUsuarios   = p.contains("Usuarios");
                     }
-                } catch (Exception ex) {}
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
-            request.setAttribute("permisosUsuario", permisosUsuario);
+
+// Setear todos los atributos en el request (sidebar y modals los leen aquí)
+            request.setAttribute("isAdmin",         isAdmin);
+            request.setAttribute("isPaciente",      isPaciente);
+            request.setAttribute("isFarmaceutico",  isFarmaceutico);
+            request.setAttribute("permPac",         permPac);
+            request.setAttribute("permMed",         permMed);
+            request.setAttribute("permCat",         permCat);
+            request.setAttribute("canSellStock",    canSellStock);
+            request.setAttribute("canManageStock",  canManageStock);
+            request.setAttribute("permCitas",       permCitas);
+            request.setAttribute("permUsuarios",    permUsuarios);
+// Nuevos permisos granulares:
+            request.setAttribute("permHosp",        permHosp);
+            request.setAttribute("permRepVentas",   permRepVentas);
+            request.setAttribute("permDirPac",      permDirPac);
+            request.setAttribute("permCatClinicos", permCatClinicos);
+            request.setAttribute("permSoporteTI",   permSoporteTI);
+            request.setAttribute("correoLogueado",  correoLogueado);
+            request.setAttribute("rolUsuario",      rolUsuario);
+// ─────────────────────────────────────────────────────────────────────────────
 
         } catch (Exception e) {
             e.printStackTrace();

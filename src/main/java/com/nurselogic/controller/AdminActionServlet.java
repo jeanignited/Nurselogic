@@ -51,16 +51,24 @@ public class AdminActionServlet extends HttpServlet {
                 String nuevaEsp = request.getParameter("nuevaEspecialidad");
                 result = adminService.editarEspecialidad(id, nuevaEsp);
             } else if ("crearRol".equals(action)) {
-                String nombreRol = request.getParameter("nombreRol");
-                String descRol = request.getParameter("descripcionRol");
-                String[] permisosArray = request.getParameterValues("permiso");
-                String permisosStr = (permisosArray != null) ? String.join(",", permisosArray) : "";
-                result = adminService.crearRol(nombreRol, descRol, permisosStr, isAdmin);
+                String nombreRol      = request.getParameter("nombreRol");
+                String descRol        = request.getParameter("descRol");         // FIX
+                String[] permisosArr  = request.getParameterValues("permiso");   // FIX
+                String permisosStr    = (permisosArr != null) ? String.join(",", permisosArr) : "";
+
+                boolean bHosp    = "true".equals(request.getParameter("permBoolHosp"));
+                boolean bVentas  = "true".equals(request.getParameter("permBoolVentas"));
+                boolean bDirPac  = "true".equals(request.getParameter("permBoolDirPac"));
+                boolean bCatClin = "true".equals(request.getParameter("permBoolCatClin"));
+                boolean bSopTI   = "true".equals(request.getParameter("permBoolSoporteTI"));
+
+                result = adminService.crearRol(nombreRol, descRol, permisosStr,
+                        bHosp, bVentas, bDirPac, bCatClin, bSopTI, isAdmin);
             } else if ("crearMedicamento".equals(action)) {
                 result = adminService.crearMedicamento(request.getParameter("nombreMed"), request.getParameter("stockMed"), request.getParameter("precioMed"));
-                        } else if ("facturarVenta".equals(action)) {
+            } else if ("facturarVenta".equals(action)) {
                 result = adminService.procesarVentaFarmacia(request.getParameter("idMed"), request.getParameter("cantidad"), request.getParameter("cliente"));
-} else if ("ajustarStock".equals(action)) {
+            } else if ("ajustarStock".equals(action)) {
                 result = adminService.ajustarStock(request.getParameter("idMed"), request.getParameter("cambio"));
             } else if ("crearEnfermedad".equals(action)) {
                 result = adminService.crearEnfermedad(request.getParameter("nombreEnf"), request.getParameter("descEnf"));
@@ -82,16 +90,16 @@ public class AdminActionServlet extends HttpServlet {
                 String esNuevoStr = request.getParameter("esNuevoPaciente");
                 boolean esNuevo = "true".equals(esNuevoStr);
                 result = adminService.prescribirReceta(
-                    request.getParameterValues("idMedicamento"),
-                    request.getParameterValues("cantidad"),
-                    request.getParameter("pacienteNombre"),
-                    request.getParameter("cedula"),
-                    request.getParameter("indicaciones"),
-                    esNuevo,
-                    request.getParameter("nuevoNombres"),
-                    request.getParameter("nuevoApellidos"),
-                    request.getParameter("nuevoFechaNac"),
-                    request.getParameter("nuevoSexo")
+                        request.getParameterValues("idMedicamento"),
+                        request.getParameterValues("cantidad"),
+                        request.getParameter("pacienteNombre"),
+                        request.getParameter("cedula"),
+                        request.getParameter("indicaciones"),
+                        esNuevo,
+                        request.getParameter("nuevoNombres"),
+                        request.getParameter("nuevoApellidos"),
+                        request.getParameter("nuevoFechaNac"),
+                        request.getParameter("nuevoSexo")
                 );
             } else if ("internarPaciente".equals(action)) {
                 result = adminService.internarPaciente(request.getParameter("idCama"), request.getParameter("pacienteNombre"), request.getParameter("medicoNombre"), request.getParameter("motivo"));

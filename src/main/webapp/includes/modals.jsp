@@ -110,36 +110,99 @@
                     </div>
 
                     <div class="mt-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05);">
-                        <label class="form-label small text-secondary fw-bold mb-3">Asignación de Permisos (Checkboxes)</label>
+                        <label class="form-label small text-secondary fw-bold mb-3">
+                            <i class="bi bi-toggles me-1"></i>Asignación de Permisos
+                        </label>
                         <div class="row g-2">
+
+                            <!-- COLUMNA IZQUIERDA — permisos CSV legacy -->
                             <div class="col-md-6">
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Inventario">
-                                    <label class="form-check-label text-light small">Inventario de Medicamentos</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_inventario" name="permiso" value="Inventario">
+                                    <label class="form-check-label text-light small" for="perm_inventario">
+                                        <i class="bi bi-capsule text-success me-1"></i>Inventario de Medicamentos
+                                    </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Catálogos">
-                                    <label class="form-check-label text-light small">Catálogos (Enfermedades)</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_catalogos" name="permiso" value="Catálogos">
+                                    <label class="form-check-label text-light small" for="perm_catalogos">
+                                        <i class="bi bi-folder2-open me-1" style="color:#60a5fa;"></i>Catálogos (Enfermedades/Alergias)
+                                    </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Admision">
-                                    <label class="form-check-label text-light small">Admisión y Triage de Pacientes</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_admision" name="permiso" value="Admision">
+                                    <label class="form-check-label text-light small" for="perm_admision">
+                                        <i class="bi bi-person-plus text-info me-1"></i>Admisión y Triage de Pacientes
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_citas" name="permiso" value="Citas">
+                                    <label class="form-check-label text-light small" for="perm_citas">
+                                        <i class="bi bi-calendar-check text-warning me-1"></i>Agendar y Control de Citas
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_reportes" name="permiso" value="Reportes">
+                                    <label class="form-check-label text-light small" for="perm_reportes">
+                                        <i class="bi bi-graph-up-arrow me-1" style="color:#c084fc;"></i>Ver Reportes y Estadísticas
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_usuarios" name="permiso" value="Usuarios">
+                                    <label class="form-check-label text-light small text-danger fw-bold" for="perm_usuarios">
+                                        <i class="bi bi-shield-lock me-1"></i>Gestión de Usuarios (Admin)
+                                    </label>
                                 </div>
                             </div>
+
+                            <!-- COLUMNA DERECHA — 5 permisos booleanos NUEVOS -->
                             <div class="col-md-6">
+                                <p class="text-secondary small fw-semibold mb-2" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
+                                    Módulos del Sistema
+                                </p>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Citas">
-                                    <label class="form-check-label text-light small">Agendar y Control de Citas</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_hosp" name="permBoolHosp" value="true">
+                                    <label class="form-check-label text-light small" for="perm_hosp">
+                                        <i class="bi bi-hospital me-1" style="color:#22d3ee;"></i>Hospitalización y Camas
+                                    </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Reportes">
-                                    <label class="form-check-label text-light small">Ver Reportes y Estadísticas</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_ventas" name="permBoolVentas" value="true">
+                                    <label class="form-check-label text-light small" for="perm_ventas">
+                                        <i class="bi bi-receipt text-primary me-1"></i>Reporte de Ventas (Farmacia)
+                                    </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Usuarios">
-                                    <label class="form-check-label text-light small text-danger fw-bold">Gestión de Usuarios (Admin)</label>
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_dirpac" name="permBoolDirPac" value="true">
+                                    <label class="form-check-label text-light small" for="perm_dirpac">
+                                        <i class="bi bi-people text-info me-1"></i>Directorio de Pacientes
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_catclin" name="permBoolCatClin" value="true">
+                                    <label class="form-check-label text-light small" for="perm_catclin">
+                                        <i class="bi bi-journal-medical me-1" style="color:#60a5fa;"></i>Catálogos Clínicos
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input perm-checkbox" type="checkbox"
+                                           id="perm_soporteti" name="permBoolSoporteTI" value="true">
+                                    <label class="form-check-label text-light small" for="perm_soporteti">
+                                        <i class="bi bi-headset me-1" style="color:#fbbf24;"></i>Soporte T.I.
+                                    </label>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

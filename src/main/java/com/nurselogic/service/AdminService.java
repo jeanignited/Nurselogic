@@ -57,12 +57,20 @@ public class AdminService {
         return new ActionResult(false, "Especialidad o ID inválido.");
     }
 
-    public ActionResult crearRol(String nombreRol, String descRol, String permisosStr, boolean isAdmin) {
+    public ActionResult crearRol(String nombreRol, String descRol, String permisosStr,
+                                 boolean bHosp, boolean bVentas, boolean bDirPac,
+                                 boolean bCatClin, boolean bSopTI, boolean isAdmin) {
         if (!isAdmin) return new ActionResult(false, "Solo los administradores pueden crear roles.");
         if (nombreRol != null && !nombreRol.trim().isEmpty()) {
             RolDAO rolDao = new RolDAO();
             Rol nuevo = new Rol(nombreRol.trim(), descRol, permisosStr);
-            if (rolDao.guardarRol(nuevo)) return new ActionResult(true, "Nuevo rol '" + nombreRol + "' creado exitosamente.");
+            nuevo.setPermHospitalizacionCamas(bHosp);
+            nuevo.setPermReporteVentas(bVentas);
+            nuevo.setPermDirectorioPacientes(bDirPac);
+            nuevo.setPermCatalogosPersonal(bCatClin);
+            nuevo.setPermSoporteTI(bSopTI);
+            if (rolDao.guardarRol(nuevo))
+                return new ActionResult(true, "Nuevo rol '" + nombreRol + "' creado exitosamente.");
             return new ActionResult(false, "No se pudo crear el rol. Verifica que no exista otro con el mismo nombre.");
         }
         return new ActionResult(false, "El nombre del rol es obligatorio.");
