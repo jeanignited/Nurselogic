@@ -28,6 +28,9 @@ public class Cama {
     @Column(name = "motivo")
     private String motivo;
 
+    @Column(name = "diagnostico", columnDefinition = "TEXT")
+    private String diagnostico;
+
     public Cama() {}
 
     public Cama(String numero, String sala, String estado) {
@@ -37,6 +40,7 @@ public class Cama {
         this.pacienteNombre = "";
         this.medicoNombre = "";
         this.motivo = "";
+        this.diagnostico = "";
     }
 
     public int getId() { return id; }
@@ -59,4 +63,10 @@ public class Cama {
 
     public String getMotivo() { return motivo; }
     public void setMotivo(String motivo) { this.motivo = motivo; }
+
+    public String getDiagnostico() { return diagnostico; }
+    public void setDiagnostico(String diagnostico) { this.diagnostico = diagnostico; }
 }
+
+
+

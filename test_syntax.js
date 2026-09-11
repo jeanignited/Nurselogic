@@ -1,3 +1,23 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ page import="java.util.List,java.util.Map,java.util.ArrayList" %>
+<%
+    boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
+    boolean isPaciente     = Boolean.TRUE.equals(request.getAttribute("isPaciente"));
+    boolean isFarmaceutico = Boolean.TRUE.equals(request.getAttribute("isFarmaceutico"));
+    boolean permPac        = Boolean.TRUE.equals(request.getAttribute("permPac"));
+    boolean permMed        = Boolean.TRUE.equals(request.getAttribute("permMed"));
+    boolean permCat        = Boolean.TRUE.equals(request.getAttribute("permCat"));
+    boolean canSellStock   = Boolean.TRUE.equals(request.getAttribute("canSellStock"));
+    boolean canManageStock = Boolean.TRUE.equals(request.getAttribute("canManageStock"));
+    boolean permCitas      = Boolean.TRUE.equals(request.getAttribute("permCitas"));
+    boolean permUsuarios   = Boolean.TRUE.equals(request.getAttribute("permUsuarios"));
+    String correoLogueado  = (String) request.getAttribute("correoLogueado");
+    String rolUsuario      = (String) request.getAttribute("rolUsuario");
+%>
+
+
+
+    
 
 
 
@@ -570,15 +590,15 @@
 
 
 
-        function filtrarMédicamentos() {
+        function filtrarMedicamentos() {
 
 
 
-            let input = document.getElementById("buscadorMédicamentos").value.toLowerCase();
+            let input = document.getElementById("buscadorMedicamentos").value.toLowerCase();
 
 
 
-            let table = document.getElementById("tablaMédicamentos");
+            let table = document.getElementById("tablaMedicamentos");
 
 
 
@@ -734,7 +754,7 @@
 
 
 
-            badge.innerText = edad + " aÃƒÂ±os";
+            badge.innerText = edad + " años";
 
 
 
@@ -882,7 +902,7 @@
 
 
 
-        // AJAX para autocompletar Paciente por cédula
+        // AJAX para autocompletar Paciente por cedula
 
 
 
@@ -1326,7 +1346,7 @@
 
 
 
-            // Validar Saturaci n
+            // Validar Saturación
 
 
 
@@ -1550,7 +1570,7 @@
 
 
 
-            if(confirm(' Ã‚Â¿EstÃƒÂ¡s seguro de que deseas eliminar este ' + tipo + '? Esta acción no se puede deshacer.')) {
+            if(confirm(' ¿Estas seguro de que deseas eliminar este ' + tipo + '? Esta acción no se puede deshacer.')) {
 
 
 
@@ -1699,129 +1719,32 @@
 
 
         function aplicarPlantillaRol(tipo, el) {
-
-
-
             document.querySelectorAll('.plantilla-card').forEach(c => {
-
-
-
-                c.style.background = gridCol;
-
-
-
+                c.style.background = 'rgba(255,255,255,0.05)';
                 c.style.borderColor = 'rgba(255,255,255,0.2)';
-
-
-
             });
-
-
-
             if (el) {
-
-
-
                 el.style.background = 'rgba(255, 193, 7, 0.15)';
-
-
-
                 el.style.borderColor = '#ffc107';
-
-
-
             }
 
-
-
-
-
-
-
-            document.querySelectorAll('.chk-permiso').forEach(chk => chk.checked = false);
-
-
-
-
-
-
-
-            if (tipo === 'moderador') {
-
-
-
-                document.getElementById('perm_usr').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'Moderador de Personal';
-
-
-
-                document.getElementById('inputDescRol').value = 'Gestión y control de cuentas de usuarios';
-
-
-
-            } else if (tipo === 'bodeguero') {
-
-
-
-                document.getElementById('perm_med').checked = true;
-
-
-
-                document.getElementById('perm_cat').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'Gestor de Bodega';
-
-
-
-                document.getElementById('inputDescRol').value = 'Control de inventario de farmacia y catalogos';
-
-
-
-            } else if (tipo === 'medico') {
-
-
-
-                document.getElementById('perm_pac').checked = true;
-
-
-
-                document.getElementById('perm_cit').checked = true;
-
-
-
-                document.getElementById('inputNombreRol').value = 'médico Triage';
-
-
-
-                document.getElementById('inputDescRol').value = 'Atenci n a pacientes, triage y citas médicas';
-
-
-
-            } else if (tipo === 'custom') {
-
-
-
-                document.getElementById('inputNombreRol').value = '';
-
-
-
-                document.getElementById('inputDescRol').value = '';
-
-
-
-                document.getElementById('inputNombreRol').focus();
-
-
-
+            document.querySelectorAll('.perm-checkbox').forEach(chk => chk.checked = false);
+
+            const t = (tipo || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (t === 'moderador') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Usuarios') chk.checked = true;
+                });
+            } else if (t === 'bodeguero') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Inventario') chk.checked = true;
+                });
+            } else if (t === 'medico') {
+                document.querySelectorAll('.perm-checkbox').forEach(chk => {
+                    if (chk.value === 'Citas' || chk.value === 'Admision') chk.checked = true;
+                });
             }
-
-
-
         }
 
 
@@ -1898,11 +1821,11 @@
 
 
 
-        function abrirModalMédicamento() {
+        function abrirModalMedicamento() {
 
 
 
-            var mEl = document.getElementById('modalMédicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+            var mEl = document.getElementById('modalMedicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
 
 
 
@@ -1914,11 +1837,11 @@
 
 
 
-        function cerrarModalMédicamento() {
+        function cerrarModalMedicamento() {
 
 
 
-            var mEl = document.getElementById('modalMédicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
+            var mEl = document.getElementById('modalMedicamento'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
 
 
 
@@ -2074,15 +1997,11 @@
 
 
 
-        function cerrarModalEspecialidad() {
+        function cerrarModalEspecialidad() { var mEl = document.getElementById('modalEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); } }
 
+        function abrirModalNuevaEspecialidad() { var mEl = document.getElementById('modalNuevaEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 
-
-            var mEl = document.getElementById('modalEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
-
-
-
-        }
+        function cerrarModalNuevaEspecialidad() { var mEl = document.getElementById('modalNuevaEspecialidad'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); } }
 
 
 
@@ -2122,7 +2041,7 @@
 
 
 
-                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-heart-pulse text-danger me-2"></i>Registrar Nueva Patolog a';
+                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-heart-pulse text-danger me-2"></i>Registrar Nueva Patología';
 
 
 
@@ -2150,7 +2069,7 @@
 
 
 
-                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-exclamation-diamond text-warning me-2"></i>Registrar Nuevo Al rgeno';
+                document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-exclamation-diamond text-warning me-2"></i>Registrar Nuevo Alergeno';
 
 
 
@@ -2194,7 +2113,7 @@
 
 
 
-            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-danger me-2"></i>Editar Patolog a / Enfermedad';
+            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-danger me-2"></i>Editar Patología / Enfermedad';
 
 
 
@@ -2246,7 +2165,7 @@
 
 
 
-            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-warning me-2"></i>Editar Al rgeno';
+            document.getElementById('catModalTitulo').innerHTML = '<i class="bi bi-pencil-square text-warning me-2"></i>Editar Alergeno';
 
 
 
@@ -2298,7 +2217,7 @@
 
 
 
-            if (confirm(' Ã‚Â¿EstÃƒÂ¡s seguro de eliminar "' + nombre + '" del catÃƒÂ¡logo clÃƒÂ­nico?')) {
+            if (confirm('¿Estás seguro de eliminar "' + nombre + '" del catálogo clínico?')) {
 
 
 
@@ -2434,7 +2353,7 @@
 
 
 
-                        document.getElementById('fichaTemp').innerText = temp > 0 ? temp + ' Ã‚Â°C' : '-- Ã‚Â°C';
+                        document.getElementById('fichaTemp').innerText = temp > 0 ? temp + ' °C' : '-- °C';
 
 
 
@@ -2458,7 +2377,7 @@
 
 
 
-                        // c lculo de DiagnÃƒÂ³stico Inteligente (Task 4)
+                        // calculo de Diagnostico Inteligente (Task 4)
 
 
 
@@ -2502,95 +2421,29 @@
 
 
 
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.05); border-left: 4px solid #38bdf8;">
-
-
-
-                                <div><span class="text-secondary small d-block">EvaluaciÃƒÂ³n Antropométrica (IMC)</span><strong>${IMC} kg/m    ${imcTxt}</strong></div>
-
-
-
-                                <span class="badge ${imcColor} px-3 py-2">IMC ${IMC}</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.05); border-left: 4px solid #38bdf8;">' +
+                                '<div><span class="text-secondary small d-block">Evaluación Antropométrica (IMC)</span><strong>' + IMC + ' kg/m² &nbsp;&nbsp;' + imcTxt + '</strong></div>' +
+                                '<span class="badge ' + imcColor + ' px-3 py-2">IMC ' + IMC + '</span>' +
+                            '</div>';
                         }
-
-
-
-
-
-
 
                         if (temp >= 38.0) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between alert-danger" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">
-
-
-
-                                <div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA T RMICA cR TICA: Fiebre Alta / Hipertermia (${temp} c)</strong><br><small class="text-theme">Protocolo de reducci n t rmica inmediata y monitoreo antit rmico sugerido.</small></div>
-
-
-
-                                <span class="badge bg-danger pulse-animation px-3 py-2 fs-6">  HIPERTERMIA</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between alert-danger" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
+                                '<div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA TÉRMICA CRÍTICA: Fiebre Alta / Hipertermia (' + temp + ' °C)</strong><br><small class="text-theme">Protocolo de reducción térmica inmediata y monitoreo antitérmico sugerido.</small></div>' +
+                                '<span class="badge bg-danger pulse-animation px-3 py-2 fs-6">HIPERTERMIA</span>' +
+                            '</div>';
                         } else if (temp >= 37.3 && temp < 38.0) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b;">
-
-
-
-                                <div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febr cula detectada (${temp} c)</strong><br><small class="text-secondary">Monitoreo peri dico cada 2 horas.</small></div>
-
-
-
-                                <span class="badge bg-warning text-dark px-3 py-2">  Febr cula</span>
-
-
-
-                            </div>`;
-
-
-
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b;">' +
+                                '<div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febrícula detectada (' + temp + ' °C)</strong><br><small class="text-secondary">Monitoreo periódico cada 2 horas.</small></div>' +
+                                '<span class="badge bg-warning text-dark px-3 py-2">Febrícula</span>' +
+                            '</div>';
                         }
 
-
-
-
-
-
-
                         if (sat > 0 && sat < 92) {
-
-
-
-                            alertasHTML += `<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">
-
-
-
-                                <div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ${sat}%)</strong><br><small class="text-theme">Administraci n urgente de ox geno suplementario requerida.</small></div>
-
-
-
-                                <span class="badge bg-danger px-3 py-2 fs-6">  HIPOXIA</span>
-
-
-
-                            </div>`;
+                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
+                                '<div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ' + sat + '%)</strong><br><small class="text-theme">Administración urgente de oxígeno suplementario requerida.</small></div>' +
+                                '<span class="badge bg-danger px-3 py-2 fs-6">HIPOXIA</span>' +
+                            '</div>';
 
 
 
@@ -2610,7 +2463,7 @@
 
 
 
-                                <i class="bi bi-check-circle-fill text-success me-2"></i><strong class="text-theme">Par metros vitales dentro de rangos clinicos estables y normales.</strong>
+                                <i class="bi bi-check-circle-fill text-success me-2"></i><strong class="text-theme">Parámetros vitales dentro de rangos clinicos estables y normales.</strong>
 
 
 
@@ -2866,7 +2719,143 @@ function configurarMinFechaCita() {
 
 
 
-            
+            <%
+
+
+
+                int medGen = 0, ped = 0, card = 0, gin = 0, der = 0, otraEsp = 0;
+
+
+
+                List<Map<String, String>> citasGraf = (List<Map<String, String>>) request.getAttribute("listaCitas");
+
+
+
+                int citPend = 0, citAtend = 0, citSala = 0, citCanc = 0;
+
+
+
+                if (citasGraf != null) {
+
+
+
+                    for (Map<String, String> cg : citasGraf) {
+
+
+
+                        String esp = cg.get("especialidad");
+
+
+
+                        if (esp != null) {
+
+
+
+                            if (esp.toLowerCase().contains("general")) medGen++;
+
+
+
+                            else if (esp.toLowerCase().contains("pedi")) ped++;
+
+
+
+                            else if (esp.toLowerCase().contains("cardio")) card++;
+
+
+
+                            else if (esp.toLowerCase().contains("gineco")) gin++;
+
+
+
+                            else if (esp.toLowerCase().contains("dermato")) der++;
+
+
+
+                            else otraEsp++;
+
+
+
+                        }
+
+
+
+                        String est = cg.get("estado");
+
+
+
+                        if ("ATENDIDO".equalsIgnoreCase(est)) citAtend++;
+
+
+
+                        else if ("EN SALA".equalsIgnoreCase(est)) citSala++;
+
+
+
+                        else if ("CANCELADO".equalsIgnoreCase(est)) citCanc++;
+
+
+
+                        else citPend++;
+
+
+
+                    }
+
+
+
+                }
+
+
+
+                
+
+
+
+                List<String> nomMeds = new java.util.ArrayList<>();
+
+
+
+                List<Integer> stkMeds = new java.util.ArrayList<>();
+
+
+
+                List<Map<String, String>> medsGraf = (List<Map<String, String>>) request.getAttribute("listaMedicamentos");
+
+
+
+                if (medsGraf != null) {
+
+
+
+                    int countM = 0;
+
+
+
+                    for (Map<String, String> mg : medsGraf) {
+
+
+
+                        if (countM++ >= 5) break;
+
+
+
+                        nomMeds.add("\"" + mg.get("nombre").replace("\"", "") + "\"");
+
+
+
+                        try { stkMeds.add(Integer.parseInt(mg.get("stock"))); } catch(Exception ex) { stkMeds.add(0); }
+
+
+
+                    }
+
+
+
+                }
+
+
+
+            %>
 
 
 
@@ -2902,7 +2891,7 @@ function configurarMinFechaCita() {
 
 
 
-                        data: [, , , , , ],
+                        data: [<%= medGen %>, <%= ped %>, <%= card %>, <%= gin %>, <%= der %>, <%= otraEsp %>],
 
 
 
@@ -2978,11 +2967,11 @@ function configurarMinFechaCita() {
 
 
 
-                        label: 'NÃƒÂºmero de Turnos',
+                        label: 'Número de Turnos',
 
 
 
-                        data: [, , , ],
+                        data: [<%= citPend %>, <%= citSala %>, <%= citAtend %>, <%= citCanc %>],
 
 
 
@@ -3062,7 +3051,7 @@ function configurarMinFechaCita() {
 
 
 
-                    labels: [],
+                    labels: [<%= String.join(",", nomMeds) %>],
 
 
 
@@ -3070,7 +3059,7 @@ function configurarMinFechaCita() {
 
 
 
-                        data: [],
+                        data: [<%= String.join(",", stkMeds.stream().map(Object::toString).toArray(String[]::new)) %>],
 
 
 
@@ -3114,53 +3103,10 @@ function configurarMinFechaCita() {
 
 
 
+
             });
 
-
-
         }
-
-
-
-
-
-
-
-        function abrirModalReceta(nombrePac) {
-
-
-
-            const pacInput = document.getElementById('recetaPacNombre');
-
-
-
-            if (pacInput && nombrePac) pacInput.value = nombrePac;
-
-
-
-            const modalEl = document.getElementById('modalReceta');
-
-
-
-            if (modalEl) {
-
-
-
-                var m = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl); m.show();
-
-
-
-            }
-
-
-
-        }
-
-
-
-
-
-
 
         function imprimirRecetaPDF() {
     const pac = document.getElementById('recetaPacNombre').value || 'Paciente no especificado';
@@ -3172,7 +3118,7 @@ function configurarMinFechaCita() {
         let qty = row.querySelector('input[name="cantidad"]').value;
         medTexts.push(name + ' (x' + qty + ')');
     });
-    const medText = medTexts.length > 0 ? medTexts.join(', ') : 'FÃ¡rmaco recetado';
+    const medText = medTexts.length > 0 ? medTexts.join(', ') : 'Fármaco recetado';
     
     const indEl = document.getElementsByName('indicaciones')[0];
     const ind = indEl ? indEl.value : 'Siga las indicaciones médicas';
@@ -3180,7 +3126,7 @@ function configurarMinFechaCita() {
     document.getElementById('printFecha').innerText = new Date().toLocaleDateString();
     document.getElementById('printPac').innerText = pac;
     
-    const farmacoEl = document.getElementById('printFÃ¡rmaco') || document.querySelector('[id^="printF"]');
+    const farmacoEl = document.getElementById('printFármaco') || document.querySelector('[id^="printF"]');
     if(farmacoEl) farmacoEl.innerText = medText;
     
     document.getElementById('printCant').innerText = '-';
@@ -3298,7 +3244,7 @@ function prepararYEnviarConsulta() {
         'PA: ' + document.getElementById('atender_pa_input').value + '\n' +
         'FR: ' + document.getElementById('atender_fr_input').value + ' rpm\n' +
         'SatO2: ' + document.getElementById('atender_sat_input').value + '%\n' +
-        'Temp: ' + document.getElementById('atender_temp_input').value + ' Â°C\n' +
+        'Temp: ' + document.getElementById('atender_temp_input').value + ' °C\n' +
         'Glasgow: ' + document.getElementById('glasgowTotal').innerText;
         
     diag.value = baseDiag + vitalesStr;
@@ -3307,37 +3253,157 @@ function prepararYEnviarConsulta() {
 
 function agregarMedicamentoReceta() {
     const sel = document.getElementById("selectMedicamentoAdd");
-    if (sel.selectedIndex <= 0) return;
+    if (!sel || sel.selectedIndex <= 0) return;
     
     const opt = sel.options[sel.selectedIndex];
     const idMed = opt.value;
-    const nombre = opt.getAttribute("data-nombre");
-    const maxStock = opt.getAttribute("data-stock");
+    let nombre = opt.getAttribute("data-nombre");
+    if (!nombre || nombre === "null" || nombre.trim() === "") {
+        nombre = opt.text ? opt.text.split("(Stock:")[0].trim() : "Medicamento";
+    }
+    nombre = nombre.trim();
+    if (!nombre) nombre = "Medicamento #" + idMed;
+    
+    const maxStock = opt.getAttribute("data-stock") || 100;
     
     if (document.getElementById("med_row_" + idMed)) {
-        alert("Este medicamento ya está¡ en la lista.");
+        alert("Este medicamento ya está en la lista.");
         return;
     }
     
     const lista = document.getElementById("listaMedicamentosReceta");
-    document.getElementById("msgRecetaVacia").style.display = "none";
+    const msgVacio = document.getElementById("msgRecetaVacia");
+    if (msgVacio) msgVacio.style.display = "none";
     
     const div = document.createElement("div");
     div.className = "d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom border-secondary";
     div.id = "med_row_" + idMed;
     
-    div.innerHTML = `
-        <div class="text-truncate me-2" style="max-width: 60%;" title="${nombre}"><i class="bi bi-capsule me-1 text-info"></i> ${nombre}</div>
-        <div class="d-flex align-items-center">
-            <input type="hidden" name="idMedicamento" value="${idMed}">
-            <input type="number" name="cantidad" class="form-control form-control-sm text-center" style="width: 70px;" min="1" max="${maxStock}" value="1" required>
-            <button type="button" class="btn btn-sm btn-link text-danger ms-2" onclick="removerMedicamentoReceta('${idMed}')"><i class="bi bi-x-circle-fill"></i></button>
-        </div>
-    `;
+    div.innerHTML = 
+        '<div class="text-truncate me-2 fw-bold" style="max-width: 65%; color: #38bdf8 !important; font-size: 0.95rem;" title="' + nombre + '"><i class="bi bi-capsule me-2 text-warning fs-5"></i>' + nombre + '</div>' +
+        '<div class="d-flex align-items-center">' +
+            '<input type="hidden" name="idMedicamento" value="' + idMed + '">' +
+            '<input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="' + maxStock + '" value="1" required>' +
+            '<button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerMedicamentoReceta(\'' + idMed + '\')"><i class="bi bi-x-circle-fill fs-5"></i></button>' +
+        '</div>';
     
     lista.appendChild(div);
     sel.selectedIndex = 0;
 }
+
+window.validarFormularioReceta = function(event) {
+    const rows = document.querySelectorAll('#listaMedicamentosReceta input[name="idMedicamento"]');
+    if (rows.length === 0) {
+        alert("Debe seleccionar y añadir al menos un medicamento a la lista haciendo clic en '+ Añadir'.");
+        if (event) event.preventDefault();
+        return false;
+    }
+    return true;
+};
+
+// BUSQUEDA Y DESPACHO DE RECETA EN FARMACIA POR CEDULA
+window.buscarRecetaFarmacia = function() {
+    var cedulaInput = document.getElementById('cedulaFarmaciaBuscador');
+    var cedula = cedulaInput ? cedulaInput.value.trim() : '';
+    var container = document.getElementById('recetaFarmaciaContainer');
+    var notFound = document.getElementById('recetaFarmaciaNotFound');
+    
+    if (!cedula || cedula.length < 10) {
+        alert("Por favor ingrese una cédula válida de 10 dígitos.");
+        return;
+    }
+    
+    fetch('api/receta?cedula=' + cedula)
+        .then(r => r.json())
+        .then(data => {
+            if (data.success) {
+                window.currentRecetaIdCita = data.idCita || '';
+                window.currentRecetaCedula = cedula;
+
+                if (container) container.classList.remove('d-none');
+                if (notFound) notFound.classList.add('d-none');
+                
+                var nameEl = document.getElementById('farmaciaPacienteNombre');
+                if (nameEl) nameEl.innerText = data.pacienteNombre;
+                
+                var fechaEl = document.getElementById('farmaciaFechaCita');
+                if (fechaEl) fechaEl.innerText = data.fecha;
+                
+                var contentEl = document.getElementById('farmaciaRecetaContenido');
+                if (contentEl) {
+                    contentEl.innerHTML = '<strong>' + data.receta + '</strong>';
+                }
+            } else {
+                window.currentRecetaIdCita = '';
+                window.currentRecetaCedula = '';
+                if (container) container.classList.add('d-none');
+                if (notFound) {
+                    notFound.classList.remove('d-none');
+                    notFound.innerText = data.message || "No se encontró ninguna receta vigente para esta cédula.";
+                }
+            }
+        })
+        .catch(err => {
+            alert("Error al consultar receta en el servidor.");
+        });
+};
+
+window.completarVentaReceta = function() {
+    var idCita = window.currentRecetaIdCita || '';
+    var cedula = window.currentRecetaCedula || (document.getElementById('cedulaFarmaciaBuscador') ? document.getElementById('cedulaFarmaciaBuscador').value.trim() : '');
+
+    var formData = new URLSearchParams();
+    formData.append("action", "completarVentaReceta");
+    formData.append("idCita", idCita);
+    formData.append("cedula", cedula);
+
+    fetch("adminAction", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+    }).then(function(res) {
+        alert("¡Venta completada exitosamente! La receta ha sido despachada y la factura se encuentra registrada en el Reporte de Ventas.");
+        window.location.href = "dashboard?vista=facturas";
+    }).catch(function(err) {
+        alert("Error al finalizar la venta de la receta.");
+    });
+};
+
+// Función global corregida para RECETA
+window.abrirModalReceta = function(nombrePaciente, cedula) {
+    var cedInput = document.getElementById("recetaCedula");
+    var infoDiv = document.getElementById("recetaPacNombreInfo");
+    var quickReg = document.getElementById("recetaQuickRegister");
+    var hiddenName = document.getElementById("recetaPacNombre");
+    
+    if (quickReg) quickReg.classList.add("d-none");
+    
+    if (cedula && cedula.trim().length === 10) {
+        if (cedInput) {
+            cedInput.value = cedula.trim();
+            cedInput.readOnly = true;
+        }
+        if (hiddenName && nombrePaciente) hiddenName.value = nombrePaciente;
+        if (infoDiv && nombrePaciente) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + nombrePaciente;
+    } else {
+        if (cedInput) {
+            cedInput.value = "";
+            cedInput.readOnly = false;
+        }
+        if (hiddenName) hiddenName.value = nombrePaciente || "";
+        if (infoDiv) infoDiv.innerHTML = nombrePaciente ? ('<i class="bi bi-person me-1"></i> Paciente: ' + nombrePaciente) : "";
+    }
+    
+    var modalEl = document.getElementById("modalReceta");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalReceta").modal('show');
+        }
+    }
+};
 
 function removerMedicamentoReceta(id) {
     const row = document.getElementById("med_row_" + id);
@@ -3348,3 +3414,413 @@ function removerMedicamentoReceta(id) {
         document.getElementById("msgRecetaVacia").style.display = "block";
     }
 }
+
+function abrirModalAtenderCita(idCita, pacienteNombre) {
+    document.getElementById("atenderIdCita").value = idCita;
+    document.getElementById("atenderPacNombre").value = pacienteNombre;
+
+    var pacienteLabel = document.getElementById("atenderCitaPaciente");
+    if (pacienteLabel) {
+        pacienteLabel.innerText = pacienteNombre;
+    }
+
+    var form = document.getElementById("formAtenderCita");
+    if (form) {
+        form.reset();
+    }
+
+    var firstTab = document.querySelector("#modalAtenderCita .nav-link");
+    if (firstTab) {
+        var tab = new bootstrap.Tab(firstTab);
+        tab.show();
+    }
+
+    var modalEl = document.getElementById("modalAtenderCita");
+    var modal = bootstrap.Modal.getInstance(modalEl);
+    if (!modal) {
+        modal = new bootstrap.Modal(modalEl);
+    }
+    modal.show();
+}
+
+function formatearFR(input) {
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length > 2) {
+        valor = valor.slice(0, 2);
+    }
+    input.value = valor;
+}
+
+
+
+// BUSQUEDA DE PACIENTE POR CEDULA EN RECETA
+window.buscarPacienteReceta = function(cedula) {
+    const infoDiv = document.getElementById('recetaPacNombreInfo');
+    const quickReg = document.getElementById('recetaQuickRegister');
+    const esNuevo = document.getElementById('recetaEsNuevoPac');
+    const btn = document.getElementById('btnPrescribirReceta');
+    const hiddenName = document.getElementById('recetaPacNombre');
+    
+    if (cedula.length === 10) {
+        if (infoDiv) infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
+        if (btn) btn.disabled = true;
+        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if (data.id) {
+                    var full = data.nombres + ' ' + data.apellidos;
+                    if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + full;
+                    if (hiddenName) hiddenName.value = full;
+                    if (quickReg) quickReg.classList.add('d-none');
+                    if (esNuevo) esNuevo.value = "false";
+                    var hiddenId = document.getElementById('recetaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = data.id;
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('recetaNuevoNombres'); if (nN) nN.required = false;
+                    var nA = document.getElementById('recetaNuevoApellidos'); if (nA) nA.required = false;
+                } else {
+                    if (infoDiv) infoDiv.innerHTML = '';
+                    if (hiddenName) hiddenName.value = '';
+                    if (quickReg) quickReg.classList.remove('d-none');
+                    if (esNuevo) esNuevo.value = "true";
+                    var hiddenId = document.getElementById('recetaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = '';
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('recetaNuevoNombres'); if (nN) nN.required = true;
+                    var nA = document.getElementById('recetaNuevoApellidos'); if (nA) nA.required = true;
+                }
+            })
+            .catch(err => {
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (btn) btn.disabled = false;
+            });
+    } else {
+        if (infoDiv) infoDiv.innerHTML = '';
+        if (hiddenName) hiddenName.value = '';
+        if (quickReg) quickReg.classList.add('d-none');
+        if (esNuevo) esNuevo.value = "false";
+        if (btn) btn.disabled = false;
+    }
+};
+
+window.abrirModalVenta = function(id, nombre, precio, stock) {
+    var modalEl = document.getElementById("modalFacturarVenta");
+    if (modalEl) {
+        var idHidden = document.getElementById("ventaIdMed");
+        if (!idHidden) {
+            idHidden = document.createElement("input");
+            idHidden.type = "hidden";
+            idHidden.id = "ventaIdMed";
+            idHidden.name = "idMed";
+            var mBody = modalEl.querySelector(".modal-body");
+            if (mBody) mBody.appendChild(idHidden);
+        }
+        idHidden.value = id || "";
+
+        var nombreInput = document.getElementById("ventaNombreMed");
+        if (nombreInput) nombreInput.value = nombre || "Medicamento";
+
+        var stockSpan = document.getElementById("ventaMaxStock");
+        if (stockSpan) stockSpan.innerText = stock || 100;
+
+        var cantInput = document.getElementById("ventaCantidad");
+        if (cantInput) {
+            cantInput.value = 1;
+            cantInput.max = stock || 100;
+        }
+
+        window.currentPrecioVenta = parseFloat(precio) || 0.0;
+        window.calcTotalVenta();
+
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalFacturarVenta").modal('show');
+        }
+    } else {
+        alert("Atención: El HTML del modalFacturarVenta no está en esta página.");
+    }
+};
+
+window.calcTotalVenta = function() {
+    var cantInput = document.getElementById("ventaCantidad");
+    var totalInput = document.getElementById("ventaTotal");
+    var cant = cantInput ? (parseInt(cantInput.value) || 1) : 1;
+    var precio = window.currentPrecioVenta || 0.0;
+    if (totalInput) totalInput.value = "$" + (cant * precio).toFixed(2);
+};
+
+// Función para CERRAR el modal de ventas (Botón X y Cancelar)
+window.cerrarModalVenta = function() {
+    try {
+        $("#modalFacturarVenta").modal('hide');
+    } catch(e) {
+        var modalEl = document.getElementById("modalFacturarVenta");
+        var modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+};
+
+// Confirmación de Venta con Generación de Factura en BD
+window.confirmarVenta = function() {
+    var idHidden = document.getElementById("ventaIdMed");
+    var idMed = idHidden ? idHidden.value : "";
+    var cliente = document.getElementById("ventaCliente") ? document.getElementById("ventaCliente").value.trim() : "Consumidor Final";
+    var cantidad = document.getElementById("ventaCantidad") ? document.getElementById("ventaCantidad").value : "1";
+
+    if (!idMed) {
+        alert("Por favor seleccione un medicamento válido.");
+        return;
+    }
+
+    var formData = new URLSearchParams();
+    formData.append("action", "facturarVenta");
+    formData.append("idMed", idMed);
+    formData.append("cantidad", cantidad);
+    formData.append("cliente", cliente || "Consumidor Final");
+
+    fetch("adminAction", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString()
+    }).then(function(res) {
+        alert("¡Venta procesada exitosamente! Se generó la factura en el Reporte de Ventas.");
+        window.cerrarModalVenta();
+        window.location.href = "dashboard?vista=facturas";
+    }).catch(function(err) {
+        alert("Error al procesar la factura de venta.");
+    });
+};
+
+window.irAReporteVentas = function() {
+    window.location.href = "dashboard?vista=facturas";
+};
+
+// CONEXIÓN A LA BASE DE DATOS Y MODAL PARA INTERNAR
+window.abrirModalInternar = function(id, numero, sala) {
+    var idInput = document.getElementById('internarIdCama');
+    if (idInput) idInput.value = id;
+    
+    var numLabel = document.getElementById('internarCamaNumLabel');
+    if (numLabel) numLabel.innerText = (numero || id) + (sala ? " (" + sala + ")" : "");
+    
+    var cedulaInput = document.getElementById('camaCedula');
+    if (cedulaInput) cedulaInput.value = '';
+    
+    var infoDiv = document.getElementById('camaPacNombreInfo');
+    if (infoDiv) infoDiv.innerHTML = '';
+    
+    var quickReg = document.getElementById('camaQuickRegister');
+    if (quickReg) quickReg.classList.add('d-none');
+    
+    var esNuevo = document.getElementById('camaEsNuevoPac');
+    if (esNuevo) esNuevo.value = "false";
+    
+    var hiddenId = document.getElementById('camaPacienteIdHidden');
+    if (hiddenId) hiddenId.value = '';
+
+    var modalEl = document.getElementById("modalInternarCama");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalInternarCama").modal('show');
+        }
+    }
+};
+
+window.buscarPacienteCama = function(cedula) {
+    const infoDiv = document.getElementById('camaPacNombreInfo');
+    const quickReg = document.getElementById('camaQuickRegister');
+    const esNuevo = document.getElementById('camaEsNuevoPac');
+    const btn = document.getElementById('btnInternarCama');
+    
+    if (cedula.length === 10) {
+        if (infoDiv) infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
+        if (btn) btn.disabled = true;
+        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if (data.id) {
+                    if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + data.nombres + ' ' + data.apellidos;
+                    if (quickReg) quickReg.classList.add('d-none');
+                    if (esNuevo) esNuevo.value = "false";
+                    var hiddenId = document.getElementById('camaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = data.id;
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('camaNuevoNombres'); if (nN) nN.required = false;
+                    var nA = document.getElementById('camaNuevoApellidos'); if (nA) nA.required = false;
+                } else {
+                    if (infoDiv) infoDiv.innerHTML = '';
+                    if (quickReg) quickReg.classList.remove('d-none');
+                    if (esNuevo) esNuevo.value = "true";
+                    var hiddenId = document.getElementById('camaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = '';
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('camaNuevoNombres'); if (nN) nN.required = true;
+                    var nA = document.getElementById('camaNuevoApellidos'); if (nA) nA.required = true;
+                }
+            })
+            .catch(err => {
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (btn) btn.disabled = false;
+            });
+    } else {
+        if (infoDiv) infoDiv.innerHTML = '';
+        if (quickReg) quickReg.classList.add('d-none');
+        if (esNuevo) esNuevo.value = "false";
+        if (btn) btn.disabled = false;
+    }
+};
+
+// CONEXIÓN INVISIBLE A BD PARA DAR DE ALTA
+window.confirmarAltaCama = function(id, numero, paciente) {
+    if (confirm("SISTEMA ACTIVO: ¿Confirmas dar de alta a " + paciente + " y liberar la " + numero + "?")) {
+        var formData = new URLSearchParams();
+        formData.append("action", "liberar");
+        formData.append("camaId", id);
+
+        fetch('camasAction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        }).then(function(response) {
+            alert("¡Alta confirmada! La " + numero + " ha sido liberada.");
+            window.location.href = "dashboard";
+        });
+    }
+};
+
+// CONEXIÓN PARA CAMBIAR ESTADO DE CAMA (Mantenimiento / Disponible)
+window.cambiarEstadoCama = function(id, estado) {
+    var est = estado || "Mantenimiento";
+    var formData = new URLSearchParams();
+    formData.append("action", "cambiarEstado");
+    formData.append("camaId", id);
+    formData.append("estado", est);
+
+    fetch('camasAction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData.toString()
+    }).then(function(response) {
+        alert("El estado de la cama ha sido actualizado a " + est + ".");
+        window.location.href = "dashboard";
+    }).catch(function(err) {
+        alert("Error al actualizar el estado de la cama.");
+    });
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("*").forEach(function(el) {
+        if (el.children.length === 0 && el.textContent.trim() === "null") {
+            el.textContent = "Sin registrar";
+        }
+    });
+
+    try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var vista = urlParams.get('vista');
+        if (vista) {
+            cambiarVista(vista);
+        }
+    } catch(e) {}
+});
+
+// ABRIR MODAL PARA CREAR NUEVA CAMA
+window.crearNuevaCama = function() {
+    var modalEl = document.getElementById("modalAñadirCama") || document.getElementById("modalAnadirCama");
+    if (modalEl) {
+        try {
+            var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+            modal.show();
+        } catch (e) {
+            $("#modalAñadirCama").modal('show');
+        }
+    }
+};
+
+// CONEXIÓN PARA ELIMINAR CAMA
+window.confirmarBorradoCama = function(id, numero) {
+    if (confirm("¿Estás seguro de que deseas eliminar la " + (numero || "cama seleccionada") + "? Esta acción no se puede deshacer.")) {
+        var formData = new URLSearchParams();
+        formData.append("action", "eliminar");
+        formData.append("camaId", id);
+
+        fetch('camasAction', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: formData.toString()
+        }).then(function(response) {
+            alert("La cama ha sido eliminada del sistema.");
+            window.location.href = "dashboard";
+        }).catch(function(err) {
+            alert("Error al eliminar la cama.");
+        });
+    }
+};
+
+function aplicarPlantillaRol(tipo, el) {
+    // 1. Resaltar la tarjeta seleccionada y desmarcar las demás
+    document.querySelectorAll('.plantilla-card').forEach(card => {
+        card.style.background = 'rgba(255, 255, 255, 0.05)';
+        card.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    });
+    if (el) {
+        el.style.background = 'rgba(255, 193, 7, 0.15)';
+        el.style.borderColor = '#ffc107';
+    }
+
+    // 2. Desmarcar todos los checkboxes
+    const checkboxes = document.querySelectorAll('.perm-checkbox');
+    checkboxes.forEach(chk => chk.checked = false);
+
+    // 3. Normalizar el parámetro (evita problemas con mayúsculas y tildes)
+    const t = (tipo || '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    // 4. Activar los permisos según la tarjeta seleccionada
+    if (t === 'moderador') {
+        checkboxes.forEach(chk => { if (chk.value === 'Usuarios') chk.checked = true; });
+    } else if (t === 'bodeguero') {
+        checkboxes.forEach(chk => { if (chk.value === 'Inventario') chk.checked = true; });
+    } else if (t === 'medico') {
+        checkboxes.forEach(chk => { if (chk.value === 'Citas' || chk.value === 'Admision') chk.checked = true; });
+    }
+    // Si es 'custom' / 'amedida', los checkboxes ya quedaron desmarcados en el paso 2
+}
+
+
+
+        function abrirModalVerDiagnostico(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta'); var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+
+
+
+        function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
+
+
+
+
+        function filtrarTicketsTI() { let select = document.getElementById('filtroNivelTI').value.toLowerCase(); let cards = document.querySelectorAll('.ticket-card'); cards.forEach(card => { let nivel = card.getAttribute('data-nivel'); if (select === 'todos' || nivel.includes(select)) { card.style.display = ''; } else { card.style.display = 'none'; } }); }
+
+
+        function filtrarFacturasAvanzado() { let input = document.getElementById('buscadorFacturas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaFacturas').value; let table = document.getElementById('tablaFacturas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('td')[1]; if(tdFecha) { let match = tdFecha.innerText.match(/(\d{4}-\d{2}-\d{2})/); if(match) dateValue = match[1]; } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; if (matchTexto && matchFecha) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } }
+
+        function abrirModalVerFactura(id, cliente, fecha, total, btnEl) { document.getElementById('verFacId').innerText = id; document.getElementById('verFacCliente').innerText = cliente; document.getElementById('verFacFecha').innerText = fecha; document.getElementById('verFacTotal').innerText = total; document.getElementById('verFacDetalles').innerHTML = btnEl.getAttribute('data-detalles'); var mEl = document.getElementById('modalVerFactura'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); var recetaEl = document.getElementById('verDiagReceta'); if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizacion)'; } var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+
+
+
+
+
+
+
+
+
+
+

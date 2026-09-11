@@ -244,6 +244,7 @@ public class DashboardServlet extends HttpServlet {
                     mapCam.put("paciente", cam.getPacienteNombre() != null ? cam.getPacienteNombre() : "");
                     mapCam.put("medico", cam.getMedicoNombre() != null ? cam.getMedicoNombre() : "");
                     mapCam.put("motivo", cam.getMotivo() != null ? cam.getMotivo() : "");
+                    mapCam.put("diagnostico", cam.getDiagnostico() != null ? cam.getDiagnostico() : "");
                     listaCamas.add(mapCam);
 
                     if ("Ocupada".equalsIgnoreCase(cam.getEstado())) {

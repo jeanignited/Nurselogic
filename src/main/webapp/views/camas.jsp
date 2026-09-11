@@ -161,6 +161,9 @@
                                     <div class="text-secondary"><i class="bi bi-user-md text-info me-1"></i><%= c.get("medico") %></div>
 
                                     <div class="text-warning mt-1" style="font-size: 0.8rem;"><i class="bi bi-info-circle me-1"></i>Motivo: <%= c.get("motivo") %></div>
+                                    <% if (c.get("diagnostico") != null && !c.get("diagnostico").isEmpty()) { %>
+                                        <button class="btn btn-sm btn-link text-info p-0 mt-1 d-block text-decoration-none" style="font-size: 0.75rem;" onclick="abrirModalVerDiagnosticoCama('<%= c.get("paciente").replace("'", "") %>', this)" data-diagnostico="<%= c.get("diagnostico").replace("\"", "&quot;") %>"><i class="bi bi-journal-text me-1"></i>Ver Diagnóstico</button>
+                                    <% } %>
 
                                 </div>
 
@@ -215,6 +218,13 @@
             <% } %>
 
         </div>
+
+
+
+
+
+
+
 
 
 

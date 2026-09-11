@@ -77,23 +77,27 @@ public class CamasActionServlet extends HttpServlet {
                 String motivo = request.getParameter("motivo");
                 if (motivo == null || motivo.isEmpty()) motivo = "Ingreso en Hospitalización";
                 
+                String diagnostico = request.getParameter("diagnostico");
                 Cama cama = em.find(Cama.class, camaId);
                 if (cama != null) {
                     cama.setEstado("Ocupada");
                     cama.setPacienteNombre(pacienteNombre != null && !pacienteNombre.isEmpty() ? pacienteNombre : "Paciente Registrado");
                     cama.setMedicoNombre(medicoNombre);
                     cama.setMotivo(motivo);
+                    cama.setDiagnostico(diagnostico);
                     em.merge(cama);
                     request.setAttribute("mensaje", "Paciente asignado exitosamente.");
                 }
             } else if ("liberar".equals(action)) {
                 int camaId = Integer.parseInt(request.getParameter("camaId"));
+                String diagnostico = request.getParameter("diagnostico");
                 Cama cama = em.find(Cama.class, camaId);
                 if (cama != null) {
                     cama.setEstado("Disponible");
                     cama.setPacienteNombre(null);
                     cama.setMedicoNombre(null);
                     cama.setMotivo(null);
+                    cama.setDiagnostico(null);
                     em.merge(cama);
                     request.setAttribute("mensaje", "Cama liberada (dada de alta) exitosamente.");
                 }
@@ -101,17 +105,20 @@ public class CamasActionServlet extends HttpServlet {
                 int camaId = Integer.parseInt(request.getParameter("camaId"));
                 String nuevoEstado = request.getParameter("estado");
                 if (nuevoEstado == null || nuevoEstado.isEmpty()) nuevoEstado = "Mantenimiento";
+                String diagnostico = request.getParameter("diagnostico");
                 Cama cama = em.find(Cama.class, camaId);
                 if (cama != null) {
                     cama.setEstado(nuevoEstado);
                     cama.setPacienteNombre(null);
                     cama.setMedicoNombre(null);
                     cama.setMotivo(null);
+                    cama.setDiagnostico(null);
                     em.merge(cama);
                     request.setAttribute("mensaje", "Estado de la cama actualizado a " + nuevoEstado + ".");
                 }
             } else if ("eliminar".equals(action)) {
                 int camaId = Integer.parseInt(request.getParameter("camaId"));
+                String diagnostico = request.getParameter("diagnostico");
                 Cama cama = em.find(Cama.class, camaId);
                 if (cama != null) {
                     em.remove(cama);
@@ -135,3 +142,9 @@ public class CamasActionServlet extends HttpServlet {
         request.getRequestDispatcher("/dashboard").forward(request, response);
     }
 }
+
+
+
+
+
+

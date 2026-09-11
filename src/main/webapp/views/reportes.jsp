@@ -17,7 +17,7 @@
                 <p class="text-secondary mt-1 mb-0">Sistema de Ticketing y Visualización de Reportes (Vista estilo cámaras de seguridad)</p>
             </div>
             <div class="d-flex gap-2">
-                <select id="filtroNivelTI" class="form-select form-select-sm bg-dark text-white border-secondary" onchange="filtrarTicketsTI()">
+                <select id="filtroNivelTI" class="form-select bg-dark text-white rounded-pill px-3 shadow-sm border-0" style="border: 1px solid rgba(255,255,255,0.1) !important;" onchange="filtrarTicketsTI()">
                     <option value="todos">Todos los niveles</option>
                     <option value="leve">Leve</option>
                     <option value="moderado">Moderado</option>
@@ -93,7 +93,8 @@
 
                     <div class="card-body">
                         <h5 class="card-title fw-bold text-truncate" title="<%= titulo %>"><%= titulo %></h5>
-                        <p class="card-text small text-secondary" style="max-height: 80px; overflow-y: auto; padding-right: 5px; white-space: pre-wrap; cursor: pointer;" title="Haz clic para expandir o contraer" onclick="this.style.maxHeight = this.style.maxHeight === '80px' ? 'none' : '80px';"><%= descripcion %></p>
+                        <p class="card-text small text-secondary mb-1" style="max-height: 60px; overflow: hidden; white-space: pre-wrap; transition: max-height 0.3s ease;" id="desc-<%= id %>"><%= descripcion %></p>
+                        <button class="btn btn-link btn-sm p-0 text-info text-decoration-none" onclick="let p = document.getElementById('desc-<%= id %>'); if(p.style.maxHeight === '60px'){ p.style.maxHeight = '1000px'; this.innerText = 'Ocultar detalles'; } else { p.style.maxHeight = '60px'; this.innerText = 'Ver detalles'; }">Ver detalles</button>
                     </div>
 
                     <div class="card-footer border-0 bg-transparent text-end">
@@ -291,3 +292,6 @@
         </style>
     <% } %>
 </div>
+
+
+

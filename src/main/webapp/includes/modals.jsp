@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
 <%
     boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
@@ -409,8 +409,16 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small text-secondary fw-semibold">Motivo de Internaci&oacute;n</label>
-                        <input type="text" id="camaMotivo" name="motivo" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Observaci&oacute;n Post-Quir&uacute;rgica / Tratamiento" required>
+                        <label class="form-label small text-secondary fw-semibold">Médico de Turno / Asignado</label>
+                        <input type="text" id="camaMedico" name="medicoNombre" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Dr. Juan Pérez" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-semibold">Motivo de Internación (Corto)</label>
+                        <input type="text" id="camaMotivo" name="motivo" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Observación Post-Quirúrgica" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label small text-secondary fw-semibold">Diagnóstico de Ingreso Detallado</label>
+                        <textarea id="camaDiagnostico" name="diagnostico" class="form-control" rows="3" style="border: var(--glass-border);" placeholder="Detalles de la internación, síntomas y estado general..." required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -932,7 +940,7 @@
               <div class="text-end"><small class="text-secondary">Fecha:</small><br><span id="verFacFecha"></span></div>
           </div>
           <hr style="border-color: rgba(255,255,255,0.1);">
-          <h6 class="fw-bold text-secondary mb-3">Art�culos</h6>
+          <h6 class="fw-bold text-secondary mb-3">Art�culos</h6>
           <div class="p-3 rounded mb-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);" id="verFacDetalles"></div>
           <div class="text-end fs-5">
               <span class="text-secondary">Total Pagado:</span> <strong class="text-success">$<span id="verFacTotal"></span></strong>
@@ -944,4 +952,5 @@
     </div>
   </div>
 </div>
+
 
