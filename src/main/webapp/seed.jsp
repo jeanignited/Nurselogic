@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page import="com.nurselogic.config.JPAUtil" %>
 <%@ page import="com.nurselogic.model.Enfermedad" %>
 <%@ page import="com.nurselogic.model.Alergia" %>

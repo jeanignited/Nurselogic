@@ -1,0 +1,9 @@
+import io
+
+with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8') as f:
+    c = f.read()
+
+c = c.replace('<script>\\n//', '<script>\n//')
+
+with io.open('src/main/webapp/includes/scripts.jsp', 'w', encoding='utf-8') as f:
+    f.write(c)

@@ -20,6 +20,7 @@ public class RegistroServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         Usuario u = new Usuario();
         u.setNombres(request.getParameter("nombres"));
         u.setApellidos(request.getParameter("apellidos"));

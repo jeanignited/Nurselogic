@@ -26,10 +26,10 @@
         <div class="d-flex align-items-center gap-2" style="width: 100%; max-width: 450px;">
             <div class="position-relative flex-grow-1">
                 <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-                <input type="text" id="buscadorFacturas" class="form-control ps-5" placeholder="Buscar cliente o cédula..." onkeyup="filtrarFacturasAvanzado()">
+                <input type="text" id="buscadorFacturas" class="form-control ps-5" placeholder="Buscar cliente o cédula..." onkeyup="filtrarFacturasAvanzado()" autocomplete="off">
             </div>
             <div class="position-relative">
-                <input type="date" id="filtroFechaFacturas" class="form-control text-secondary" onchange="filtrarFacturasAvanzado()">
+                <input type="date" id="filtroFechaFacturas" class="form-control text-secondary" onchange="filtrarFacturasAvanzado()" autocomplete="off">
             </div>
             <a href="exportCsv?tipo=facturas" class="btn btn-outline-success text-nowrap rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</a>
         </div>
@@ -64,7 +64,7 @@
                                 }
                                 out.print("<td style='font-size: 0.85rem;'>" + detalles.toString() + "</td>");
                                 out.print("<td class='text-success fw-bold'>$" + String.format("%.2f", f.getTotal()) + "</td>");
-                                out.print("<td class='pe-4 text-center'><button type='button' class='btn btn-sm btn-outline-info rounded-pill px-3' title='Ver Factura' onclick=\"abrirModalVerFactura('FAC-" + String.format("%05d", f.getId()) + "', '" + f.getClienteNombre().replace("'", "\\'") + "', '" + f.getFechaEmision().toString().replace("T", " ").substring(0, 16) + "', '" + String.format("%.2f", f.getTotal()) + "', this)\" data-detalles=\"" + detalles.toString().replace("\"", "&quot;") + "\"><i class='bi bi-eye me-1'></i> Ver</button></td>");
+                                out.print("<td class='pe-4 text-center d-flex justify-content-center gap-2'><button type='button' class='btn btn-sm btn-outline-info rounded-pill px-3' title='Ver Factura' onclick=\"abrirModalVerFactura('FAC-" + String.format("%05d", f.getId()) + "', '" + f.getClienteNombre().replace("'", "\\'") + "', '" + f.getFechaEmision().toString().replace("T", " ").substring(0, 16) + "', '" + String.format("%.2f", f.getTotal()) + "', this)\" data-detalles=\"" + detalles.toString().replace("\"", "&quot;") + "\"><i class='bi bi-eye me-1'></i> Ver</button>" + (isAdmin ? "<form action='adminAction' method='POST' style='display:inline;' onsubmit='event.preventDefault(); window.confirmarBorradoFactura(" + f.getId() + ");'><input type='hidden' name='action' value='eliminarFactura'><input type='hidden' name='id' value='" + f.getId() + "'><button type='submit' class='btn btn-sm btn-outline-danger rounded-pill px-2' title='Eliminar Factura'><i class='bi bi-trash'></i></button></form>" : "") + "</td>");
                                 out.print("</tr>");
                             }
                         } else {

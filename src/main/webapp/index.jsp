@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
@@ -49,6 +50,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         :root { --bg-main:#0f172a; --bg-panel:rgba(30,41,59,0.7); --text-color:#f8fafc; --accent:#3b82f6; --sidebar-w:260px; --glass-border:1px solid rgba(255,255,255,0.1); }
         html[data-bs-theme="light"] { --bg-main:#f1f5f9; --bg-panel:rgba(255,255,255,0.9); --text-color:#0f172a; --glass-border:1px solid rgba(0,0,0,0.1); }
@@ -97,14 +99,40 @@
         .modal-backdrop { z-index:1040!important; }
         .modal { z-index:1050!important; }
         [data-bs-theme="dark"] ::placeholder { color:#94a3b8!important; opacity:1; }
+    
+        /* FORZAR TEXTOS BLANCOS A OSCUROS EN MODO CLARO */
+        [data-bs-theme="light"] .text-white,
+        [data-bs-theme="light"] .text-light,
+        [data-bs-theme="light"] .text-white-50 {
+            color: #212529 !important;
+        }
+        
+        /* Opcional: si algo realmente debe quedarse blanco, aplicamos text-shadow */
+        [data-bs-theme="light"] .btn.text-white {
+            color: #fff !important; /* Los botones s pueden ser blancos */
+        }
+        [data-bs-theme="light"] .force-shadow-light {
+            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
+        }
     </style>
+
+    <script>
+        (function() {
+            var theme = localStorage.getItem('nurselogic_theme') || 'dark';
+            var actualTheme = theme;
+            if (theme === 'auto') {
+                actualTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.documentElement.setAttribute('data-bs-theme', actualTheme);
+        })();
+    </script>
 </head>
 <body>
-    <form id="formAdminAction" action="adminAction" method="POST" style="display:none;">
-        <input type="hidden" name="action" id="adminActionType">
-        <input type="hidden" name="target" id="adminActionTarget">
-        <input type="hidden" name="id" id="adminActionId">
-        <input type="hidden" name="nuevoRol" id="adminActionRol">
+    <form id="formAdminAction" action="adminAction" method="POST" style="display:none;" autocomplete="off">
+        <input type="hidden" name="action" id="adminActionType" autocomplete="off">
+        <input type="hidden" name="target" id="adminActionTarget" autocomplete="off">
+        <input type="hidden" name="id" id="adminActionId" autocomplete="off">
+        <input type="hidden" name="nuevoRol" id="adminActionRol" autocomplete="off">
     </form>
 
     <jsp:include page="includes/sidebar.jsp" />
@@ -129,6 +157,7 @@
     <jsp:include page="includes/modals.jsp" />
 
     <!-- Scripts -->
-    <jsp:include page="includes/scripts.jsp" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<jsp:include page="includes/scripts.jsp" />
 </body>
 </html>

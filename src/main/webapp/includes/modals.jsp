@@ -61,9 +61,9 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevoRol()"></button>
             </div>
-            <form action="adminAction" method="POST">
+            <form action="adminAction" method="POST" autocomplete="off">
                 <div class="modal-body">
-                    <input type="hidden" name="action" value="crearRol">
+                    <input type="hidden" name="action" value="crearRol" autocomplete="off">
 
                     <p class="text-secondary small mb-2 fw-semibold">Paso 1: Elige un Molde / Plantilla base</p>
                     <div class="row g-2 mb-4">
@@ -101,11 +101,11 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Nombre del Rol (Ej: Enfermera Jefe)</label>
-                            <input type="text" name="nombreRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required>
+                            <input type="text" name="nombreRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required autocomplete="off">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Descripción breve</label>
-                            <input type="text" name="descRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required>
+                            <input type="text" name="descRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required autocomplete="off">
                         </div>
                     </div>
 
@@ -119,42 +119,42 @@
                             <div class="col-md-6">
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_inventario" name="permiso" value="Inventario">
+                                           id="perm_inventario" name="permiso" value="Inventario" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_inventario">
                                         <i class="bi bi-capsule text-success me-1"></i>Inventario de Medicamentos
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_catalogos" name="permiso" value="Catálogos">
+                                           id="perm_catalogos" name="permiso" value="Catálogos" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_catalogos">
                                         <i class="bi bi-folder2-open me-1" style="color:#60a5fa;"></i>Catálogos (Enfermedades/Alergias)
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_admision" name="permiso" value="Admision">
+                                           id="perm_admision" name="permiso" value="Admision" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_admision">
                                         <i class="bi bi-person-plus text-info me-1"></i>Admisión y Triage de Pacientes
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_citas" name="permiso" value="Citas">
+                                           id="perm_citas" name="permiso" value="Citas" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_citas">
                                         <i class="bi bi-calendar-check text-warning me-1"></i>Agendar y Control de Citas
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_reportes" name="permiso" value="Reportes">
+                                           id="perm_reportes" name="permiso" value="Reportes" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_reportes">
                                         <i class="bi bi-graph-up-arrow me-1" style="color:#c084fc;"></i>Ver Reportes y Estadísticas
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_usuarios" name="permiso" value="Usuarios">
+                                           id="perm_usuarios" name="permiso" value="Usuarios" autocomplete="off">
                                     <label class="form-check-label text-light small text-danger fw-bold" for="perm_usuarios">
                                         <i class="bi bi-shield-lock me-1"></i>Gestión de Usuarios (Admin)
                                     </label>
@@ -168,35 +168,35 @@
                                 </p>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_hosp" name="permBoolHosp" value="true">
+                                           id="perm_hosp" name="permBoolHosp" value="true" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_hosp">
                                         <i class="bi bi-hospital me-1" style="color:#22d3ee;"></i>Hospitalización y Camas
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_ventas" name="permBoolVentas" value="true">
+                                           id="perm_ventas" name="permBoolVentas" value="true" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_ventas">
                                         <i class="bi bi-receipt text-primary me-1"></i>Reporte de Ventas (Farmacia)
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_dirpac" name="permBoolDirPac" value="true">
+                                           id="perm_dirpac" name="permBoolDirPac" value="true" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_dirpac">
                                         <i class="bi bi-people text-info me-1"></i>Directorio de Pacientes
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_catclin" name="permBoolCatClin" value="true">
+                                           id="perm_catclin" name="permBoolCatClin" value="true" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_catclin">
                                         <i class="bi bi-journal-medical me-1" style="color:#60a5fa;"></i>Catálogos Clínicos
                                     </label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
-                                           id="perm_soporteti" name="permBoolSoporteTI" value="true">
+                                           id="perm_soporteti" name="permBoolSoporteTI" value="true" autocomplete="off">
                                     <label class="form-check-label text-light small" for="perm_soporteti">
                                         <i class="bi bi-headset me-1" style="color:#fbbf24;"></i>Soporte T.I.
                                     </label>
@@ -225,16 +225,16 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="adminAction" method="post" onsubmit="return validarFormularioReceta(event)">
-                <input type="hidden" name="action" value="prescribirReceta">
-                <input type="hidden" id="recetaEsNuevoPac" name="esNuevoPaciente" value="false">
-                <input type="hidden" id="recetaPacienteIdHidden" name="pacienteId" value="">
+            <form action="adminAction" method="post" onsubmit="return validarFormularioReceta(event)" autocomplete="off">
+                <input type="hidden" name="action" value="prescribirReceta" autocomplete="off">
+                <input type="hidden" id="recetaEsNuevoPac" name="esNuevoPaciente" value="false" autocomplete="off">
+                <input type="hidden" id="recetaPacienteIdHidden" name="pacienteId" value="" autocomplete="off">
                 <div class="modal-body">
                     <div class="row g-3 mb-3">
                         <div class="col-md-12">
                             <label class="form-label small text-secondary fw-semibold">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
-                            <input type="text" id="recetaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteReceta(this.value);" required>
-                            <input type="hidden" id="recetaPacNombre" name="pacienteNombre" value="">
+                            <input type="text" id="recetaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteReceta(this.value);" required autocomplete="off">
+                            <input type="hidden" id="recetaPacNombre" name="pacienteNombre" value="" autocomplete="off">
                             <div id="recetaPacNombreInfo" class="form-text text-info mt-1"></div>
                         </div>
                     </div>
@@ -244,13 +244,13 @@
                         <p class="small text-warning fw-bold mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Paciente Nuevo. Complete datos:</p>
                         <div class="row g-2">
                             <div class="col-md-6">
-                                <input type="text" id="recetaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos">
+                                <input type="text" id="recetaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos" autocomplete="off">
                             </div>
                             <div class="col-md-6">
-                                <input type="text" id="recetaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos">
+                                <input type="text" id="recetaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos" autocomplete="off">
                             </div>
                             <div class="col-md-6">
-                                <input type="date" id="recetaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento">
+                                <input type="date" id="recetaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento" max="<%= java.time.LocalDate.now().toString() %>" autocomplete="off">
                             </div>
                             <div class="col-md-6">
                                 <select id="recetaNuevoSexo" name="nuevoSexo" class="form-select form-select-sm">
@@ -289,7 +289,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Indicaciones Dosis y Frecuencia</label>
-                        <input type="text" name="indicaciones" class="form-control" placeholder="Ej: 1 tableta cada 8 horas por 5 d&iacute;as" required>
+                        <input type="text" name="indicaciones" class="form-control" placeholder="Ej: 1 tableta cada 8 horas por 5 d&iacute;as" required autocomplete="off">
                     </div>
                 </div>
                 <div class="modal-footer border-0">
@@ -328,7 +328,7 @@
 </div>
 
 <!-- Modal Añadir Cama -->
-<div class="modal fade" id="modalAñadirCama" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modalAnadirCama" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(20px); border: var(--glass-border); box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);">
             <div class="modal-header border-0">
@@ -337,12 +337,12 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="camasAction" method="post">
-                <input type="hidden" name="action" value="crear">
+            <form action="camasAction" method="post" autocomplete="off">
+                <input type="hidden" name="action" value="crear" autocomplete="off">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">N&uacute;mero de Cama</label>
-                        <input type="text" name="numero" class="form-control" style="border: var(--glass-border);" placeholder="N&uacute;mero" required>
+                        <input type="text" name="numero" class="form-control" style="border: var(--glass-border);" placeholder="N&uacute;mero" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Sala / &Aacute;rea Hospitalaria</label>
@@ -373,15 +373,15 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="camasAction" method="post">
-                <input type="hidden" name="action" value="asignar">
-                <input type="hidden" id="internarIdCama" name="camaId" value="">
-                <input type="hidden" id="camaEsNuevoPac" name="esNuevoPaciente" value="false">
-                <input type="hidden" id="camaPacienteIdHidden" name="pacienteId" value="">
+            <form action="camasAction" method="post" autocomplete="off">
+                <input type="hidden" name="action" value="asignar" autocomplete="off">
+                <input type="hidden" id="internarIdCama" name="camaId" value="" autocomplete="off">
+                <input type="hidden" id="camaEsNuevoPac" name="esNuevoPaciente" value="false" autocomplete="off">
+                <input type="hidden" id="camaPacienteIdHidden" name="pacienteId" value="" autocomplete="off">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
-                        <input type="text" id="camaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCama(this.value);" required>
+                        <input type="text" id="camaCedula" name="cedula" class="form-control" style="border: var(--glass-border);" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCama(this.value);" required autocomplete="off">
                         <div id="camaPacNombreInfo" class="form-text text-info mt-1"></div>
                     </div>
 
@@ -390,13 +390,13 @@
                         <p class="small text-warning fw-bold mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Paciente Nuevo. Complete datos:</p>
                         <div class="row g-2">
                             <div class="col-md-6">
-                                <input type="text" id="camaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos">
+                                <input type="text" id="camaNuevoNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos" autocomplete="off">
                             </div>
                             <div class="col-md-6">
-                                <input type="text" id="camaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos">
+                                <input type="text" id="camaNuevoApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos" autocomplete="off">
                             </div>
                             <div class="col-md-6">
-                                <input type="date" id="camaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento">
+                                <input type="date" id="camaNuevoFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento" max="<%= java.time.LocalDate.now().toString() %>" autocomplete="off">
                             </div>
                             <div class="col-md-6">
                                 <select id="camaNuevoSexo" name="nuevoSexo" class="form-select form-select-sm">
@@ -410,11 +410,11 @@
 
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Médico de Turno / Asignado</label>
-                        <input type="text" id="camaMedico" name="medicoNombre" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Dr. Juan Pérez" required>
+                        <input type="text" id="camaMedico" name="medicoNombre" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Dr. Juan Pérez" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Motivo de Internación (Corto)</label>
-                        <input type="text" id="camaMotivo" name="motivo" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Observación Post-Quirúrgica" required>
+                        <input type="text" id="camaMotivo" name="motivo" class="form-control" style="border: var(--glass-border);" placeholder="Ej: Observación Post-Quirúrgica" required autocomplete="off">
                     </div>
                     <div class="mb-3">
                         <label class="form-label small text-secondary fw-semibold">Diagnóstico de Ingreso Detallado</label>
@@ -464,10 +464,10 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <form action="adminAction" method="post" id="formAtenderCita">
-        <input type="hidden" name="action" value="atenderCita">
-        <input type="hidden" name="idCita" id="atenderIdCita">
-        <input type="hidden" name="pacienteNombre" id="atenderPacNombre">
+      <form action="adminAction" method="post" id="formAtenderCita" autocomplete="off">
+        <input type="hidden" name="action" value="atenderCita" autocomplete="off">
+        <input type="hidden" name="idCita" id="atenderIdCita" autocomplete="off">
+        <input type="hidden" name="pacienteNombre" id="atenderPacNombre" autocomplete="off">
 
         <div class="modal-body p-0">
             <!-- Pestañas (Tabs) -->
@@ -491,27 +491,27 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Frecuencia Card&iacute;aca (lpm)</label>
-                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" oninput="if(typeof formatearFC === 'function') formatearFC(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
+                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" oninput="if(typeof formatearFC === 'function') formatearFC(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
                             <div id="atender_fc_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Presi&oacute;n Arterial (Sist/Diast)</label>
-                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" onkeyup="if(typeof formatearPresion === 'function') formatearPresion(this);" oninput="if(typeof evaluarVitales === 'function') evaluarVitales();">
+                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" onkeyup="if(typeof formatearPresion === 'function') formatearPresion(this);" oninput="if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
                             <div id="atender_pa_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Frecuencia Respiratoria</label>
-                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" oninput="if(typeof formatearFR === 'function') formatearFR(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
+                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" oninput="if(typeof formatearFR === 'function') formatearFR(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
                             <div id="atender_fr_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Saturaci&oacute;n O2 (%)</label>
-                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" oninput="if(typeof formatearSat === 'function') formatearSat(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
+                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" oninput="if(typeof formatearSat === 'function') formatearSat(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
                             <div id="atender_sat_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Temperatura (&deg;C)</label>
-                            <input type="number" step="0.1" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="0" oninput="if(typeof formatearTemperatura === 'function') formatearTemperatura(this); if(typeof evaluarVitales === 'function') evaluarVitales();">
+                            <input type="number" step="0.1" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="0" oninput="if(typeof formatearTemperatura === 'function') formatearTemperatura(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
                             <div id="atender_temp_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                     </div>
@@ -592,20 +592,20 @@
             <div class="modal-body">
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Nombre del Cliente / Paciente</label>
-                    <input type="text" id="ventaCliente" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" placeholder="Consumidor Final" required>
+                    <input type="text" id="ventaCliente" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" placeholder="Consumidor Final" required autocomplete="off">
                 </div>
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Medicamento a Vender</label>
-                    <input type="text" id="ventaNombreMed" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" disabled>
+                    <input type="text" id="ventaNombreMed" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" disabled autocomplete="off">
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Cantidad (Max: <span id="ventaMaxStock"></span>)</label>
-                        <input type="number" id="ventaCantidad" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" min="1" value="1" oninput="calcTotalVenta()">
+                        <input type="number" id="ventaCantidad" class="form-control" style="background-color:#0b0f19; color:#fff; border:1px solid #374151;" min="1" value="1" oninput="calcTotalVenta()" autocomplete="off">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-semibold">Total a Pagar</label>
-                        <input type="text" id="ventaTotal" class="form-control text-success fw-bold" style="background-color:#0b0f19; border:1px solid #374151;" disabled>
+                        <input type="text" id="ventaTotal" class="form-control text-success fw-bold" style="background-color:#0b0f19; border:1px solid #374151;" disabled autocomplete="off">
                     </div>
                 </div>
             </div>
@@ -653,11 +653,11 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-award me-2 text-warning"></i>Asignar Especialidad Clínica</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalEspecialidad()"></button>
       </div>
-      <form action="adminAction" method="POST">
+      <form action="adminAction" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" value="editarEspecialidad">
-          <input type="hidden" name="target" value="usuario">
-          <input type="hidden" name="id" id="espUserEmail">
+          <input type="hidden" name="action" value="editarEspecialidad" autocomplete="off">
+          <input type="hidden" name="target" value="usuario" autocomplete="off">
+          <input type="hidden" name="id" id="espUserEmail" autocomplete="off">
           <p class="text-secondary small mb-3">Selecciona la especialidad médica para <span id="espUserDisplay" class="fw-bold text-theme"></span></p>
           <select name="nuevaEspecialidad" id="selectEspecialidadModal" class="form-select form-select-lg mb-3" style="max-height: 200px; overflow-y: auto;" size="5">
               <%
@@ -691,12 +691,12 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-award-fill me-2 text-info"></i>Crear Nueva Especialidad</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevaEspecialidad()"></button>
       </div>
-      <form action="adminAction" method="POST">
+      <form action="adminAction" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" value="crearEspecialidad">
+          <input type="hidden" name="action" value="crearEspecialidad" autocomplete="off">
           <div class="mb-3">
              <label class="form-label small text-secondary">Nombre de la Especialidad</label>
-             <input type="text" name="nombreEspecialidad" class="form-control" placeholder="Ej: Pediatría, Cardiología" required>
+             <input type="text" name="nombreEspecialidad" class="form-control" placeholder="Ej: Pediatría, Cardiología" required autocomplete="off">
           </div>
         </div>
         <div class="modal-footer border-0 pt-0">
@@ -716,24 +716,24 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-capsule me-2 text-success"></i>Registrar Nuevo Medicamento</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalMedicamento()"></button>
       </div>
-      <form action="adminAction" method="POST">
+      <form action="adminAction" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" value="crearMedicamento">
+          <input type="hidden" name="action" value="crearMedicamento" autocomplete="off">
           <div class="mb-3">
              <label class="form-label small text-secondary">Nombre Farmacológico</label>
-             <input type="text" name="nombre" class="form-control" required>
+             <input type="text" name="nombre" class="form-control" required autocomplete="off">
           </div>
           <div class="mb-3">
              <label class="form-label small text-secondary">Presentación</label>
-             <input type="text" name="presentacion" class="form-control" placeholder="Ej: Tabletas 500mg" required>
+             <input type="text" name="presentacion" class="form-control" placeholder="Ej: Tabletas 500mg" required autocomplete="off">
           </div>
           <div class="mb-3">
              <label class="form-label small text-secondary">Stock Inicial</label>
-             <input type="number" name="stock" class="form-control" min="0" value="0" required>
+             <input type="number" name="stock" class="form-control" min="0" value="0" required autocomplete="off">
           </div>
           <div class="mb-3">
              <label class="form-label small text-secondary">Precio Unitario ($)</label>
-             <input type="number" name="precio" step="0.01" class="form-control" min="0" value="0.00" required>
+             <input type="number" name="precio" step="0.01" class="form-control" min="0" value="0.00" required autocomplete="off">
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 mt-3">
@@ -753,22 +753,22 @@
         <h5 class="modal-title fw-bold" id="catModalTitulo"><i class="bi bi-folder-plus me-2 text-info"></i>Nuevo Elemento de Catálogo</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCatálogos()"></button>
       </div>
-      <form action="adminAction" method="POST">
+      <form action="adminAction" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" id="catActionInput" value="crearEnfermedad">
-          <input type="hidden" name="id" id="catIdEnf">
-          <input type="hidden" name="idAle" id="catIdAle">
+          <input type="hidden" name="action" id="catActionInput" value="crearEnfermedad" autocomplete="off">
+          <input type="hidden" name="id" id="catIdEnf" autocomplete="off">
+          <input type="hidden" name="idAle" id="catIdAle" autocomplete="off">
 
           <div id="catEnfermedadCampos" class="mb-3">
              <label class="form-label small text-secondary">Nombre de la Patología</label>
-             <input type="text" name="nombreEnf" id="catNombreEnf" class="form-control">
+             <input type="text" name="nombreEnf" id="catNombreEnf" class="form-control" autocomplete="off">
              <label class="form-label small text-secondary mt-2">Descripción</label>
              <textarea name="descEnf" id="catDescEnf" class="form-control" rows="2"></textarea>
           </div>
 
           <div id="catAlergiaCampos" class="mb-3 d-none">
              <label class="form-label small text-secondary">Nombre del Alérgeno</label>
-             <input type="text" name="nombreAle" id="catNombreAle" class="form-control">
+             <input type="text" name="nombreAle" id="catNombreAle" class="form-control" autocomplete="off">
              <label class="form-label small text-secondary mt-2">Gravedad</label>
              <select name="gravedadAle" id="catGravAle" class="form-select">
                 <option value="Leve">Leve</option>
@@ -794,15 +794,15 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-calendar-plus me-2 text-info"></i>Agendar Cita (Admin)</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCitaAdmin()"></button>
       </div>
-      <form action="agendarCita" method="POST" onsubmit="return validarCitaAdmin(event)">
+      <form action="agendarCita" method="POST" onsubmit="return validarCitaAdmin(event)" autocomplete="off">
         <div class="modal-body pb-0">
-          <input type="hidden" name="action" value="crearCitaAdmin">
-          <input type="hidden" id="citaEsNuevoPac" name="esNuevoPaciente" value="false">
+          <input type="hidden" name="action" value="crearCitaAdmin" autocomplete="off">
+          <input type="hidden" id="citaEsNuevoPac" name="esNuevoPaciente" value="false" autocomplete="off">
 
           <div class="mb-3">
              <label class="form-label small text-secondary">C&eacute;dula del Paciente (10 d&iacute;gitos)</label>
-             <input type="hidden" id="citaPacienteIdHidden" name="pacienteId">
-             <input type="text" id="citaCedula" name="cedula" class="form-control" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCita(this.value);" required>
+             <input type="hidden" id="citaPacienteIdHidden" name="pacienteId" autocomplete="off">
+             <input type="text" id="citaCedula" name="cedula" class="form-control" placeholder="Ej: 0912345678" maxlength="10" pattern="[0-9]{10}" oninput="this.value = this.value.replace(/[^0-9]/g, ''); buscarPacienteCita(this.value);" required autocomplete="off">
              <div id="citaPacNombre" class="form-text text-info mt-1"></div>
           </div>
           
@@ -811,13 +811,13 @@
               <p class="small text-warning fw-bold mb-2"><i class="bi bi-exclamation-triangle me-1"></i>Paciente Nuevo. Complete datos:</p>
               <div class="row g-2">
                   <div class="col-md-6">
-                      <input type="text" id="citaNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos">
+                      <input type="text" id="citaNombres" name="nuevoNombres" class="form-control form-control-sm" placeholder="Nombres completos" autocomplete="off">
                   </div>
                   <div class="col-md-6">
-                      <input type="text" id="citaApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos">
+                      <input type="text" id="citaApellidos" name="nuevoApellidos" class="form-control form-control-sm" placeholder="Apellidos completos" autocomplete="off">
                   </div>
                   <div class="col-md-6">
-                      <input type="date" id="citaFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento">
+                      <input type="date" id="citaFechaNac" name="nuevoFechaNac" class="form-control form-control-sm" title="Fecha de Nacimiento" max="<%= java.time.LocalDate.now().toString() %>" autocomplete="off">
                   </div>
                   <div class="col-md-6">
                       <select id="citaSexo" name="nuevoSexo" class="form-select form-select-sm">
@@ -841,7 +841,7 @@
           </div>
           <div class="mb-3">
              <label class="form-label small text-secondary">Fecha y Hora</label>
-             <input type="datetime-local" id="citaFechaHora" name="fechaHora" class="form-control" required>
+             <input type="datetime-local" id="citaFechaHora" name="fechaHora" class="form-control" required autocomplete="off">
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 mt-3">
@@ -861,7 +861,7 @@
         <div>
           <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Mdica Integral</h4>
           <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
-          <small class="text-secondary" id="fichaInfo">Cdula: -- | Nacimiento: -- | Sexo: --</small>
+          <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
         </div>
         <button type="button" class="btn-close btn-close-white align-self-start" onclick="cerrarModalFicha()"></button>
       </div>
@@ -930,7 +930,7 @@
               <div class="text-end"><small class="text-secondary">Fecha:</small><br><span id="verFacFecha"></span></div>
           </div>
           <hr style="border-color: rgba(255,255,255,0.1);">
-          <h6 class="fw-bold text-secondary mb-3">Art�culos</h6>
+          <h6 class="fw-bold text-secondary mb-3">Artículos</h6>
           <div class="p-3 rounded mb-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);" id="verFacDetalles"></div>
           <div class="text-end fs-5">
               <span class="text-secondary">Total Pagado:</span> <strong class="text-success">$<span id="verFacTotal"></span></strong>

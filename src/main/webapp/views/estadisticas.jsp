@@ -42,7 +42,7 @@
 
                     <div class="stat-card p-4 rounded-4 h-100" style="background: var(--bg-panel); border: var(--glass-border); backdrop-filter: blur(15px);">
 
-                        <h5 class="fw-bold mb-3 text-info"><i class="bi bi-pie-chart-fill me-2"></i>Especialidades Demandadas</h5>
+                        <h5 class="fw-bold mb-3 text-info"><i class="bi bi-pie-chart-fill me-2"></i>Personal Médico por Especialidad</h5>
 
                         <div style="position: relative; height: 260px; width: 100%;">
 

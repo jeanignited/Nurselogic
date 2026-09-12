@@ -644,4 +644,30 @@ public class AdminService {
             em.close();
         }
     }
+
+    public ActionResult eliminarFactura(String idStr) {
+        if (idStr == null || idStr.trim().isEmpty()) return new ActionResult(false, "ID inválido.");
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            int id = Integer.parseInt(idStr);
+            Factura f = em.find(Factura.class, id);
+            if (f != null) {
+                em.remove(f);
+                tx.commit();
+                return new ActionResult(true, "Factura eliminada correctamente.");
+            } else {
+                tx.rollback();
+                return new ActionResult(false, "Factura no encontrada.");
+            }
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return new ActionResult(false, "Error al eliminar factura.");
+        } finally {
+            em.close();
+        }
+    }
+
 }

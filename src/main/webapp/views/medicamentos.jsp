@@ -49,7 +49,7 @@
 
                 <div class="input-group mb-4" style="max-width: 500px;">
 
-                    <input type="text" id="cedulaFarmaciaBuscador" class="form-control" placeholder="Ingrese Cédula del Paciente (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(event.key === 'Enter') buscarRecetaFarmacia()">
+                    <input type="text" id="cedulaFarmaciaBuscador" class="form-control" placeholder="Ingrese Cédula del Paciente (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeydown="if(event.key === 'Enter') buscarRecetaFarmacia()" autocomplete="off">
 
                     <button class="btn btn-success px-4" type="button" onclick="buscarRecetaFarmacia()"><i class="bi bi-search me-2"></i>Buscar Receta</button>
 
@@ -167,7 +167,7 @@
 
                 <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
 
-                <input type="text" id="buscadorMedicamentos" class="form-control ps-5 form-control-sm" style="border: var(--glass-border); border-radius: 20px;" placeholder="Buscar fármaco o estado de bodega..." onkeyup="filtrarMedicamentos()">
+                <input type="text" id="buscadorMedicamentos" class="form-control ps-5 form-control-sm" style="border: var(--glass-border); border-radius: 20px;" placeholder="Buscar fármaco o estado de bodega..." onkeyup="filtrarMedicamentos()" autocomplete="off">
 
             </div>
 
@@ -201,7 +201,7 @@
 
                                 if (medsCheck == null || medsCheck.isEmpty()) {
 
-                                    out.print("<tr><td colspan='" + (canManageStock || canSellStock ? "5" : "4") + "' class='text-center py-5 text-secondary'><i class='bi bi-box-seam me-2 fs-4 d-block mb-2'></i>Bodega vacÃ­a.</td></tr>");
+                                    out.print("<tr><td colspan='" + (canManageStock || canSellStock ? "5" : "4") + "' class='text-center py-5 text-secondary'><i class='bi bi-box-seam me-2 fs-4 d-block mb-2'></i>Bodega vacía.</td></tr>");
 
                                 } else {
 
@@ -225,7 +225,7 @@
 
                                         if (st <= 0) { badgeClass = "bg-danger text-white"; estadoText = "AGOTADO"; icon = "bi-x-octagon-fill"; }
 
-                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CRÍTICO"; icon = "bi-exclamation-triangle-fill"; }
+                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CR�TICO"; icon = "bi-exclamation-triangle-fill"; }
 
                                         else if (st <= 25) { badgeClass = "bg-warning text-dark"; estadoText = "Bajo"; icon = "bi-exclamation-circle"; }
 

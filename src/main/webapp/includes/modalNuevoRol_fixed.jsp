@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 <div class="modal fade" id="modalNuevoRol" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
@@ -7,9 +8,9 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevoRol()"></button>
             </div>
-            <form action="adminAction" method="POST">
+            <form action="adminAction" method="POST" autocomplete="off">
                 <div class="modal-body">
-                    <input type="hidden" name="action" value="crearRol">
+                    <input type="hidden" name="action" value="crearRol" autocomplete="off">
                     
                     <p class="text-secondary small mb-2 fw-semibold">Paso 1: Elige un Molde / Plantilla base</p>
                     <div class="row g-2 mb-4">
@@ -47,11 +48,11 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Nombre del Rol (Ej: Enfermera Jefe)</label>
-                            <input type="text" name="nombreRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required>
+                            <input type="text" name="nombreRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required autocomplete="off">
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Descripción breve</label>
-                            <input type="text" name="descRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required>
+                            <input type="text" name="descRol" class="form-control" style="background-color:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);" required autocomplete="off">
                         </div>
                     </div>
                     
@@ -60,29 +61,29 @@
                         <div class="row g-2">
                             <div class="col-md-6">
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Inventario">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Inventario" autocomplete="off">
                                     <label class="form-check-label text-light small">Inventario de Medicamentos</label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Catalogos">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Catalogos" autocomplete="off">
                                     <label class="form-check-label text-light small">Catálogos (Enfermedades)</label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Admision">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Admision" autocomplete="off">
                                     <label class="form-check-label text-light small">Admisión y Triage de Pacientes</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Citas">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Citas" autocomplete="off">
                                     <label class="form-check-label text-light small">Agendar y Control de Citas</label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Reportes">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Reportes" autocomplete="off">
                                     <label class="form-check-label text-light small">Ver Reportes y Estadísticas</label>
                                 </div>
                                 <div class="form-check form-switch mb-2">
-                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Usuarios">
+                                    <input class="form-check-input perm-checkbox" type="checkbox" name="permisos" value="Usuarios" autocomplete="off">
                                     <label class="form-check-label text-light small text-danger fw-bold">Gestión de Usuarios (Admin)</label>
                                 </div>
                             </div>

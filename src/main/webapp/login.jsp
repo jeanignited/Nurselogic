@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="es">
@@ -183,17 +184,17 @@
 
         <!-- PANEL LOGIN -->
         <div id="panel-login" class="panel <%= showLogin ? "" : "d-none" %>">
-            <form action="login" method="post">
+            <form action="login" method="post" autocomplete="off">
                 <div class="mb-3">
                     <label class="form-label small text-secondary fw-semibold">Correo Electrónico</label>
-                    <input type="email" name="usuario" class="form-control" placeholder="usuario@ejemplo.com" required>
+                    <input type="email" name="usuario" class="form-control" placeholder="usuario@ejemplo.com" required autocomplete="nope">
                 </div>
                 <div class="mb-4">
                     <div class="d-flex justify-content-between">
                         <label class="form-label small text-secondary fw-semibold">Contraseña</label>
                         <a href="#" class="small text-decoration-none" style="color: var(--accent);" onclick="mostrarPanel('panel-recover')">¿Olvidaste tu clave?</a>
                     </div>
-                    <input type="password" name="clave" class="form-control" placeholder="••••••••" required>
+                    <input type="password" name="clave" class="form-control" placeholder="••••••••" required autocomplete="new-password">
                 </div>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-box-arrow-in-right me-2"></i>AUTENTICAR</button>
             </form>
@@ -204,15 +205,15 @@
 
         <!-- PANEL REGISTRO -->
         <div id="panel-register" class="panel d-none">
-            <form action="registroUsuario" method="post">
+            <form action="registroUsuario" method="post" autocomplete="off">
                 <div class="row g-2 mb-3">
-                    <div class="col-6"><input type="text" name="nombres" class="form-control" placeholder="Nombres" required></div>
-                    <div class="col-6"><input type="text" name="apellidos" class="form-control" placeholder="Apellidos" required></div>
-                    <div class="col-12"><input type="email" name="correo" class="form-control" placeholder="Correo Electrónico" required></div>
-                    <div class="col-6"><input type="text" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required></div>
-                    <div class="col-6"><input type="text" name="telefono" class="form-control" placeholder="Teléfono (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required></div>
-                    <div class="col-12"><input type="text" name="direccion" class="form-control" placeholder="Dirección" required></div>
-                    <div class="col-12"><input type="password" name="clave" class="form-control" placeholder="Crear Contraseña" required></div>
+                    <div class="col-6"><input type="text" name="nombres" class="form-control" placeholder="Nombres" required autocomplete="off"></div>
+                    <div class="col-6"><input type="text" name="apellidos" class="form-control" placeholder="Apellidos" required autocomplete="off"></div>
+                    <div class="col-12"><input type="email" name="correo" class="form-control" placeholder="Correo Electrónico" required autocomplete="nope"></div>
+                    <div class="col-6"><input type="text" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off"></div>
+                    <div class="col-6"><input type="text" name="telefono" class="form-control" placeholder="Teléfono (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off"></div>
+                    <div class="col-12"><input type="text" name="direccion" class="form-control" placeholder="Dirección" required autocomplete="off"></div>
+                    <div class="col-12"><input type="password" name="clave" class="form-control" placeholder="Crear Contraseña" required autocomplete="new-password"></div>
                     <div class="col-12">
                         <select name="tipoUsuario" class="form-select" required>
                             <option value="" disabled selected>Seleccione el tipo de cuenta...</option>
@@ -231,11 +232,11 @@
         <!-- PANEL RECUPERAR CONTRASEÑA -->
         <div id="panel-recover" class="panel <%= showRecover ? "" : "d-none" %>">
             <p class="text-center text-secondary small mb-4">Ingresa tu correo registrado para enviarte un código de verificación y desbloquear tu cuenta.</p>
-            <form action="recuperar" method="post">
-                <input type="hidden" name="action" value="enviarCodigo">
+            <form action="recuperar" method="post" autocomplete="off">
+                <input type="hidden" name="action" value="enviarCodigo" autocomplete="off">
                 <div class="mb-4">
                     <label class="form-label small text-secondary fw-semibold">Correo Electrónico</label>
-                    <input type="email" name="correo" class="form-control" required>
+                    <input type="email" name="correo" class="form-control" required autocomplete="nope">
                 </div>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-envelope-paper me-2"></i>ENVIAR CÓDIGO</button>
             </form>
@@ -247,16 +248,16 @@
         <!-- PANEL RESETEAR CLAVE (Ingresar código) -->
         <div id="panel-reset" class="panel <%= showReset ? "" : "d-none" %>">
             <p class="text-center text-secondary small mb-4">Ingresa el código de 6 dígitos que enviamos a tu correo para crear una nueva contraseña.</p>
-            <form action="recuperar" method="post">
-                <input type="hidden" name="action" value="resetClave">
-                <input type="hidden" name="correo" value="<%= request.getAttribute("correoRecuperacion") != null ? request.getAttribute("correoRecuperacion") : "" %>">
+            <form action="recuperar" method="post" autocomplete="off">
+                <input type="hidden" name="action" value="resetClave" autocomplete="off">
+                <input type="hidden" name="correo" value="<%= request.getAttribute("correoRecuperacion") != null ? request.getAttribute("correoRecuperacion") : "" %>" autocomplete="off">
                 <div class="mb-3">
                     <label class="form-label small text-secondary fw-semibold">Código de Verificación</label>
-                    <input type="text" name="codigo" class="form-control text-center fs-4 letter-spacing-2" placeholder="000000" maxlength="6" pattern="\d{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+                    <input type="text" name="codigo" class="form-control text-center fs-4 letter-spacing-2" placeholder="000000" maxlength="6" pattern="\d{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off">
                 </div>
                 <div class="mb-4">
                     <label class="form-label small text-secondary fw-semibold">Nueva Contraseña</label>
-                    <input type="password" name="nuevaClave" class="form-control" placeholder="••••••••" required>
+                    <input type="password" name="nuevaClave" class="form-control" placeholder="••••••••" required autocomplete="new-password">
                 </div>
                 <button type="submit" class="btn btn-success"><i class="bi bi-key me-2"></i>ACTUALIZAR CONTRASEÑA</button>
             </form>

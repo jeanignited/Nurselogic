@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page import="java.io.BufferedReader" %>
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="java.net.HttpURLConnection" %>

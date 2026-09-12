@@ -30,14 +30,14 @@
                 <div class="row mb-3 g-2 align-items-center">
                     <div class="col-md-4 position-relative">
                         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-                        <input type="text" id="buscadorCitas" class="form-control ps-5 form-control-sm" placeholder="Buscar cédula, paciente o estado..." onkeyup="filtrarCitasAvanzado()">
+                        <input type="text" id="buscadorCitas" class="form-control ps-5 form-control-sm" placeholder="Buscar cédula, paciente o estado..." onkeyup="filtrarCitasAvanzado()" autocomplete="off">
                     </div>
                     <div class="col-md-3">
-                        <input type="date" id="filtroFechaCitas" class="form-control form-control-sm text-secondary" onchange="filtrarCitasAvanzado()">
+                        <input type="date" id="filtroFechaCitas" class="form-control form-control-sm text-secondary" onchange="filtrarCitasAvanzado()" autocomplete="off">
                     </div>
                     <div class="col-md-5">
                         <div class="form-check form-switch d-flex align-items-center gap-2 ms-2">
-                            <input class="form-check-input mt-0" type="checkbox" id="checkOcultarCerradas" checked onchange="filtrarCitasAvanzado()" style="cursor: pointer;">
+                            <input class="form-check-input mt-0" type="checkbox" id="checkOcultarCerradas" checked onchange="filtrarCitasAvanzado()" style="cursor: pointer;" autocomplete="off">
                             <label class="form-check-label text-secondary small mb-0" for="checkOcultarCerradas" style="cursor: pointer; padding-top: 2px;">Ocultar Historial (Atendidos / Cancelados)</label>
                         </div>
                     </div>
@@ -69,7 +69,7 @@
                                         out.print("<tr>");
                                         out.print("<td class='fw-bold text-info'><i class='bi bi-clock me-1'></i>" + c.get("hora") + "<br><small class='text-secondary fw-normal'>" + c.get("fecha") + "</small></td>");
                                         out.print("<td class='fw-semibold fs-6'>" + c.get("paciente") + "</td>");
-                                        out.print("<td><span class='badge badge-especialidad px-3 py-1'>" + c.get("especialidad") + "</span></td>");
+                                        out.print("<td><span class='badge text-body px-3 py-1'>" + c.get("especialidad") + "</span></td>");
                                         out.print("<td><span class='badge " + estBadge + " rounded-pill px-3 py-2 fs-6'><i class='bi " + estIcon + " me-1'></i>" + c.get("estado") + "</span></td>");
                                         if (isAdmin || permCitas) {
                                             out.print("<td>");

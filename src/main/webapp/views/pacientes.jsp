@@ -21,7 +21,7 @@
                 <div class="d-flex align-items-center gap-2" style="width: 100%; max-width: 450px;">
                     <div class="position-relative flex-grow-1">
                         <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-                        <input type="text" id="buscadorPacientes" class="form-control ps-5" placeholder="Buscar por cédula..." maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeyup="filtrarPacientes()">
+                        <input type="text" id="buscadorPacientes" class="form-control ps-5" placeholder="Buscar por cédula..." maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" onkeyup="filtrarPacientes()" autocomplete="off">
                     </div>
                     <a href="exportCsv?tipo=pacientes" class="btn btn-outline-success text-nowrap rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</a>
                 </div>

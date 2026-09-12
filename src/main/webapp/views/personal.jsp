@@ -61,7 +61,7 @@
 
                                                 String badge = "Admin".equalsIgnoreCase(r) ? "bg-success" : ("Pendiente".equalsIgnoreCase(r) ? "bg-warning text-dark" : "bg-primary");
 
-                                                String espBadge = (esp != null && !esp.equals("null") && !esp.isEmpty() && !esp.equals("Sin Especialidad")) ? "<span class='badge badge-especialidad px-3 py-1'><i class='bi bi-award me-1'></i> " + esp + "</span>" : "<span class='badge px-3 py-1' style='background: rgba(148, 163, 184, 0.2); border: 1px solid rgba(148, 163, 184, 0.4); color: #64748b;'>General</span>";
+                                                String espBadge = (esp != null && !esp.equals("null") && !esp.isEmpty() && !esp.equals("Sin Especialidad")) ? "<span class='badge text-body px-3 py-1'><i class='bi bi-award me-1'></i> " + esp + "</span>" : "<span class='badge px-3 py-1' style='background: rgba(148, 163, 184, 0.2); border: 1px solid rgba(148, 163, 184, 0.4); color: #64748b;'>General</span>";
 
 
 

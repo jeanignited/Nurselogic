@@ -814,6 +814,7 @@
 
 
 
+            sessionStorage.setItem('ultima_vista_nurselogic', vistaId);
             changingActiveNav(vistaId);
 
 
@@ -1567,33 +1568,34 @@
 
 
         function confirmarBorrado(tipo, id) {
-
-
-
-            if(confirm(' ¿Estas seguro de que deseas eliminar este ' + tipo + '? Esta acción no se puede deshacer.')) {
-
-
-
-                document.getElementById('adminActionType').value = 'eliminar';
-
-
-
-                document.getElementById('adminActionTarget').value = tipo;
-
-
-
-                document.getElementById('adminActionId').value = id;
-
-
-
-                document.getElementById('formAdminAction').submit();
-
-
-
-            }
-
-
-
+            Swal.fire({
+                title: '¿Eliminar ' + tipo + '?',
+                text: 'Esta acción no se puede deshacer.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, Eliminar',
+                cancelButtonText: 'Cancelar',
+                background: 'var(--bg-panel)',
+                color: 'var(--text-color)'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new URLSearchParams();
+                    formData.append("action", "eliminar");
+                    formData.append("target", tipo);
+                    formData.append("id", id);
+                    fetch('adminAction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: formData.toString()
+                    }).then(function(response) {
+                        Swal.fire({title: 'Eliminado', text: 'El registro ha sido eliminado exitosamente.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                            window.location.href = "dashboard";
+                        });
+                    });
+                }
+            });
         }
 
 
@@ -1758,61 +1760,43 @@
 
 
         function cambiarEstadoCita(idCita, nuevoEstado) {
+            let executeChange = () => {
+                var formData = new URLSearchParams();
+                formData.append("action", "actualizarEstadoCita");
+                formData.append("target", "cita");
+                formData.append("id", idCita);
+                formData.append("nuevoEstado", nuevoEstado);
+                fetch('adminAction', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
+                }).then(function(response) {
+                    Swal.fire({title: 'Actualizado', text: 'El estado de la cita ha sido actualizado a ' + nuevoEstado, icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                        window.location.href = "dashboard";
+                    });
+                });
+            };
 
-
-
-            document.getElementById('adminActionType').value = 'actualizarEstadoCita';
-
-
-
-            document.getElementById('adminActionTarget').value = 'cita';
-
-
-
-            document.getElementById('adminActionId').value = idCita;
-
-
-
-            let inputEst = document.getElementById('adminActionNuevoEst');
-
-
-
-            if (!inputEst) {
-
-
-
-                inputEst = document.createElement('input');
-
-
-
-                inputEst.type = 'hidden';
-
-
-
-                inputEst.name = 'nuevoEstado';
-
-
-
-                inputEst.id = 'adminActionNuevoEst';
-
-
-
-                document.getElementById('formAdminAction').appendChild(inputEst);
-
-
-
+            if (nuevoEstado === 'CANCELADO') {
+                Swal.fire({
+                    title: '¿Cancelar Cita?',
+                    text: '¿Estás seguro de que deseas cancelar esta cita? Esta acción la moverá al historial de cancelados.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, Cancelar',
+                    cancelButtonText: 'No, mantener',
+                    background: 'var(--bg-panel)',
+                    color: 'var(--text-color)'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        executeChange();
+                    }
+                });
+            } else {
+                executeChange();
             }
-
-
-
-            inputEst.value = nuevoEstado;
-
-
-
-            document.getElementById('formAdminAction').submit();
-
-
-
         }
 
 
@@ -2214,435 +2198,44 @@
 
 
         function borrarCatalogo(tipo, id, nombre) {
-
-
-
-            if (confirm('¿Estás seguro de eliminar "' + nombre + '" del catálogo clínico?')) {
-
-
-
-                let f = document.getElementById('formAdminAction');
-
-
-
-                document.getElementById('adminActionType').value = tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia';
-
-
-
-                let inputId = document.createElement('input');
-
-
-
-                inputId.type = 'hidden';
-
-
-
-                inputId.name = tipo === 'enfermedad' ? 'idEnf' : 'idAle';
-
-
-
-                inputId.value = id;
-
-
-
-                f.appendChild(inputId);
-
-
-
-                f.submit();
-
-
-
-            }
-
-
-
-        }
-
-
-
-
-
-
-
-        function cerrarModalCatalogos() {
-
-
-
-            var mEl = document.getElementById('modalCatalogos'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
-
-
-
-        }
-
-
-
-
-
-
-
-        let cedulaFichaActual = '';
-
-
-
-        function verFichaClinica(cedula) {
-
-
-
-            cedulaFichaActual = cedula;
-
-
-
-            fetch('registroPaciente?action=buscarCedula&cedula=' + encodeURIComponent(cedula))
-
-
-
-                .then(r => r.json())
-
-
-
-                .then(data => {
-
-
-
-                    if (data && data.encontrado) {
-
-
-
-                        document.getElementById('fichaNombre').innerText = data.nombres + ' ' + data.apellidos;
-
-
-
-                        document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || 'N/D') + ' | Sexo: ' + (data.sexo || 'N/D');
-
-
-
-                        
-
-
-
-                        let est = parseFloat(data.estatura || 0);
-
-
-
-                        let peso = parseFloat(data.peso || 0);
-
-
-
-                        let temp = parseFloat(data.temperatura || 0);
-
-
-
-                        let fc = parseInt(data.fc || 0);
-
-
-
-                        let sat = parseInt(data.sat || 0);
-
-
-
-                        let pres = data.presion || '120/80';
-
-
-
-
-
-
-
-                        document.getElementById('fichaEstPeso').innerText = (est > 0 ? est + ' m' : '-- m') + ' / ' + (peso > 0 ? peso + ' kg' : '-- kg');
-
-
-
-                        document.getElementById('fichaTemp').innerText = temp > 0 ? temp + ' °C' : '-- °C';
-
-
-
-                        document.getElementById('fichaPresion').innerText = pres;
-
-
-
-                        document.getElementById('fichaFcSat').innerText = (fc > 0 ? fc + ' lpm' : '--') + ' / ' + (sat > 0 ? sat + '%' : '--');
-                        document.getElementById('fichaFechaActualizacion').innerHTML = '<i class="bi bi-calendar3 me-1"></i> Fecha: ' + new Date().toLocaleDateString();
-
-
-
-                        document.getElementById('fichaEnfermedades').innerText = data.enfermedad || 'Ninguna preexistente';
-
-
-
-                        document.getElementById('fichaAlergias').innerText = data.alergias || 'Ninguna reportada';
-
-
-
-
-
-
-
-                        // calculo de Diagnostico Inteligente (Task 4)
-
-
-
-                        let alertasHTML = '';
-
-
-
-                        let IMC = (est > 0 && peso > 0) ? (peso / (est * est)).toFixed(1) : 0;
-
-
-
-                        
-
-
-
-                        if (IMC > 0) {
-
-
-
-                            let imcColor = 'bg-success';
-
-
-
-                            let imcTxt = 'Peso Normal / Saludable  ';
-
-
-
-                            if (IMC < 18.5) { imcColor = 'bg-info'; imcTxt = 'Bajo Peso (Riesgo de desnutrición)  '; }
-
-
-
-                            else if (IMC >= 25 && IMC < 30) { imcColor = 'bg-warning text-dark'; imcTxt = 'Sobrepeso (Recomendación dietética)  '; }
-
-
-
-                            else if (IMC >= 30) { imcColor = 'bg-danger'; imcTxt = 'Obesidad clínica (Atención médica)  '; }
-
-
-
-
-
-
-
-                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(255,255,255,0.05); border-left: 4px solid #38bdf8;">' +
-                                '<div><span class="text-secondary small d-block">Evaluación Antropométrica (IMC)</span><strong>' + IMC + ' kg/m² &nbsp;&nbsp;' + imcTxt + '</strong></div>' +
-                                '<span class="badge ' + imcColor + ' px-3 py-2">IMC ' + IMC + '</span>' +
-                            '</div>';
-                        }
-
-                        if (temp >= 38.0) {
-                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between alert-danger" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
-                                '<div><i class="bi bi-exclamation-triangle-fill text-danger me-2 fs-5"></i><strong class="text-theme">ALERTA TÉRMICA CRÍTICA: Fiebre Alta / Hipertermia (' + temp + ' °C)</strong><br><small class="text-theme">Protocolo de reducción térmica inmediata y monitoreo antitérmico sugerido.</small></div>' +
-                                '<span class="badge bg-danger pulse-animation px-3 py-2 fs-6">HIPERTERMIA</span>' +
-                            '</div>';
-                        } else if (temp >= 37.3 && temp < 38.0) {
-                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(245, 158, 11, 0.15); border-left: 4px solid #f59e0b;">' +
-                                '<div><strong class="text-warning"><i class="bi bi-exclamation-circle me-1"></i> Febrícula detectada (' + temp + ' °C)</strong><br><small class="text-secondary">Monitoreo periódico cada 2 horas.</small></div>' +
-                                '<span class="badge bg-warning text-dark px-3 py-2">Febrícula</span>' +
-                            '</div>';
-                        }
-
-                        if (sat > 0 && sat < 92) {
-                            alertasHTML += '<div class="p-3 mb-2 rounded d-flex align-items-center justify-content-between" style="background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444;">' +
-                                '<div><i class="bi bi-lungs-fill text-danger me-2 fs-5"></i><strong class="text-theme">HIPOXIA SEVERA DETECTADA (Sat O2: ' + sat + '%)</strong><br><small class="text-theme">Administración urgente de oxígeno suplementario requerida.</small></div>' +
-                                '<span class="badge bg-danger px-3 py-2 fs-6">HIPOXIA</span>' +
-                            '</div>';
-
-
-
-                        }
-
-
-
-
-
-
-
-                        if (alertasHTML === '') {
-
-
-
-                            alertasHTML = `<div class="p-3 mb-2 rounded text-center" style="background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981;">
-
-
-
-                                <i class="bi bi-check-circle-fill text-success me-2"></i><strong class="text-theme">Parámetros vitales dentro de rangos clinicos estables y normales.</strong>
-
-
-
-                            </div>`;
-
-
-
-                        }
-
-
-
-
-
-
-
-                        document.getElementById('fichaAlertasContenedor').innerHTML = alertasHTML;
-
-
-
-
-
-
-
-                        var mEl = document.getElementById('modalFichaClinica'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
-
-
-
-                    } else {
-
-
-
-                        alert('No se encontraron los datos del paciente.');
-
-
-
-                    }
-
-
-
-                })
-
-
-
-                .catch(err => console.error(err));
-
-
-
-        }
-
-
-
-
-
-
-
-        function cerrarModalFicha() {
-
-
-
-            var mEl = document.getElementById('modalFichaClinica'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
-
-
-
-        }
-
-
-
-
-
-
-
-        function editarPacienteDesdeFicha() {
-
-
-
-            cerrarModalFicha();
-
-
-
-            if(cedulaFichaActual) {
-
-
-
-                editarPaciente(cedulaFichaActual);
-
-
-
-            }
-
-
-
-        }
-
-
-
-
-
-
-
-        function buscarPacienteCita(cedula) {
-    const infoDiv = document.getElementById('citaPacNombre');
-    const quickReg = document.getElementById('citaQuickRegister');
-    const esNuevo = document.getElementById('citaEsNuevoPac');
-    const btn = document.getElementById('btnAgendarCita');
-    
-    if (cedula.length === 10) {
-        infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
-        btn.disabled = true;
-        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
-            .then(r => r.json())
-            .then(data => {
-                if (data.id) {
-                    infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + data.nombres + ' ' + data.apellidos;
-                    quickReg.classList.add('d-none');
-                    esNuevo.value = "false";
-                    document.getElementById('citaPacienteIdHidden').value = data.id;
-                    btn.disabled = false;
-                    document.getElementById('citaNombres').required = false;
-                    document.getElementById('citaApellidos').required = false;
-                    document.getElementById('citaFechaNac').required = false;
-                    document.getElementById('citaSexo').required = false;
-                } else {
-                    infoDiv.innerHTML = '';
-                    quickReg.classList.remove('d-none');
-                    esNuevo.value = "true";
-                    document.getElementById('citaPacienteIdHidden').value = '';
-                    btn.disabled = false;
-                    document.getElementById('citaNombres').required = true;
-                    document.getElementById('citaApellidos').required = true;
-                    document.getElementById('citaFechaNac').required = true;
-                    document.getElementById('citaSexo').required = true;
+            Swal.fire({
+                title: '¿Eliminar del catálogo?',
+                text: '¿Estás seguro de eliminar "' + nombre + '" del catálogo clínico?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, Eliminar',
+                cancelButtonText: 'Cancelar',
+                background: 'var(--bg-panel)',
+                color: 'var(--text-color)'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new URLSearchParams();
+                    formData.append("action", tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia');
+                    formData.append("id", id);
+                    fetch('adminAction', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: formData.toString()
+                    }).then(function(response) {
+                        Swal.fire({title: 'Eliminado', text: 'El elemento ha sido eliminado.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                            window.location.href = "dashboard";
+                        });
+                    });
                 }
-            })
-            .catch(e => {
-                infoDiv.innerHTML = '<span class="text-danger">Error de red</span>';
-                btn.disabled = false;
             });
-    } else {
-        infoDiv.innerHTML = '';
-        quickReg.classList.add('d-none');
-        esNuevo.value = "false";
-                    document.getElementById('citaPacienteIdHidden').value = data.id;
-        btn.disabled = false;
-    }
-}
-
-function validarCitaAdmin(e) {
-    const form = e.target;
-    const datetime = document.getElementById('citaFechaHora').value;
-    if (datetime) {
-        const parts = datetime.split('T');
-        if (parts.length === 2) {
-            let f = document.createElement('input');
-            f.type = 'hidden';
-            f.name = 'fecha';
-            f.value = parts[0];
-            form.appendChild(f);
-            
-            let h = document.createElement('input');
-            h.type = 'hidden';
-            h.name = 'hora';
-            h.value = parts[1];
-            form.appendChild(h);
         }
-    }
-    return true;
-}
 
-// Configurar min fecha
-function configurarMinFechaCita() {
-    const input = document.getElementById('citaFechaHora');
-    if (input) {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-        input.min = now.toISOString().slice(0, 16);
-    }
-}
-
+        function configurarMinFechaCita() {
+            let input = document.getElementById('citaFechaHora');
+            if (input) {
+                let now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                input.min = now.toISOString().slice(0, 16);
+            }
+        }
+        
         function abrirModalCitaAdmin() {
             configurarMinFechaCita();
 
@@ -2724,87 +2317,43 @@ function configurarMinFechaCita() {
 
 
 
-                int medGen = 0, ped = 0, card = 0, gin = 0, der = 0, otraEsp = 0;
-
-
+                
+                java.util.Map<String, Integer> espCounts = new java.util.HashMap<>();
+                List<Map<String, String>> usuariosGraf = (List<Map<String, String>>) request.getAttribute("listaUsuarios");
+                if (usuariosGraf != null) {
+                    for (Map<String, String> ug : usuariosGraf) {
+                        String rol = ug.get("rol");
+                        if ("Administrador".equalsIgnoreCase(rol) || "Paciente".equalsIgnoreCase(rol)) continue;
+                        
+                        String esp = ug.get("especialidad");
+                        if (esp == null || esp.trim().isEmpty() || "N/A".equalsIgnoreCase(esp) || "Ninguna".equalsIgnoreCase(esp)) {
+                            esp = rol; // Fallback al rol si no tiene especialidad
+                        }
+                        
+                        espCounts.put(esp, espCounts.getOrDefault(esp, 0) + 1);
+                    }
+                }
+                
+                StringBuilder espLabels = new StringBuilder();
+                StringBuilder espData = new StringBuilder();
+                for (java.util.Map.Entry<String, Integer> entry : espCounts.entrySet()) {
+                    if (espLabels.length() > 0) { espLabels.append(","); espData.append(","); }
+                    espLabels.append("'").append(entry.getKey().replace("'", "\'")).append("'");
+                    espData.append(entry.getValue());
+                }
 
                 List<Map<String, String>> citasGraf = (List<Map<String, String>>) request.getAttribute("listaCitas");
-
-
-
                 int citPend = 0, citAtend = 0, citSala = 0, citCanc = 0;
-
-
-
                 if (citasGraf != null) {
-
-
-
                     for (Map<String, String> cg : citasGraf) {
-
-
-
-                        String esp = cg.get("especialidad");
-
-
-
-                        if (esp != null) {
-
-
-
-                            if (esp.toLowerCase().contains("general")) medGen++;
-
-
-
-                            else if (esp.toLowerCase().contains("pedi")) ped++;
-
-
-
-                            else if (esp.toLowerCase().contains("cardio")) card++;
-
-
-
-                            else if (esp.toLowerCase().contains("gineco")) gin++;
-
-
-
-                            else if (esp.toLowerCase().contains("dermato")) der++;
-
-
-
-                            else otraEsp++;
-
-
-
-                        }
-
-
-
                         String est = cg.get("estado");
-
-
-
-                        if ("ATENDIDO".equalsIgnoreCase(est)) citAtend++;
-
-
-
-                        else if ("EN SALA".equalsIgnoreCase(est)) citSala++;
-
-
-
-                        else if ("CANCELADO".equalsIgnoreCase(est)) citCanc++;
-
-
-
+                        if (est != null && (est.toUpperCase().startsWith("ATEND") || est.toUpperCase().startsWith("DESPACH"))) citAtend++;
+                        else if (est != null && est.toUpperCase().startsWith("CANCEL")) citCanc++;
+                        else if ("SALA_ESPERA".equalsIgnoreCase(est) || "SALA ESPERA".equalsIgnoreCase(est) || "EN SALA".equalsIgnoreCase(est)) citSala++;
                         else citPend++;
-
-
-
                     }
-
-
-
                 }
+
 
 
 
@@ -2873,69 +2422,21 @@ function configurarMinFechaCita() {
 
 
             chartEspInst = new Chart(ctxEsp, {
-
-
-
                 type: 'pie',
-
-
-
                 data: {
-
-
-
-                    labels: ['Medicina General', 'Pediatría', 'Cardiología', 'Ginecología', 'Dermatología', 'Otras'],
-
-
-
+                    labels: [<%= espLabels.toString() %>],
                     datasets: [{
-
-
-
-                        data: [<%= medGen %>, <%= ped %>, <%= card %>, <%= gin %>, <%= der %>, <%= otraEsp %>],
-
-
-
-                        backgroundColor: ['#38bdf8', '#34d399', '#f87171', '#fbbf24', '#c084fc', '#94a3b8'],
-
-
-
+                        data: [<%= espData.toString() %>],
+                        backgroundColor: ['#38bdf8', '#34d399', '#f87171', '#fbbf24', '#c084fc', '#94a3b8', '#f472b6', '#2dd4bf', '#a3e635', '#a78bfa'],
                         borderWidth: 1,
-
-
-
                         borderColor: '#0f172a'
-
-
-
                     }]
-
-
-
                 },
-
-
-
                 options: {
-
-
-
                     responsive: true,
-
-
-
                     maintainAspectRatio: false,
-
-
-
                     plugins: { legend: { position: 'bottom', labels: { color: txtCol } } }
-
-
-
                 }
-
-
-
             });
 
 
@@ -3268,7 +2769,7 @@ function agregarMedicamentoReceta() {
     const maxStock = opt.getAttribute("data-stock") || 100;
     
     if (document.getElementById("med_row_" + idMed)) {
-        alert("Este medicamento ya está en la lista.");
+        Swal.fire({text: "Este medicamento ya está en la lista.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         return;
     }
     
@@ -3283,8 +2784,8 @@ function agregarMedicamentoReceta() {
     div.innerHTML = 
         '<div class="text-truncate me-2 fw-bold" style="max-width: 65%; color: #38bdf8 !important; font-size: 0.95rem;" title="' + nombre + '"><i class="bi bi-capsule me-2 text-warning fs-5"></i>' + nombre + '</div>' +
         '<div class="d-flex align-items-center">' +
-            '<input type="hidden" name="idMedicamento" value="' + idMed + '">' +
-            '<input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="' + maxStock + '" value="1" required>' +
+            '<input type="hidden" name="idMedicamento" value="' + idMed + '" autocomplete="off">' +
+            '<input type="number" name="cantidad" class="form-control form-control-sm text-center fw-bold" style="width: 70px;" min="1" max="' + maxStock + '" value="1" required autocomplete="off">' +
             '<button type="button" class="btn btn-sm btn-link text-danger ms-2 p-0" onclick="removerMedicamentoReceta(\'' + idMed + '\')"><i class="bi bi-x-circle-fill fs-5"></i></button>' +
         '</div>';
     
@@ -3295,7 +2796,7 @@ function agregarMedicamentoReceta() {
 window.validarFormularioReceta = function(event) {
     const rows = document.querySelectorAll('#listaMedicamentosReceta input[name="idMedicamento"]');
     if (rows.length === 0) {
-        alert("Debe seleccionar y añadir al menos un medicamento a la lista haciendo clic en '+ Añadir'.");
+        Swal.fire({text: "Debe seleccionar y añadir al menos un medicamento a la lista haciendo clic en '+ Añadir'.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         if (event) event.preventDefault();
         return false;
     }
@@ -3310,7 +2811,7 @@ window.buscarRecetaFarmacia = function() {
     var notFound = document.getElementById('recetaFarmaciaNotFound');
     
     if (!cedula || cedula.length < 10) {
-        alert("Por favor ingrese una cédula válida de 10 dígitos.");
+        Swal.fire({text: "Por favor ingrese una cédula válida de 10 dígitos.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         return;
     }
     
@@ -3345,7 +2846,7 @@ window.buscarRecetaFarmacia = function() {
             }
         })
         .catch(err => {
-            alert("Error al consultar receta en el servidor.");
+            Swal.fire({text: "Error al consultar receta en el servidor.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         });
 };
 
@@ -3363,10 +2864,10 @@ window.completarVentaReceta = function() {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     }).then(function(res) {
-        alert("¡Venta completada exitosamente! La receta ha sido despachada y la factura se encuentra registrada en el Reporte de Ventas.");
+        Swal.fire({text: "¡Venta completada exitosamente! La receta ha sido despachada y la factura se encuentra registrada en el Reporte de Ventas.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         window.location.href = "dashboard?vista=facturas";
     }).catch(function(err) {
-        alert("Error al finalizar la venta de la receta.");
+        Swal.fire({text: "Error al finalizar la venta de la receta.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
     });
 };
 
@@ -3542,7 +3043,7 @@ window.abrirModalVenta = function(id, nombre, precio, stock) {
             $("#modalFacturarVenta").modal('show');
         }
     } else {
-        alert("Atención: El HTML del modalFacturarVenta no está en esta página.");
+        Swal.fire({text: "Atención: El HTML del modalFacturarVenta no está en esta página.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
     }
 };
 
@@ -3573,7 +3074,7 @@ window.confirmarVenta = function() {
     var cantidad = document.getElementById("ventaCantidad") ? document.getElementById("ventaCantidad").value : "1";
 
     if (!idMed) {
-        alert("Por favor seleccione un medicamento válido.");
+        Swal.fire({text: "Por favor seleccione un medicamento válido.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         return;
     }
 
@@ -3588,11 +3089,11 @@ window.confirmarVenta = function() {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString()
     }).then(function(res) {
-        alert("¡Venta procesada exitosamente! Se generó la factura en el Reporte de Ventas.");
+        Swal.fire({text: "¡Venta procesada exitosamente! Se generó la factura en el Reporte de Ventas.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         window.cerrarModalVenta();
         window.location.href = "dashboard?vista=facturas";
     }).catch(function(err) {
-        alert("Error al procesar la factura de venta.");
+        Swal.fire({text: "Error al procesar la factura de venta.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
     });
 };
 
@@ -3631,6 +3132,50 @@ window.abrirModalInternar = function(id, numero, sala) {
         } catch (e) {
             $("#modalInternarCama").modal('show');
         }
+    }
+};
+
+window.buscarPacienteCita = function(cedula) {
+    const infoDiv = document.getElementById('citaPacNombre');
+    const quickReg = document.getElementById('citaQuickRegister');
+    const esNuevo = document.getElementById('citaEsNuevoPac');
+    const btn = document.getElementById('btnAgendarCita');
+    
+    if (cedula.length === 10) {
+        if (infoDiv) infoDiv.innerHTML = '<i class="spinner-border spinner-border-sm me-2"></i>Buscando...';
+        if (btn) btn.disabled = true;
+        fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if (data.id) {
+                    if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> Paciente: ' + data.nombres + ' ' + data.apellidos;
+                    if (quickReg) quickReg.classList.add('d-none');
+                    if (esNuevo) esNuevo.value = "false";
+                    var hiddenId = document.getElementById('citaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = data.id;
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('citaNombres'); if (nN) nN.required = false;
+                    var nA = document.getElementById('citaApellidos'); if (nA) nA.required = false;
+                } else {
+                    if (infoDiv) infoDiv.innerHTML = '';
+                    if (quickReg) quickReg.classList.remove('d-none');
+                    if (esNuevo) esNuevo.value = "true";
+                    var hiddenId = document.getElementById('citaPacienteIdHidden');
+                    if (hiddenId) hiddenId.value = "";
+                    if (btn) btn.disabled = false;
+                    
+                    var nN = document.getElementById('citaNombres'); if (nN) nN.required = true;
+                    var nA = document.getElementById('citaApellidos'); if (nA) nA.required = true;
+                }
+            }).catch(e => {
+                if (infoDiv) infoDiv.innerHTML = '<i class="bi bi-exclamation-triangle-fill text-danger me-1"></i> Error de conexión.';
+            });
+    } else {
+        if (infoDiv) infoDiv.innerHTML = '';
+        if (quickReg) quickReg.classList.add('d-none');
+        if (esNuevo) esNuevo.value = "false";
+        if (btn) btn.disabled = false;
     }
 };
 
@@ -3682,20 +3227,33 @@ window.buscarPacienteCama = function(cedula) {
 
 // CONEXIÓN INVISIBLE A BD PARA DAR DE ALTA
 window.confirmarAltaCama = function(id, numero, paciente) {
-    if (confirm("SISTEMA ACTIVO: ¿Confirmas dar de alta a " + paciente + " y liberar la " + numero + "?")) {
-        var formData = new URLSearchParams();
-        formData.append("action", "liberar");
-        formData.append("camaId", id);
-
-        fetch('camasAction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
-        }).then(function(response) {
-            alert("¡Alta confirmada! La " + numero + " ha sido liberada.");
-            window.location.href = "dashboard";
-        });
-    }
+    Swal.fire({
+        title: 'Dar de Alta',
+        text: "¿Confirmas dar de alta a " + paciente + " y liberar la " + numero + "?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, Dar de Alta',
+        cancelButtonText: 'Cancelar',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = new URLSearchParams();
+            formData.append("action", "liberar");
+            formData.append("camaId", id);
+            fetch('camasAction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            }).then(function(response) {
+                Swal.fire({title: 'Alta confirmada', text: 'La ' + numero + ' ha sido liberada.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                    window.location.href = "dashboard";
+                });
+            });
+        }
+    });
 };
 
 // CONEXIÓN PARA CAMBIAR ESTADO DE CAMA (Mantenimiento / Disponible)
@@ -3711,10 +3269,10 @@ window.cambiarEstadoCama = function(id, estado) {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: formData.toString()
     }).then(function(response) {
-        alert("El estado de la cama ha sido actualizado a " + est + ".");
+        Swal.fire({text: "El estado de la cama ha sido actualizado a " + est + ".", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
         window.location.href = "dashboard";
     }).catch(function(err) {
-        alert("Error al actualizar el estado de la cama.");
+        Swal.fire({text: "Error al actualizar el estado de la cama.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
     });
 };
 
@@ -3730,13 +3288,18 @@ document.addEventListener("DOMContentLoaded", function() {
         var vista = urlParams.get('vista');
         if (vista) {
             cambiarVista(vista);
+        } else {
+            var ultimaVista = sessionStorage.getItem('ultima_vista_nurselogic');
+            if (ultimaVista) {
+                cambiarVista(ultimaVista);
+            }
         }
     } catch(e) {}
 });
 
 // ABRIR MODAL PARA CREAR NUEVA CAMA
 window.crearNuevaCama = function() {
-    var modalEl = document.getElementById("modalAñadirCama") || document.getElementById("modalAnadirCama");
+    var modalEl = document.getElementById("modalAnadirCama") || document.getElementById("modalAnadirCama");
     if (modalEl) {
         try {
             var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
@@ -3749,22 +3312,33 @@ window.crearNuevaCama = function() {
 
 // CONEXIÓN PARA ELIMINAR CAMA
 window.confirmarBorradoCama = function(id, numero) {
-    if (confirm("¿Estás seguro de que deseas eliminar la " + (numero || "cama seleccionada") + "? Esta acción no se puede deshacer.")) {
-        var formData = new URLSearchParams();
-        formData.append("action", "eliminar");
-        formData.append("camaId", id);
-
-        fetch('camasAction', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData.toString()
-        }).then(function(response) {
-            alert("La cama ha sido eliminada del sistema.");
-            window.location.href = "dashboard";
-        }).catch(function(err) {
-            alert("Error al eliminar la cama.");
-        });
-    }
+    Swal.fire({
+        title: '¿Eliminar Cama?',
+        text: "¿Ests seguro de eliminar la " + (numero || "cama seleccionada") + "? Esta acción es irreversible.",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, Eliminar',
+        cancelButtonText: 'Cancelar',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = new URLSearchParams();
+            formData.append("action", "eliminar");
+            formData.append("camaId", id);
+            fetch('camasAction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            }).then(function(response) {
+                Swal.fire({title: 'Eliminada', text: 'La cama ha sido eliminada.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                    window.location.href = "dashboard";
+                });
+            });
+        }
+    });
 };
 
 function aplicarPlantillaRol(tipo, el) {
@@ -3823,4 +3397,69 @@ function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById
 
 
 
+
+
+<script>
+// Lgica de Tema Claro / Oscuro
+function setTheme(theme) {
+    localStorage.setItem('nurselogic_theme', theme);
+    applyTheme(theme);
+}
+
+function applyTheme(theme) {
+    let actualTheme = theme;
+    if (theme === 'auto') {
+        actualTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-bs-theme', actualTheme);
+
+    // Update icons if topbar has them
+    let iconNav = document.getElementById('themeIconDash');
+    let labelNav = document.getElementById('themeLabelDash');
+    let iconClass = 'bi-moon-stars-fill';
+    let labelText = 'Oscuro';
+    if (theme === 'light') { iconClass = 'bi-sun-fill text-warning'; labelText = 'Claro'; }
+    else if (theme === 'auto') { iconClass = 'bi-display text-info'; labelText = 'Auto'; }
+
+    if (iconNav) iconNav.className = 'bi ' + iconClass;
+    if (labelNav) labelNav.innerText = labelText;
+}
+
+// Inicializar estado del dropdown si es que existe
+document.addEventListener('DOMContentLoaded', function() {
+    var savedTheme = localStorage.getItem('nurselogic_theme') || 'dark';
+    applyTheme(savedTheme);
+});
+
+window.confirmarBorradoFactura = function(id) {
+    Swal.fire({
+        title: '¿Eliminar Factura?',
+        text: "Esta acción es irreversible.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, Eliminar',
+        cancelButtonText: 'Cancelar',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = new URLSearchParams();
+            formData.append("action", "eliminarFactura");
+            formData.append("id", id);
+            fetch('adminAction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            }).then(function(response) {
+                Swal.fire({title: 'Eliminada', text: 'La factura ha sido eliminada.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                    window.location.href = "dashboard";
+                });
+            });
+        }
+    });
+};
+
+</script>
 

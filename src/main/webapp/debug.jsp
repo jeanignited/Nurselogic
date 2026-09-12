@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page import="java.sql.*" %>
 <%@ page import="javax.naming.*" %>
 <%@ page import="javax.sql.*" %>

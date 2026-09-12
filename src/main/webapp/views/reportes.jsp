@@ -72,8 +72,8 @@
                             boolean esResuelto = "Resuelto".equalsIgnoreCase(estado);
             %>
             <div class="col-md-6 col-lg-4 ticket-card" data-nivel="<%= alerta.toLowerCase() %>">
-                <div class="card h-100 bg-dark text-white" style="border: var(--glass-border); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-                    <div class="card-header border-0 d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.05);">
+                <div class="card h-100 glass-card text-theme" style="overflow: hidden; border-radius: 12px;">
+                    <div class="card-header border-0 d-flex justify-content-between align-items-center" style="border-bottom: var(--glass-border) !important; background: transparent;">
                         <span class="badge <%= badgeClass %>"><i class="bi bi-exclamation-triangle-fill me-1"></i><%= alerta %></span>
                         <span class="small text-secondary"><i class="bi bi-clock me-1"></i><%= fecha.substring(0,16) %></span>
                     </div>
@@ -99,9 +99,9 @@
 
                     <div class="card-footer border-0 bg-transparent text-end">
                         <% if (!esResuelto) { %>
-                            <form action="soporteAction" method="POST">
-                                <input type="hidden" name="action" value="resolver">
-                                <input type="hidden" name="id" value="<%= id %>">
+                            <form action="soporteAction" method="POST" autocomplete="off">
+                                <input type="hidden" name="action" value="resolver" autocomplete="off">
+                                <input type="hidden" name="id" value="<%= id %>" autocomplete="off">
                                 <button type="submit" class="btn btn-sm btn-outline-success rounded-pill px-3"><i class="bi bi-check2-all me-1"></i>Marcar Resuelto</button>
                             </form>
                         <% } else { %>
@@ -129,11 +129,11 @@
                 <p class="text-secondary">Graba tu pantalla mostrando el error y describe el problema para que el equipo T.I. pueda ayudarte.</p>
             </div>
 
-            <form id="formSoporteTicket" onsubmit="enviarTicketSoporte(event)">
+            <form id="formSoporteTicket" onsubmit="enviarTicketSoporte(event)" autocomplete="off">
                 <div class="row g-3 mb-4 text-start">
                     <div class="col-md-8">
                         <label class="form-label small text-secondary fw-semibold">Título del Problema</label>
-                        <input type="text" id="ticketTitulo" class="form-control" placeholder="Ej: No puedo agendar una cita" required>
+                        <input type="text" id="ticketTitulo" class="form-control" placeholder="Ej: No puedo agendar una cita" required autocomplete="off">
                     </div>
                     <div class="col-md-4">
                         <label class="form-label small text-secondary fw-semibold">Nivel de Alerta</label>
@@ -217,7 +217,7 @@
                     
                 } catch (err) {
                     console.error("Error al compartir pantalla: ", err);
-                    alert("Debes permitir compartir pantalla para reportar el error.");
+                    Swal.fire({text: "Debes permitir compartir pantalla para reportar el error.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                 }
             }
 
@@ -234,7 +234,7 @@
                 e.preventDefault();
                 
                 if (!soporteBlob) {
-                    alert("Por favor, graba la pantalla mostrando el error antes de enviar.");
+                    Swal.fire({text: "Por favor, graba la pantalla mostrando el error antes de enviar.", icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                     return;
                 }
 
@@ -259,7 +259,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if(data.success) {
-                        alert(data.message);
+                        Swal.fire({text: data.message, icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                         // Resetear formulario
                         document.getElementById('formSoporteTicket').reset();
                         document.getElementById('soporteVideoPreview').classList.add('d-none');
@@ -272,14 +272,14 @@
                         btn.classList.remove('btn-success');
                         btn.disabled = true;
                     } else {
-                        alert("Error: " + data.message);
+                        Swal.fire({text: "Error: " + data.message, icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                         btn.disabled = false;
                         btn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Intentar de Nuevo';
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('Error de red al enviar el ticket.');
+                    Swal.fire({text: 'Error de red al enviar el ticket.', icon: 'info', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                     btn.disabled = false;
                     btn.innerHTML = '<i class="bi bi-send-fill me-2"></i>Intentar de Nuevo';
                 });

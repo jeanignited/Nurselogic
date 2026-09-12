@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page import="com.nurselogic.model.Paciente" %>
 <%@ page import="com.nurselogic.config.JPAUtil" %>
 <%@ page import="jakarta.persistence.EntityManager" %>

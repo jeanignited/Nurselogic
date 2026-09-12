@@ -1,3 +1,4 @@
+<%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page import="java.sql.*" %>
 <%
     out.println("<h2>Fixing MySQL Pacientes Table</h2>");

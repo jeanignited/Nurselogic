@@ -28,6 +28,7 @@ public class CitaServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         String fecha = request.getParameter("fecha");
         String hora = request.getParameter("hora");
         String idEspecialidad = request.getParameter("especialidad");
