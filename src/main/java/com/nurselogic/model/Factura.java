@@ -18,6 +18,9 @@ public class Factura {
     @Column(name = "cliente_nombre", nullable = false)
     private String clienteNombre;
 
+    @Column(name = "cliente_cedula", length = 20)
+    private String clienteCedula;
+
     @Column(name = "total", nullable = false)
     private double total;
 
@@ -32,6 +35,8 @@ public class Factura {
     public void setFechaEmision(LocalDateTime fechaEmision) { this.fechaEmision = fechaEmision; }
     public String getClienteNombre() { return clienteNombre; }
     public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }
+    public String getClienteCedula() { return clienteCedula; }
+    public void setClienteCedula(String clienteCedula) { this.clienteCedula = clienteCedula; }
     public double getTotal() { return total; }
     public void setTotal(double total) { this.total = total; }
     public List<FacturaDetalle> getDetalles() { return detalles; }

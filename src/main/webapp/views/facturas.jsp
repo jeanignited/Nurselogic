@@ -31,7 +31,7 @@
             <div class="position-relative">
                 <input type="date" id="filtroFechaFacturas" class="form-control text-secondary" onchange="filtrarFacturasAvanzado()" autocomplete="off">
             </div>
-            <a href="exportCsv?tipo=facturas" class="btn btn-outline-success text-nowrap rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</a>
+            <button type="button" class="btn btn-outline-success text-nowrap rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV" onclick="exportarFacturasFechas()"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</button>
         </div>
     </div>
     

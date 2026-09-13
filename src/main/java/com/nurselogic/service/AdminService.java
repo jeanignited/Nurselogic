@@ -670,4 +670,127 @@ public class AdminService {
         }
     }
 
+
+    
+    public String buscarClientePorCedula(String cedula) {
+        if (cedula == null || cedula.trim().length() < 10) return "{}";
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            // Check in Paciente first
+            List<com.nurselogic.model.Paciente> pacientes = em.createQuery("SELECT p FROM Paciente p WHERE p.cedula = :c", com.nurselogic.model.Paciente.class).setParameter("c", cedula).setMaxResults(1).getResultList();
+            if (!pacientes.isEmpty()) {
+                return "{\"nombre\": \"" + pacientes.get(0).getNombres() + " " + pacientes.get(0).getApellidos() + "\"}";
+            }
+            // Check past facturas
+            List<com.nurselogic.model.Factura> facturas = em.createQuery("SELECT f FROM Factura f WHERE f.clienteCedula = :c ORDER BY f.fechaEmision DESC", com.nurselogic.model.Factura.class).setParameter("c", cedula).setMaxResults(1).getResultList();
+            if (!facturas.isEmpty()) {
+                return "{\"nombre\": \"" + facturas.get(0).getClienteNombre() + "\"}";
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return "{}";
+    }
+
+    public ActionResult procesarVentaCarrito(String payload, String cliente, String cedula) {
+        if (payload == null || payload.trim().isEmpty()) return new ActionResult(false, "El carrito está vacío.");
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            Factura factura = new Factura();
+            factura.setClienteNombre(cliente != null && !cliente.trim().isEmpty() ? cliente : "Consumidor Final");
+            factura.setClienteCedula(cedula);
+            factura.setFechaEmision(java.time.LocalDateTime.now());
+            factura.setTotal(0.0);
+            em.persist(factura);
+
+            double totalGral = 0.0;
+            String[] items = payload.split(",");
+            for (String item : items) {
+                String[] parts = item.split(":");
+                if (parts.length != 2) continue;
+                int id = Integer.parseInt(parts[0]);
+                int cant = Integer.parseInt(parts[1]);
+
+                Medicamento med = em.find(Medicamento.class, id);
+                if (med != null && med.getStock() >= cant) {
+                    med.setStock(med.getStock() - cant);
+                    em.merge(med);
+
+                    FacturaDetalle det = new FacturaDetalle();
+                    det.setFactura(factura);
+                    det.setMedicamento(med);
+                    det.setCantidad(cant);
+                    det.setSubtotal(med.getPrecio() * cant);
+                    em.persist(det);
+                    totalGral += det.getSubtotal();
+                }
+            }
+            factura.setTotal(totalGral);
+            em.merge(factura);
+            tx.commit();
+            return new ActionResult(true, "Venta múltiples items facturada exitosamente a " + factura.getClienteNombre());
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return new ActionResult(false, "Error interno al procesar el carrito.");
+        } finally {
+            em.close();
+        }
+    }
+
+    public ActionResult ajustarStockMultiple(String payload) {
+        if (payload == null || payload.trim().isEmpty()) return new ActionResult(false, "No hay fármacos seleccionados.");
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            String[] items = payload.split(",");
+            for (String item : items) {
+                String[] parts = item.split(":");
+                if (parts.length != 2) continue;
+                int id = Integer.parseInt(parts[0]);
+                int cambio = Integer.parseInt(parts[1]);
+
+                Medicamento med = em.find(Medicamento.class, id);
+                if (med != null) {
+                    med.setStock(med.getStock() + cambio);
+                    em.merge(med);
+                }
+            }
+            tx.commit();
+            return new ActionResult(true, "Abastecimiento registrado correctamente.");
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return new ActionResult(false, "Error interno al abastecer bodega.");
+        } finally {
+            em.close();
+        }
+    }
+
+    public ActionResult eliminarMedicamento(String idStr) {
+        if (idStr == null || idStr.trim().isEmpty()) return new ActionResult(false, "ID inválido.");
+        EntityManager em = JPAUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            int id = Integer.parseInt(idStr);
+            Medicamento med = em.find(Medicamento.class, id);
+            if (med != null) {
+                em.remove(med);
+                tx.commit();
+                return new ActionResult(true, "Fármaco eliminado correctamente.");
+            } else {
+                tx.rollback();
+                return new ActionResult(false, "Fármaco no encontrado.");
+            }
+        } catch (Exception e) {
+            if (tx.isActive()) tx.rollback();
+            e.printStackTrace();
+            return new ActionResult(false, "Error al eliminar el fármaco (quizás está siendo usado en facturas).");
+        } finally {
+            em.close();
+        }
+    }
+
 }

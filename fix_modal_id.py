@@ -1,22 +1,22 @@
-import io, re
-
-with io.open('src/main/webapp/includes/modals.jsp', 'rb') as f:
+import io
+with io.open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
     c = f.read()
 
-# Replace any modalA...Cama with modalAnadirCama
-c = re.sub(b'id="modalA[^\x00-\x7F]*adirCama"', b'id="modalAnadirCama"', c)
+# Replace any modalCat... with modalCatalogos
+c = c.replace('id="modalCat\u00E1logos"', 'id="modalCatalogos"')
+c = c.replace('id="modalCat\u00F3logos"', 'id="modalCatalogos"') # in case of wrong accent
+c = c.replace('onclick="cerrarModalCat\u00E1logos()"', 'onclick="cerrarModalCatalogos()"')
+# Also standard characters if powershell swallowed accents
+c = c.replace('id="modalCatlogos"', 'id="modalCatalogos"')
+c = c.replace('onclick="cerrarModalCatlogos()"', 'onclick="cerrarModalCatalogos()"')
 
-with io.open('src/main/webapp/includes/modals.jsp', 'wb') as f:
+with io.open('src/main/webapp/includes/modals.jsp', 'w', encoding='utf-8') as f:
     f.write(c)
 
-with io.open('src/main/webapp/includes/scripts.jsp', 'rb') as f:
+with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8') as f:
     s = f.read()
-
-s = re.sub(b'getElementById\("modalA[^\x00-\x7F]*adirCama"\)', b'getElementById("modalAnadirCama")', s)
-# Fix reload issue
-s = s.replace(b'window.location.reload();', b'window.location.href = "dashboard";')
-
-with io.open('src/main/webapp/includes/scripts.jsp', 'wb') as f:
+s = s.replace('cerrarModalCat\u00E1logos', 'cerrarModalCatalogos')
+with io.open('src/main/webapp/includes/scripts.jsp', 'w', encoding='utf-8') as f:
     f.write(s)
 
-print("Fixed modal ID and reload issue")
+print("Fixed modalCatalogos ID")

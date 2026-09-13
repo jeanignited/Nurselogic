@@ -1,36 +1,23 @@
-import sys
-with open('lint.js', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
+import io
+import re
 
-stack = []
-for i, line in enumerate(lines):
-    # simple parsing ignoring strings for a moment
-    in_str = False
-    str_char = ''
-    escape = False
-    for j, char in enumerate(line):
-        if escape:
-            escape = False
-            continue
-        if char == '\\':
-            escape = True
-            continue
-        if in_str:
-            if char == str_char:
-                in_str = False
-            continue
-        if char in ('"', "'", ''):
-            in_str = True
-            str_char = char
-            continue
-        
-        if char == '(':
-            stack.append((i+1, j+1, line.strip()))
-        elif char == ')':
-            if stack:
-                stack.pop()
-            else:
-                pass
+with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8') as f:
+    text = f.read()
 
-for item in stack:
-    print(f"Unclosed parenthesis at line {item[0]}: {item[2]}")
+idx_start = text.find('<script>') + 8
+idx_end = text.find('</script>', idx_start)
+js = text[idx_start:idx_end]
+
+# remove comments and strings
+js = re.sub(r'//.*', '', js)
+js = re.sub(r'/\*.*?\*/', '', js, flags=re.DOTALL)
+js = re.sub(r'"[^"]*"', '""', js)
+js = re.sub(r"'[^']*'", "''", js)
+js = re.sub(r'`[^`]*`', '``', js)
+
+funcs = re.split(r'\n(?=function |window\.)', js)
+for f in funcs:
+    o = f.count('(')
+    c = f.count(')')
+    if o != c:
+        print(f"Mismatch in chunk: {f[:50]}... -> open {o}, close {c}")

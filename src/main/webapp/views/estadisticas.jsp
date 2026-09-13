@@ -44,7 +44,7 @@
 
                         <h5 class="fw-bold mb-3 text-info"><i class="bi bi-pie-chart-fill me-2"></i>Personal Médico por Especialidad</h5>
 
-                        <div style="position: relative; height: 260px; width: 100%;">
+                        <div style="position: relative; height: 350px; width: 100%;">
 
                             <canvas id="chartEspecialidades"></canvas>
 
@@ -60,7 +60,7 @@
 
                         <h5 class="fw-bold mb-3 text-success"><i class="bi bi-bar-chart-fill me-2"></i>Estado de Citas Médicas</h5>
 
-                        <div style="position: relative; height: 260px; width: 100%;">
+                        <div style="position: relative; height: 350px; width: 100%;">
 
                             <canvas id="chartCitasEstado"></canvas>
 
@@ -74,9 +74,9 @@
 
                     <div class="stat-card p-4 rounded-4 h-100" style="background: var(--bg-panel); border: var(--glass-border); backdrop-filter: blur(15px);">
 
-                        <h5 class="fw-bold mb-3 text-warning"><i class="bi bi-doughnut-chart me-2"></i>Disponibilidad de Bodega</h5>
+                        <h5 class="fw-bold mb-3 text-warning"><i class="bi bi-doughnut-chart me-2"></i>Disponibilidad de Bodega (Top 7)</h5>
 
-                        <div style="position: relative; height: 260px; width: 100%;">
+                        <div style="position: relative; height: 350px; width: 100%;">
 
                             <canvas id="chartStockMeds"></canvas>
 

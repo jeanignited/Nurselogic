@@ -19,9 +19,9 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="m-0 fw-bold" style="color: #38bdf8;"><i class="bi bi-calendar2-check me-2" style="color: #38bdf8;"></i>Agenda Médica y Citas Programadas</h4>
                     <div class="d-flex align-items-center gap-2 flex-wrap">
-                        <a href="exportCsv?tipo=citas" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</a>
+                        <button type="button" class="btn btn-outline-success text-nowrap rounded-pill px-3 py-2 shadow-sm" title="Descargar Excel/CSV" onclick="exportarCitasFechas()"><i class="bi bi-file-earmark-spreadsheet-fill me-1"></i>Exportar</button>
                         <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 py-2 shadow-sm" onclick="abrirModalReceta('')"><i class="bi bi-prescription2 me-1"></i>Prescribir Receta</button>
-                        <span class="badge bg-dark border border-secondary text-light px-3 py-2"><i class="bi bi-clock me-2"></i>Turnos y Citas del Día</span>
+                        <span class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-2 disabled" style="opacity: 1;"><i class="bi bi-clock me-2"></i>Turnos y Citas del Día</span>
                         <% if(isAdmin || permCitas) { %>
                         <button type="button" class="btn btn-sm px-3 py-2 fw-bold shadow-sm" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); color: #0b0f19; border:none; border-radius: 8px;" onclick="abrirModalCitaAdmin()"><i class="bi bi-calendar-plus me-1"></i> + Agendar Cita</button>
                         <% } %>

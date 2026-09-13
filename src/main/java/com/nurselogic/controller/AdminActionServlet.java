@@ -71,9 +71,23 @@ public class AdminActionServlet extends HttpServlet {
 
                 result = adminService.crearRol(nombreRol, descRol, permisosStr,
                         bHosp, bVentas, bDirPac, bCatClin, bSopTI, isAdmin);
+            } else if ("eliminarMedicamento".equals(action)) {
+                result = adminService.eliminarMedicamento(request.getParameter("id"));
+            } else if ("eliminarFactura".equals(action)) {
+                result = adminService.eliminarFactura(request.getParameter("id"));
             } else if ("crearMedicamento".equals(action)) {
                 result = adminService.crearMedicamento(request.getParameter("nombreMed"), request.getParameter("stockMed"), request.getParameter("precioMed"));
-            } else if ("facturarVenta".equals(action)) {
+                          } else if ("buscarClienteCedula".equals(action)) {
+                  String json = adminService.buscarClientePorCedula(request.getParameter("cedula"));
+                  response.setContentType("application/json");
+                  response.setCharacterEncoding("UTF-8");
+                  response.getWriter().write(json);
+                  return;
+              } else if ("facturarCarrito".equals(action)) {
+                  result = adminService.procesarVentaCarrito(request.getParameter("payload"), request.getParameter("cliente"), request.getParameter("cedula"));
+              } else if ("ajustarStockMultiple".equals(action)) {
+                  result = adminService.ajustarStockMultiple(request.getParameter("payload"));
+              } else if ("facturarVenta".equals(action)) {
                 result = adminService.procesarVentaFarmacia(request.getParameter("idMed"), request.getParameter("cantidad"), request.getParameter("cliente"));
             } else if ("ajustarStock".equals(action)) {
                 result = adminService.ajustarStock(request.getParameter("idMed"), request.getParameter("cambio"));

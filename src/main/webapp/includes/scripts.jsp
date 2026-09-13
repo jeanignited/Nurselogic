@@ -17,7 +17,29 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+window.exportarCitasFechas = function() {
+    let today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Exportar Agenda Médica',
+        html: '<div class="text-start">' +
+              '<label class="form-label small text-secondary">Desde:</label>' +
+              '<input type="date" id="expCitasDesde" class="form-control mb-3 bg-transparent text-white border-secondary" max="' + today + '">' +
+              '<label class="form-label small text-secondary">Hasta:</label>' +
+              '<input type="date" id="expCitasHasta" class="form-control bg-transparent text-white border-secondary" max="' + today + '">' +
+              '</div>',
+        background: 'var(--bg-panel)', color: 'var(--text-color)',
+        showCancelButton: true, confirmButtonText: 'Exportar', cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (res.isConfirmed) {
+            let d = document.getElementById('expCitasDesde').value;
+            let h = document.getElementById('expCitasHasta').value;
+            window.location.href = "exportCsv?tipo=citas&desde=" + d + "&hasta=" + h;
+        }
+    });
+};
+
+</script>
 <script>
 
 
@@ -1584,7 +1606,8 @@
                     var formData = new URLSearchParams();
                     formData.append("action", "eliminar");
                     formData.append("target", tipo);
-                    formData.append("id", id);
+                    formData.append("idEnf", id);
+                    formData.append("idAle", id);
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2213,7 +2236,8 @@
                 if (result.isConfirmed) {
                     var formData = new URLSearchParams();
                     formData.append("action", tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia');
-                    formData.append("id", id);
+                    formData.append("idEnf", id);
+                    formData.append("idAle", id);
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2369,39 +2393,28 @@
 
 
 
-                List<Map<String, String>> medsGraf = (List<Map<String, String>>) request.getAttribute("listaMedicamentos");
-
-
-
-                if (medsGraf != null) {
-
-
-
-                    int countM = 0;
-
-
-
-                    for (Map<String, String> mg : medsGraf) {
-
-
-
-                        if (countM++ >= 5) break;
-
-
-
-                        nomMeds.add("\"" + mg.get("nombre").replace("\"", "") + "\"");
-
-
-
-                        try { stkMeds.add(Integer.parseInt(mg.get("stock"))); } catch(Exception ex) { stkMeds.add(0); }
-
-
-
+                try {
+                    List<Map<String, String>> medsGraf = (List<Map<String, String>>) request.getAttribute("listaMedicamentos");
+                    if (medsGraf != null) {
+                        List<Map<String, String>> sortedMeds = new java.util.ArrayList<>(medsGraf);
+                        java.util.Collections.sort(sortedMeds, new java.util.Comparator<Map<String, String>>() {
+                            public int compare(Map<String, String> m1, Map<String, String> m2) {
+                                int s1 = 0, s2 = 0;
+                                try { s1 = Integer.parseInt(m1.get("stock")); } catch(Exception e) {}
+                                try { s2 = Integer.parseInt(m2.get("stock")); } catch(Exception e) {}
+                                return Integer.compare(s2, s1);
+                            }
+                        });
+                        int countM = 0;
+                        for (Map<String, String> mg : sortedMeds) {
+                            if (countM++ >= 7) break;
+                            String n = mg.get("nombre");
+                            if (n == null) n = "Desconocido";
+                            nomMeds.add("\"" + n.replace("\"", "") + "\"");
+                            try { stkMeds.add(Integer.parseInt(mg.get("stock"))); } catch(Exception ex) { stkMeds.add(0); }
+                        }
                     }
-
-
-
-                }
+                } catch(Exception bigEx) {}
 
 
 
@@ -2565,7 +2578,7 @@
 
 
 
-                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6'],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899'],
 
 
 
@@ -3388,7 +3401,6 @@ function aplicarPlantillaRol(tipo, el) {
 
         function abrirModalVerFactura(id, cliente, fecha, total, btnEl) { document.getElementById('verFacId').innerText = id; document.getElementById('verFacCliente').innerText = cliente; document.getElementById('verFacFecha').innerText = fecha; document.getElementById('verFacTotal').innerText = total; document.getElementById('verFacDetalles').innerHTML = btnEl.getAttribute('data-detalles'); var mEl = document.getElementById('modalVerFactura'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); var recetaEl = document.getElementById('verDiagReceta'); if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizacion)'; } var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
-</script>
 
 
 
@@ -3399,7 +3411,7 @@ function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById
 
 
 
-<script>
+
 // Lgica de Tema Claro / Oscuro
 function setTheme(theme) {
     localStorage.setItem('nurselogic_theme', theme);
@@ -3425,11 +3437,251 @@ function applyTheme(theme) {
     if (labelNav) labelNav.innerText = labelText;
 }
 
+
+// ==========================================
+// MOTOR DEL CARRITO DE VENTAS (FARMACIA)
+// ==========================================
+let carritoVentas = [];
+window.vaciarCarrito = function() {
+    carritoVentas = [];
+    document.getElementById('cartBubbleContainer').classList.add('d-none');
+    var mEl = document.getElementById('modalCarrito');
+    if (mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
+};
+
+
+window.agregarAlCarrito = function(id, nombre, precio, maxStock) {
+    let item = carritoVentas.find(i => i.id === id);
+    if (item) {
+        if (item.cantidad < maxStock) {
+            item.cantidad++;
+            Swal.fire({title: 'Actualizado', text: '+1 ' + nombre + ' al carrito.', icon: 'success', timer: 1000, showConfirmButton: false, background: 'var(--bg-panel)', color: 'var(--text-color)'});
+        } else {
+            Swal.fire({title: 'Stock Insuficiente', text: 'No hay más unidades disponibles en bodega.', icon: 'warning', background: 'var(--bg-panel)', color: 'var(--text-color)'});
+        }
+    } else {
+        carritoVentas.push({ id: id, nombre: nombre, precio: parseFloat(precio), cantidad: 1, maxStock: parseInt(maxStock) });
+        Swal.fire({title: 'Agregado', text: nombre + ' añadido al carrito.', icon: 'success', timer: 1000, showConfirmButton: false, background: 'var(--bg-panel)', color: 'var(--text-color)'});
+    }
+    actualizarBurbujaCarrito();
+};
+
+window.actualizarBurbujaCarrito = function() {
+    let btn = document.getElementById('cartBubbleContainer');
+    let badge = document.getElementById('cartBubbleBadge');
+    if (!btn || !badge) return;
+    
+    let totalItems = carritoVentas.reduce((acc, item) => acc + item.cantidad, 0);
+    if (totalItems > 0) {
+        btn.classList.remove('d-none');
+        badge.innerText = totalItems;
+    } else {
+        btn.classList.add('d-none');
+    }
+};
+
+window.abrirModalCarrito = function() {
+    renderizarTablaCarrito();
+    var mEl = document.getElementById('modalCarrito');
+    if (mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+};
+
+window.cambiarCantidadCarrito = function(id, delta) {
+    let item = carritoVentas.find(i => i.id === id);
+    if (item) {
+        let nuevaCant = item.cantidad + delta;
+        if (nuevaCant <= 0) {
+            carritoVentas = carritoVentas.filter(i => i.id !== id);
+        } else if (nuevaCant > item.maxStock) {
+            Swal.fire({title: 'Límite', text: 'Alcanzó el máximo en bodega.', icon: 'warning', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false});
+        } else {
+            item.cantidad = nuevaCant;
+        }
+        actualizarBurbujaCarrito();
+        renderizarTablaCarrito();
+    }
+};
+
+window.renderizarTablaCarrito = function() {
+    let tbody = document.getElementById('tablaCarritoCuerpo');
+    let totalSpan = document.getElementById('carritoTotalLabel');
+    if (!tbody || !totalSpan) return;
+    
+    tbody.innerHTML = '';
+    let total = 0;
+    
+    if (carritoVentas.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-secondary py-4">El carrito está vacío</td></tr>';
+        totalSpan.innerText = '0.00';
+        return;
+    }
+    
+    carritoVentas.forEach(item => {
+        let subt = item.precio * item.cantidad;
+        total += subt;
+        
+        let tr = document.createElement('tr');
+        tr.innerHTML = 
+            '<td class="align-middle fw-semibold">' + item.nombre + '</td>' +
+            '<td class="align-middle text-info">$' + item.precio.toFixed(2) + '</td>' +
+            '<td class="align-middle">' +
+                '<div class="input-group input-group-sm" style="width: 100px;">' +
+                    '<button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidadCarrito(' + item.id + ', -1)">-</button>' +
+                    '<input type="text" class="form-control text-center bg-transparent text-white border-secondary" value="' + item.cantidad + '" readonly>' +
+                    '<button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidadCarrito(' + item.id + ', 1)">+</button>' +
+                '</div>' +
+            '</td>' +
+            '<td class="align-middle text-success fw-bold">$' + subt.toFixed(2) + '</td>' +
+            '<td class="align-middle text-end">' +
+                '<button class="btn btn-sm btn-outline-danger" onclick="cambiarCantidadCarrito(' + item.id + ', -9999)"><i class="bi bi-trash"></i></button>' +
+            '</td>';
+        tbody.appendChild(tr);
+    });
+    
+    totalSpan.innerText = total.toFixed(2);
+};
+
+window.procesarCheckout = function() {
+    if (carritoVentas.length === 0) return;
+    
+    Swal.fire({
+        title: '¿Facturar Venta?',
+        text: 'Se procesarán ' + carritoVentas.length + ' medicamentos.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        confirmButtonText: 'Sí, Facturar',
+        cancelButtonText: 'Cancelar',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({title: 'Procesando...', text: 'Registrando ventas...', allowOutsideClick: false, background: 'var(--bg-panel)', color: 'var(--text-color)', didOpen: () => { Swal.showLoading(); }});
+            
+                        let payload = carritoVentas.map(item => item.id + ":" + item.cantidad).join(",");
+            let clienteNombre = document.getElementById("ventaClienteCarrito") ? document.getElementById("ventaClienteCarrito").value.trim() : "Consumidor Final";
+            let clienteCedula = document.getElementById("ventaCedulaCarrito") ? document.getElementById("ventaCedulaCarrito").value.trim() : "";
+            
+            var formData = new URLSearchParams();
+            formData.append("action", "facturarCarrito");
+            formData.append("payload", payload);
+            formData.append("cliente", clienteNombre);
+            formData.append("cedula", clienteCedula);
+            
+            fetch("adminAction", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData.toString()
+            }).then(() => {
+                Swal.fire({title: 'Venta procesada exitosamente!', text: 'Se generó la factura correspondiente.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                    carritoVentas = [];
+                    window.location.href = "dashboard";
+                });
+            }).catch(e => {
+                Swal.fire('Error', 'Hubo un problema al procesar la venta.', 'error');
+            });
+        }
+    });
+};
+
+
+window.verFichaClinica = function(cedula) {
+    if (!cedula) return;
+    Swal.fire({title: 'Cargando Ficha...', text: 'Obteniendo información del paciente...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+    fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+        .then(r => r.json())
+        .then(data => {
+            Swal.close();
+            if (data.id) {
+                document.getElementById('fichaNombre').innerText = data.nombres + ' ' + data.apellidos;
+                document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || '--') + ' | Sexo: ' + (data.sexo || '--');
+                document.getElementById('fichaFechaActualizacion').innerHTML = '<i class="bi bi-calendar3 me-1"></i> Fecha: ' + new Date().toLocaleDateString();
+                document.getElementById('fichaEstPeso').innerText = (data.estatura && data.estatura !== '0.0' ? data.estatura : '--') + ' cm / ' + (data.peso && data.peso !== '0.0' ? data.peso : '--') + ' kg';
+                document.getElementById('fichaTemp').innerText = (data.temperatura && data.temperatura !== '0.0' ? data.temperatura : '--') + ' °C';
+                document.getElementById('fichaPresion').innerText = (data.presion || '--');
+                document.getElementById('fichaFcSat').innerText = (data.fc && data.fc !== 0 ? data.fc : '--') + ' lpm / ' + (data.sat && data.sat !== 0 ? data.sat : '--') + ' %';
+                document.getElementById('fichaEnfermedades').innerText = data.enfermedad && data.enfermedad !== 'null' && data.enfermedad !== 'Ninguna' ? data.enfermedad : 'Ninguna registrada';
+                document.getElementById('fichaAlergias').innerText = data.alergias && data.alergias !== 'null' && data.alergias !== 'Ninguna' ? data.alergias : 'Ninguna registrada';
+                
+                let container = document.getElementById('fichaAlertasContenedor');
+                container.innerHTML = '';
+                if (data.alergias && data.alergias.trim() !== '') {
+                    container.innerHTML += '<div class="alert alert-danger py-2 mb-2 border-0" style="background: rgba(220,38,38,0.1);"><i class="bi bi-exclamation-octagon-fill me-2"></i>Paciente reporta alergias. Riesgo de shock anafiláctico.</div>';
+                }
+                if (data.presion) {
+                    let parts = data.presion.split('/');
+                    if (parts.length === 2 && parseInt(parts[0]) >= 140) {
+                        container.innerHTML += '<div class="alert alert-warning py-2 mb-2 border-0" style="background: rgba(245,158,11,0.1);"><i class="bi bi-heart-pulse-fill me-2"></i>Hipertensión detectada. Monitorear signos vitales.</div>';
+                    }
+                }
+                if (container.innerHTML === '') {
+                    container.innerHTML = '<div class="alert alert-success py-2 mb-0 border-0" style="background: rgba(16,185,129,0.1);"><i class="bi bi-check-circle-fill me-2"></i>Parámetros estables. Ninguna alerta clínica urgente.</div>';
+                }
+                
+                var mEl = document.getElementById('modalFichaClinica');
+                if (mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+            } else {
+                Swal.fire('Error', 'Paciente no encontrado.', 'error');
+            }
+        })
+        .catch(e => {
+            Swal.fire('Error', 'Problema de conexión al cargar la ficha.', 'error');
+        });
+};
+
+
+window.editarPacienteDesdeFicha = function() {
+    let cedulaText = document.getElementById('fichaInfo').innerText;
+    let match = cedulaText.match(/Cédula: (\d+)/);
+    if (match && match[1]) {
+        cerrarModalFicha();
+        editarPaciente(match[1]);
+    } else {
+        Swal.fire('Error', 'No se pudo obtener la cédula del paciente.', 'error');
+    }
+};
+
+window.cerrarModalFicha = function() {
+    var mEl = document.getElementById('modalFichaClinica');
+    if (mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }
+};
+
 // Inicializar estado del dropdown si es que existe
 document.addEventListener('DOMContentLoaded', function() {
     var savedTheme = localStorage.getItem('nurselogic_theme') || 'dark';
     applyTheme(savedTheme);
 });
+
+
+window.borrarMedicamento = function(id) {
+    Swal.fire({
+        title: 'Eliminar F\u00E1rmaco?',
+        text: "Esta acci\u00F3n es irreversible.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'S\u00ED, Eliminar',
+        cancelButtonText: 'Cancelar',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            var formData = new URLSearchParams();
+            formData.append("action", "eliminarMedicamento");
+            formData.append("id", id);
+            fetch('adminAction', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData.toString()
+            }).then(function(response) {
+                Swal.fire({title: 'Eliminado', text: 'El f\u00E1rmaco ha sido eliminado.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
+                    window.location.href = "dashboard?vista=medicamentos";
+                });
+            });
+        }
+    });
+};
 
 window.confirmarBorradoFactura = function(id) {
     Swal.fire({
@@ -3447,7 +3699,8 @@ window.confirmarBorradoFactura = function(id) {
         if (result.isConfirmed) {
             var formData = new URLSearchParams();
             formData.append("action", "eliminarFactura");
-            formData.append("id", id);
+            formData.append("idEnf", id);
+                    formData.append("idAle", id);
             fetch('adminAction', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -3461,5 +3714,91 @@ window.confirmarBorradoFactura = function(id) {
     });
 };
 
-</script>
 
+window.cerrarModalCatalogos = function() {
+    var mEl = document.getElementById('modalCatalogos');
+    if(mEl) { 
+        var m = bootstrap.Modal.getInstance(mEl); 
+        if(m) m.hide(); 
+    }
+};
+
+
+
+window.buscarClienteCarrito = function(cedula) {
+    if (cedula.length === 10) {
+        fetch("adminAction?action=buscarClienteCedula&cedula=" + cedula)
+            .then(r => r.json())
+            .then(data => {
+                let input = document.getElementById("ventaClienteCarrito");
+                if (data.nombre) {
+                    input.value = data.nombre;
+                    input.classList.add("fw-bold", "text-info");
+                }
+            }).catch(e => console.log(e));
+    }
+};
+
+window.exportarFacturasFechas = function() {
+    let today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Exportar Reporte de Ventas',
+        html: '<div class="text-start">' +
+              '<label class="form-label small text-secondary">Desde:</label>' +
+              '<input type="date" id="expDesde" class="form-control mb-3 bg-transparent text-white border-secondary" max="' + today + '">' +
+              '<label class="form-label small text-secondary">Hasta:</label>' +
+              '<input type="date" id="expHasta" class="form-control bg-transparent text-white border-secondary" max="' + today + '">' +
+              '</div>',
+        background: 'var(--bg-panel)', color: 'var(--text-color)',
+        showCancelButton: true, confirmButtonText: 'Exportar', cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (res.isConfirmed) {
+            let d = document.getElementById('expDesde').value;
+            let h = document.getElementById('expHasta').value;
+            window.location.href = "exportCsv?tipo=facturas&desde=" + d + "&hasta=" + h;
+        }
+    });
+};
+
+window.imprimirFactura = function() {
+    var id = document.getElementById('verFacId').innerText;
+    var cliente = document.getElementById('verFacCliente').innerText;
+    var fecha = document.getElementById('verFacFecha').innerText;
+    var detalles = document.getElementById('verFacDetalles').innerHTML;
+    var total = document.getElementById('verFacTotal').innerText;
+    
+    var w = window.open('', '', 'width=800,height=600');
+    w.document.write('<html><head><title>Factura ' + id + '</title>');
+    w.document.write('<style>body{font-family:sans-serif;padding:20px;} .factura-box{border:1px solid #ccc;padding:20px;} .header{text-align:center;} .tot{text-align:right;font-size:1.2em;font-weight:bold;}</style>');
+    w.document.write('</head><body><div class="factura-box"><div class="header"><h2>Farmacia NurseLogic</h2><h3>Factura ' + id + '</h3></div>');
+    w.document.write('<p><strong>Cliente:</strong> ' + cliente + '</p>');
+    w.document.write('<p><strong>Fecha:</strong> ' + fecha + '</p><hr>');
+    w.document.write('<div>' + detalles + '</div><hr>');
+    w.document.write('<p class="tot">TOTAL: $' + total + '</p>');
+    w.document.write('</div><script>window.print();<\/script></body></html>');
+    w.document.close();
+};
+
+
+window.exportarCitasFechas = function() {
+    let today = new Date().toISOString().split('T')[0];
+    Swal.fire({
+        title: 'Exportar Agenda Médica',
+        html: '<div class="text-start">' +
+              '<label class="form-label small text-secondary">Desde:</label>' +
+              '<input type="date" id="expCitasDesde" class="form-control mb-3 bg-transparent text-white border-secondary" max="' + today + '">' +
+              '<label class="form-label small text-secondary">Hasta:</label>' +
+              '<input type="date" id="expCitasHasta" class="form-control bg-transparent text-white border-secondary" max="' + today + '">' +
+              '</div>',
+        background: 'var(--bg-panel)', color: 'var(--text-color)',
+        showCancelButton: true, confirmButtonText: 'Exportar', cancelButtonText: 'Cancelar'
+    }).then(res => {
+        if (res.isConfirmed) {
+            let d = document.getElementById('expCitasDesde').value;
+            let h = document.getElementById('expCitasHasta').value;
+            window.location.href = "exportCsv?tipo=citas&desde=" + d + "&hasta=" + h;
+        }
+    });
+};
+
+</script>

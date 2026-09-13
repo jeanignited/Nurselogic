@@ -163,12 +163,16 @@
 
 
 
-            <div class="mb-3 position-relative" style="max-width: 400px;">
-
-                <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
-
-                <input type="text" id="buscadorMedicamentos" class="form-control ps-5 form-control-sm" style="border: var(--glass-border); border-radius: 20px;" placeholder="Buscar fármaco o estado de bodega..." onkeyup="filtrarMedicamentos()" autocomplete="off">
-
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="position-relative flex-grow-1" style="max-width: 400px;">
+                    <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary"></i>
+                    <input type="text" id="buscadorMedicamentos" class="form-control ps-5 form-control-sm" style="border: var(--glass-border); border-radius: 20px;" placeholder="Buscar fármaco o estado de bodega..." onkeyup="filtrarMedicamentos()" autocomplete="off">
+                </div>
+                <% if(canManageStock) { %>
+                <button type="button" class="btn btn-sm px-4 py-2 fw-bold shadow-sm text-dark" style="background: linear-gradient(135deg, #a3e635, #84cc16); border:none; border-radius: 20px;" onclick="abrirModalAnadirStockMultiple()">
+                    <i class="bi bi-box-arrow-in-down me-2"></i>Abastecimiento Múltiple
+                </button>
+                <% } %>
             </div>
 
             <div class="form-section p-0">
@@ -189,7 +193,7 @@
 
                                 <th>Estado de Bodega</th>
 
-                                <% if(canManageStock || canSellStock) { out.print("<th>Ajuste Rápido de Stock</th>"); } %>
+                                <% if(canSellStock) { out.print("<th class='text-center'><i class='bi bi-cart-plus me-1'></i></th>"); } %>
 
                             </tr>
 
@@ -225,13 +229,13 @@
 
                                         if (st <= 0) { badgeClass = "bg-danger text-white"; estadoText = "AGOTADO"; icon = "bi-x-octagon-fill"; }
 
-                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CR�TICO"; icon = "bi-exclamation-triangle-fill"; }
+                                        else if (st < 10) { badgeClass = "bg-danger"; estadoText = "CRTICO"; icon = "bi-exclamation-triangle-fill"; }
 
                                         else if (st <= 25) { badgeClass = "bg-warning text-dark"; estadoText = "Bajo"; icon = "bi-exclamation-circle"; }
 
 
 
-                                        out.print("<tr>");
+                                        out.print("<tr data-id='" + m.get("id") + "' data-nombre='" + m.get("nombre").replace("'", "\\'") + "'>");
 
                                         out.print("<td class='fw-bold fs-6'>" + m.get("nombre") + "</td>");
 
@@ -241,28 +245,19 @@
 
                                         out.print("<td><span class='text-theme'><i class='bi " + icon + " me-1'></i> " + estadoText + "</span></td>");
 
-                                        if (canManageStock || canSellStock) {
-
-                                            out.print("<td>");
-
-                                            out.print("<div class='btn-group' role='group'>");
-
-                                            if (canSellStock) {
-
-                                                out.print("<button class='btn btn-sm btn-outline-danger' title='Disminuir 1 ud (Venta)' onclick=\"abrirModalVenta(" + m.get("id") + ", '" + m.get("nombre") + "', " + m.get("precio") + ", " + m.get("stock") + ")\" " + (st <= 0 ? "disabled" : "") + "><i class='bi bi-dash-lg'></i> Facturar Venta</button>");
-
+                                        if (canSellStock) {
+                                            out.print("<td class='text-center'>");
+                                            if (st > 0) {
+                                                out.print("<div class='d-flex justify-content-center gap-2'>");
+out.print("<button class='btn btn-sm btn-outline-info rounded-circle px-2' title='Añadir al carrito' onclick=\"agregarAlCarrito(" + m.get("id") + ", '" + m.get("nombre").replace("'", "\\'") + "', " + m.get("precio") + ", " + m.get("stock") + ")\"><i class='bi bi-cart-plus'></i></button>");
+if(isAdmin) {
+    out.print("<button class='btn btn-sm btn-outline-danger rounded-circle px-2' title='Eliminar Fármaco' onclick=\"borrarMedicamento(" + m.get("id") + ")\"><i class='bi bi-trash'></i></button>");
+}
+out.print("</div>");
+                                            } else {
+                                                out.print("<button class='btn btn-sm btn-outline-secondary rounded-circle px-2' disabled><i class='bi bi-cart-x'></i></button>");
                                             }
-
-                                            if (canManageStock) {
-
-                                                out.print("<button class='btn btn-sm btn-outline-success' title='Ingreso +10 uds' onclick=\"ajustarStockMed(" + m.get("id") + ", 10)\"><i class='bi bi-plus-lg'></i> +10</button>");
-
-                                            }
-
-                                            out.print("</div>");
-
                                             out.print("</td>");
-
                                         }
 
                                         out.print("</tr>");

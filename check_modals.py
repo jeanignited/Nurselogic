@@ -1,8 +1,8 @@
-﻿import os
+import io
+import re
 
-with open('full_index.jsp', 'r', encoding='utf-16') as f:
-    lines = f.readlines()
+with io.open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
+    text = f.read()
 
-for line in lines:
-    if 'Modal' in line:
-        print(line.strip())
+idx_enf = text.find('crearEnfermedad')
+print(text[idx_enf-200:idx_enf+500])
