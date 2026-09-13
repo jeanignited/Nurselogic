@@ -53,9 +53,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         :root { --bg-main:#0f172a; --bg-panel:rgba(30,41,59,0.7); --text-color:#f8fafc; --accent:#3b82f6; --sidebar-w:260px; --glass-border:1px solid rgba(255,255,255,0.1); }
-        html[data-bs-theme="light"] { --bg-main:#f1f5f9; --bg-panel:rgba(255,255,255,0.9); --text-color:#0f172a; --glass-border:1px solid rgba(0,0,0,0.1); }
+        html[data-bs-theme="light"] { --bg-main:#ebf0f6; --bg-panel:rgba(255,255,255,0.55); --text-color:#1e293b; --glass-border:1px solid rgba(0,0,0,0.08); }
+        html[data-bs-theme="light"] .sidebar { background: linear-gradient(180deg, rgba(235,240,246,0.9) 0%, rgba(226,232,240,0.9) 100%); box-shadow: 2px 0 10px rgba(0,0,0,0.02); }
         body { background-color:var(--bg-main); color:var(--text-color); font-family:'Segoe UI',system-ui,sans-serif; overflow-x:hidden; transition:background-color 0.3s,color 0.3s; }
-        .sidebar { width:var(--sidebar-w); height:100vh; background:var(--bg-panel); backdrop-filter:blur(12px); position:fixed; transition:0.3s; border-right:var(--glass-border); z-index:1000; box-shadow:4px 0 15px rgba(0,0,0,0.1); overflow-y:auto; }
+        .sidebar { width:var(--sidebar-w); height:100vh; background:var(--bg-panel); backdrop-filter:blur(12px); position:fixed; transition:0.3s; border-right:var(--glass-border); z-index:1000; box-shadow:4px 0 15px rgba(0,0,0,0.1); overflow:hidden; display:flex; flex-direction:column; }
         .sidebar.contraida { width:75px; }
         .sidebar.contraida .texto-nav, .sidebar.contraida .brand-title { display:none; }
         .nav-link { color:#94a3b8; padding:12px 25px; margin:4px 12px; border-radius:8px; transition:0.2s; cursor:pointer; display:flex; align-items:center; }
@@ -64,9 +65,9 @@
         html[data-bs-theme="light"] .nav-link:hover, html[data-bs-theme="light"] .nav-link.active { color:var(--accent); background:rgba(59,130,246,0.1); }
         .nav-link i { font-size:1.2rem; margin-right:15px; }
         .sidebar.contraida .nav-link i { margin-right:0; margin:0 auto; }
-        .main-content { margin-left:var(--sidebar-w); transition:0.3s; padding:30px; }
+        .main-content { margin-left:var(--sidebar-w); transition:0.3s; padding:30px; position: relative; z-index: 1; }
         .main-content.expandida { margin-left:75px; }
-        .top-bar { display:flex; justify-content:space-between; margin-bottom:30px; border-bottom:var(--glass-border); padding-bottom:15px; }
+        .top-bar { display:flex; justify-content:space-between; margin-bottom:30px; border-bottom:var(--glass-border); padding: 15px 30px; margin: -30px -30px 30px -30px; background: var(--bg-main); position: sticky; top: 0; z-index: 100; transition: background-color 0.3s; }
         .btn-menu { background:none; border:none; color:var(--text-color); font-size:1.5rem; cursor:pointer; transition:0.3s; }
         .btn-menu:hover { color:var(--accent); }
         .dropdown-menu { background:var(--bg-panel); backdrop-filter:blur(15px); border:var(--glass-border); }
@@ -114,7 +115,12 @@
         [data-bs-theme="light"] .force-shadow-light {
             text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000 !important;
         }
-    </style>
+    
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
 
     <script>
         (function() {
@@ -128,6 +134,8 @@
     </script>
 </head>
 <body>
+    <canvas id="globalParticles" class="position-fixed w-100 h-100" style="top:0; left:0; z-index:0; pointer-events: none; opacity: 0.6;"></canvas>
+
     <form id="formAdminAction" action="adminAction" method="POST" style="display:none;" autocomplete="off">
         <input type="hidden" name="action" id="adminActionType" autocomplete="off">
         <input type="hidden" name="target" id="adminActionTarget" autocomplete="off">

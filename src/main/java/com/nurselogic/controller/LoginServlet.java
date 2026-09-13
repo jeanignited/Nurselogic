@@ -31,7 +31,8 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             Usuario u = result.usuario;
             session.setAttribute("usuarioLogueado", u.getCorreo());
-            session.setAttribute("nombres", u.getNombres() + " " + u.getApellidos());
+            session.setAttribute("nombres", u.getNombres());
+session.setAttribute("apellidos", u.getApellidos());
             session.setAttribute("rol", u.getRol());
 
             response.sendRedirect("dashboard");

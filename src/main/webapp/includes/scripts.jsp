@@ -39,6 +39,56 @@ window.exportarCitasFechas = function() {
     });
 };
 
+
+// Particles Animation
+function initDashboardParticles() {
+    const canvas = document.getElementById('globalParticles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let particles = [];
+    
+    window.addEventListener('resize', () => {
+        if(window.innerWidth === 0) return;
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    for (let i = 0; i < 70; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 4 + 1.5,
+            dx: (Math.random() - 0.5) * 0.5,
+            dy: (Math.random() - 0.5) * 0.5,
+            alpha: Math.random() * 0.6 + 0.2
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+            p.x += p.dx;
+            p.y += p.dy;
+            if (p.x < 0 || p.x > width) p.dx = -p.dx;
+            if (p.y < 0 || p.y > height) p.dy = -p.dy;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            let isLight = document.documentElement.getAttribute('data-bs-theme') === 'light';
+            let r = isLight ? 59 : 56;
+            let g = isLight ? 130 : 189;
+            let b = isLight ? 246 : 248;
+            ctx.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + p.alpha + ')';
+            ctx.fill();
+        });
+    }
+    animate();
+}
+
+document.addEventListener('DOMContentLoaded', initDashboardParticles);
+
 </script>
 <script>
 
@@ -3800,5 +3850,55 @@ window.exportarCitasFechas = function() {
         }
     });
 };
+
+
+// Particles Animation
+function initDashboardParticles() {
+    const canvas = document.getElementById('globalParticles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+    let particles = [];
+    
+    window.addEventListener('resize', () => {
+        if(window.innerWidth === 0) return;
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+    });
+
+    for (let i = 0; i < 70; i++) {
+        particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 4 + 1.5,
+            dx: (Math.random() - 0.5) * 0.5,
+            dy: (Math.random() - 0.5) * 0.5,
+            alpha: Math.random() * 0.6 + 0.2
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+            p.x += p.dx;
+            p.y += p.dy;
+            if (p.x < 0 || p.x > width) p.dx = -p.dx;
+            if (p.y < 0 || p.y > height) p.dy = -p.dy;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            let isLight = document.documentElement.getAttribute('data-bs-theme') === 'light';
+            let r = isLight ? 59 : 56;
+            let g = isLight ? 130 : 189;
+            let b = isLight ? 246 : 248;
+            ctx.fillStyle = 'rgba(' + r + ', ' + g + ', ' + b + ', ' + p.alpha + ')';
+            ctx.fill();
+        });
+    }
+    animate();
+}
+
+document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 </script>

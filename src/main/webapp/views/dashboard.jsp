@@ -18,7 +18,20 @@
 
         <!-- VISTA DASHBOARD MEDICO/ADMIN -->
 
-        <div id="dashboard" class="vista-activa">
+                <div id="dashboard" class="vista-activa position-relative" style="min-height: 80vh; overflow: visible; border-radius: 12px; padding: 20px;">
+            <div class="mb-5 text-center" style="animation: fadeInDown 0.8s ease-out;">
+                <%
+                    String nombreBienvenida = (String) session.getAttribute("nombres");
+                    if(nombreBienvenida != null && !nombreBienvenida.trim().isEmpty() && !nombreBienvenida.contains("null")) {
+                        nombreBienvenida = nombreBienvenida.trim();
+                    } else {
+                        nombreBienvenida = "Usuario";
+                    }
+                %>
+                <h2 class="fw-bold text-white mb-2" style="font-size: 2.5rem; letter-spacing: -0.5px;">Bienvenido, <span style="color: #38bdf8;"><%= nombreBienvenida %></span></h2>
+                <p class="text-secondary fs-5">Este es el resumen de actividad de tu centro m&eacute;dico hoy.</p>
+            </div>
+
 
             <div class="row g-4 mb-5">
 
@@ -60,7 +73,7 @@
 
                     <div class="kpi-card h-100" onclick="cambiarVista('personal')">
 
-                        <div class="kpi-title"><i class="bi bi-people-fill me-2" style="color: #f59e0b;"></i>Personal Médico</div>
+                        <div class="kpi-title"><i class="bi bi-people-fill me-2" style="color: #f59e0b;"></i>Personal M&eacute;dico</div>
 
                         <div class="kpi-number"><%= request.getAttribute("totalUsers") != null ? request.getAttribute("totalUsers") : "0" %></div>
 
@@ -88,7 +101,7 @@
 
                 <button type="button" class="btn btn-info btn-lg text-dark fw-bold shadow-sm" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); border: none;" onclick="cambiarVista('agenda')">
 
-                    <i class="bi bi-calendar2-week-fill me-2"></i>Ver Agenda Médica
+                    <i class="bi bi-calendar2-week-fill me-2"></i>Ver Agenda M&eacute;dica
 
                 </button>
 
@@ -302,7 +315,7 @@
 
             <div class="form-section mt-0 mb-4 border-start border-4 border-success">
 
-                <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-file-earmark-medical me-2"></i>Mis Datos Clínicos (Registrados por el Médico)</h4>
+                <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-file-earmark-medical me-2"></i>Mis Datos Clínicos (Registrados por el M&eacute;dico)</h4>
 
                 <div class="row g-4 text-theme">
 
@@ -370,7 +383,7 @@
 
                     <div class="form-section mt-0 h-100 d-flex flex-column">
 
-                        <h4 class="mb-4 fw-bold" style="color: #3b82f6;"><i class="bi bi-calendar-plus me-2"></i>Agendar Cita Médica</h4>
+                        <h4 class="mb-4 fw-bold" style="color: #3b82f6;"><i class="bi bi-calendar-plus me-2"></i>Agendar Cita M&eacute;dica</h4>
 
                         <p class="text-secondary mb-4">Selecciona la especialidad, fecha y hora para programar tu consulta con nuestros especialistas.</p>
 
@@ -454,7 +467,7 @@
 
                         <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-calculator me-2"></i>Calculadora de IMC</h4>
 
-                        <p class="text-secondary mb-4">Conoce tu �ndice de Masa Corporal para un mejor seguimiento de tu salud.</p>
+                        <p class="text-secondary mb-4">Conoce tu �ndice de Masa Corporal para un mejor seguimiento de tu salud.</p>
 
                         
 
