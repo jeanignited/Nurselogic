@@ -181,15 +181,18 @@
                     <small class="text-secondary d-block" style="font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase;">Módulo Activo</small>
 
                     <%
-
-                       String nombreTop = (String) session.getAttribute("nombres");
-
-                       if(nombreTop == null || nombreTop.trim().isEmpty() || nombreTop.contains("null")) {
-
-                           nombreTop = "Usuario del Sistema";
-
+                       String pNombres = (String) session.getAttribute("nombres");
+                       String pApellidos = (String) session.getAttribute("apellidos");
+                       String nombreTop = "";
+                       if (pNombres != null && !pNombres.trim().isEmpty() && !pNombres.contains("null")) {
+                           nombreTop += pNombres.trim();
                        }
-
+                       if (pApellidos != null && !pApellidos.trim().isEmpty() && !pApellidos.contains("null")) {
+                           nombreTop += (nombreTop.isEmpty() ? "" : " ") + pApellidos.trim();
+                       }
+                       if (nombreTop.isEmpty()) {
+                           nombreTop = "Usuario del Sistema";
+                       }
                     %>
 
                     <span class="fw-bold" style="font-size: 1.1rem;"><%= nombreTop %></span>

@@ -287,8 +287,9 @@
 
         <!-- VISTA DASHBOARD PACIENTE -->
 
-        <div id="dashboard_paciente" class="vista-activa">
-        <div id="vista-inicio">
+        <div id="dashboard_paciente" class="position-relative" style="z-index: 10;">
+        
+        <div id="vista-inicio" class="position-relative" style="z-index: 10; display: block !important; opacity: 1 !important; visibility: visible !important;">
 
             
 
@@ -536,7 +537,7 @@
         </div> <!-- Fin vista-inicio -->
 
         <!-- VISTA MIS CITAS PREVIAS -->
-        <div id="vista-citas" class="d-none">
+        <div id="vista-citas" class="d-none position-relative" style="z-index: 10;">
             <h3 class="fw-bold mb-4" style="color: #f59e0b;"><i class="bi bi-calendar-event me-2"></i>Historial de Citas M&eacute;dicas</h3>
             <div class="row mb-3 align-items-center">
                 <div class="col-md-4">
@@ -596,7 +597,7 @@
 
         
         <!-- VISTA RESULTADOS / EXAMENES -->
-        <div id="vista-resultados" class="d-none">
+        <div id="vista-resultados" class="d-none position-relative" style="z-index: 10;">
             <h3 class="fw-bold mb-4" style="color: #a855f7;"><i class="bi bi-file-earmark-medical me-2"></i>Resultados y Ex&aacute;menes Cl&iacute;nicos</h3>
             <div class="row mb-3 align-items-center">
                 <div class="col-md-4">
@@ -645,7 +646,7 @@
         </div>
 
         <!-- VISTA MIS RECETAS -->
-        <div id="vista-recetas" class="d-none">
+        <div id="vista-recetas" class="d-none position-relative" style="z-index: 10;">
             <h3 class="fw-bold mb-4" style="color: #10b981;"><i class="bi bi-capsule me-2"></i>Mis Recetas M&eacute;dicas</h3>
             <div class="row mb-3 align-items-center">
                 <div class="col-md-4">
@@ -694,7 +695,23 @@
         </div>
 
 <script>
-            function switchPacienteTab(tabId) {
+            
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let dash = document.getElementById('dashboard_paciente');
+    if (dash) {
+        dash.classList.remove('d-none');
+        dash.style.display = 'block';
+        dash.style.opacity = '1';
+    }
+    let vistaInicioPaciente = document.getElementById('vista-inicio');
+    if(vistaInicioPaciente) {
+        vistaInicioPaciente.classList.remove('d-none');
+        vistaInicioPaciente.style.display = 'block';
+    }
+});
+function switchPacienteTab(tabId) {
                 const vistas = ['vista-inicio', 'vista-citas', 'vista-resultados', 'vista-recetas'];
                 vistas.forEach(v => {
                     const el = document.getElementById(v);
@@ -736,5 +753,49 @@
         </script>
 
 
+
+        <script>
+            function initPacienteParticles() {
+                const canvas = document.getElementById('pacienteParticles');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width = canvas.width = window.innerWidth;
+                let height = canvas.height = window.innerHeight;
+                let particles = [];
+                
+                window.addEventListener('resize', () => {
+                    if(window.innerWidth === 0) return;
+                    width = canvas.width = window.innerWidth;
+                    height = canvas.height = window.innerHeight;
+                });
+
+                for (let i = 0; i < 70; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 4 + 1.5,
+                        dx: (Math.random() - 0.5) * 0.5,
+                        dy: (Math.random() - 0.5) * 0.5
+                    });
+                }
+
+                function animate() {
+                    requestAnimationFrame(animate);
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => {
+                        p.x += p.dx;
+                        p.y += p.dy;
+                        if (p.x < 0 || p.x > width) p.dx = -p.dx;
+                        if (p.y < 0 || p.y > height) p.dy = -p.dy;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(56, 189, 248, 0.4)';
+                        ctx.fill();
+                    });
+                }
+                animate();
+            }
+            document.addEventListener("DOMContentLoaded", initPacienteParticles);
+        </script>
 <% } %>
 

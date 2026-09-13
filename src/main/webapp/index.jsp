@@ -65,7 +65,7 @@
         html[data-bs-theme="light"] .nav-link:hover, html[data-bs-theme="light"] .nav-link.active { color:var(--accent); background:rgba(59,130,246,0.1); }
         .nav-link i { font-size:1.2rem; margin-right:15px; }
         .sidebar.contraida .nav-link i { margin-right:0; margin:0 auto; }
-        .main-content { margin-left:var(--sidebar-w); transition:0.3s; padding:30px; position: relative; z-index: 1; }
+        .main-content { margin-left:var(--sidebar-w); transition:0.3s; padding:30px; position: relative; z-index: 10; }
         .main-content.expandida { margin-left:75px; }
         .top-bar { display:flex; justify-content:space-between; margin-bottom:30px; border-bottom:var(--glass-border); padding: 15px 30px; margin: -30px -30px 30px -30px; background: var(--bg-main); position: sticky; top: 0; z-index: 100; transition: background-color 0.3s; }
         .btn-menu { background:none; border:none; color:var(--text-color); font-size:1.5rem; cursor:pointer; transition:0.3s; }
@@ -134,7 +134,10 @@
     </script>
 </head>
 <body>
-    <canvas id="globalParticles" class="position-fixed w-100 h-100" style="top:0; left:0; z-index:0; pointer-events: none; opacity: 0.6;"></canvas>
+    <canvas id="globalParticles" class="position-fixed w-100 h-100" style="top:0; left:0; z-index:-1; pointer-events: none; opacity: 0.6;"></canvas>
+    <% if (isPaciente) { %>
+    <canvas id="pacienteParticles" class="position-fixed w-100 h-100" style="top:0; left:0; z-index:-1; pointer-events: none; opacity: 0.6;"></canvas>
+    <% } %>
 
     <form id="formAdminAction" action="adminAction" method="POST" style="display:none;" autocomplete="off">
         <input type="hidden" name="action" id="adminActionType" autocomplete="off">
