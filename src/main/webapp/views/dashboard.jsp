@@ -327,7 +327,7 @@
                     <p class="fs-5 text-light opacity-75 mb-4" style="max-width: 800px; line-height: 1.6;">
                         Bienvenido a NurseLogic. Tu ecosistema de salud digital dise&ntilde;ado para darte control total sobre tu historial cl&iacute;nico, facilitar el agendamiento de tus citas y mantener una comunicaci&oacute;n directa con tus especialistas.
                     </p>
-                    <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow" onclick="document.getElementById('formAgendar').scrollIntoView({behavior: 'smooth'})">
+                    <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow" onclick="document.getElementById('contenedor-agendar').scrollIntoView({behavior: 'smooth'})">
                         <i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita
                     </button>
                 </div>
@@ -406,7 +406,7 @@
 
             <div class="row g-4 mb-4">
                 <div class="col-md-7">
-                    <div class="form-section mt-0 h-100 d-flex flex-column">
+                    <div id="contenedor-agendar" class="form-section mt-0 h-100 d-flex flex-column">
                           <div class="d-flex flex-column flex-grow-1">
                               <h4 class="mb-4 fw-bold" style="color: #3b82f6;"><i class="bi bi-calendar-plus me-2"></i>Agendar Cita M&eacute;dica</h4>
                             <p class="text-secondary mb-4">Selecciona la especialidad, fecha y hora para programar tu consulta con nuestros especialistas.</p>
@@ -711,7 +711,7 @@ document.addEventListener("DOMContentLoaded", function() {
         vistaInicioPaciente.style.display = 'block';
     }
 });
-function switchPacienteTab(tabId) {
+function switchPacienteTab(tabId, elementoClickeado) {
                 const vistas = ['vista-inicio', 'vista-citas', 'vista-resultados', 'vista-recetas'];
                 vistas.forEach(v => {
                     const el = document.getElementById(v);
@@ -719,6 +719,16 @@ function switchPacienteTab(tabId) {
                 });
                 const seleccionada = document.getElementById(tabId);
                 if (seleccionada) seleccionada.classList.remove('d-none');
+
+                if (elementoClickeado) {
+                    const parent = elementoClickeado.closest('ul.nav');
+                    if(parent) {
+                        parent.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                    } else {
+                        document.querySelectorAll('.sidebar .nav-link').forEach(link => link.classList.remove('active'));
+                    }
+                    elementoClickeado.classList.add('active');
+                }
             }
 
             document.addEventListener("DOMContentLoaded", function() {

@@ -86,16 +86,19 @@
             <% } %>
 
             <% if(isPaciente) { %>
-            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-inicio')">
+            <li class="nav-item"><a class="nav-link active btn-inicio" href="#" onclick="switchPacienteTab('vista-inicio', this)">
+                <i class="bi bi-house text-primary"></i><span class="texto-nav">Inicio</span>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-inicio', document.querySelector('.btn-inicio')); setTimeout(() => document.getElementById('contenedor-agendar').scrollIntoView({behavior: 'smooth'}), 50);">
                 <i class="bi bi-calendar-heart text-danger"></i><span class="texto-nav">Agendar Cita</span>
             </a></li>
-            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-citas')">
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-citas', this)">
                 <i class="bi bi-clock-history text-warning"></i><span class="texto-nav">Mis Citas</span>
             </a></li>
-            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-resultados')">
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-resultados', this)">
                 <i class="bi bi-file-earmark-medical" style="color: var(--bs-purple, #6f42c1);"></i><span class="texto-nav">Resultados / Ex&aacute;menes</span>
             </a></li>
-            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-recetas')">
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-recetas', this)">
                 <i class="bi bi-capsule text-success"></i><span class="texto-nav">Mis Recetas</span>
             </a></li>
             <% } %>
