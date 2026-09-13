@@ -313,199 +313,219 @@
 
             %>
 
-            <div class="form-section mt-0 mb-4 border-start border-4 border-success">
-
-                <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-file-earmark-medical me-2"></i>Mis Datos Clínicos (Registrados por el M&eacute;dico)</h4>
-
-                <div class="row g-4 text-theme">
-
-                    <div class="col-md-4">
-
-                        <label class="text-secondary small">Nombres Completos</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getNombres() %> <%= miHC.getApellidos() %></div>
-
-                    </div>
-
-                    <div class="col-md-4">
-
-                        <label class="text-secondary small">Cédula</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getCedula() %></div>
-
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="text-secondary small">Fecha de Nacimiento</label>
-                        <div class="fw-semibold fs-5"><%= (miHC.getFechaNacimiento() != null) ? miHC.getFechaNacimiento() : "Sin registrar" %></div>
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <label class="text-secondary small">Estatura</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getEstatura() %> m</div>
-
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <label class="text-secondary small">Peso</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getPeso() %> kg</div>
-
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="text-secondary small">Presión Arterial</label>
-                        <div class="fw-semibold fs-5"><%= (miHC.getPresionArterial() != null && !miHC.getPresionArterial().trim().isEmpty()) ? miHC.getPresionArterial() : "Sin evaluar" %></div>
-                    </div>
-
-                    <div class="col-md-3">
-
-                        <label class="text-secondary small">Temperatura</label>
-
-                        <div class="fw-semibold fs-5"><%= miHC.getTemperatura() %> °C</div>
-
-                    </div>
-
+                        <!-- Jumbotron de Bienvenida (Ahora por fuera de los Datos Clinicos) -->
+            <div class="p-5 mb-5 rounded-4 shadow-sm text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-left: 5px solid #3b82f6;">
+                <!-- Marca de Agua -->
+                <i class="bi bi-heart-pulse text-primary position-absolute" style="font-size: 15rem; opacity: 0.05; right: -2%; top: 50%; transform: translateY(-50%) rotate(-15deg); pointer-events: none;"></i>
+                
+                <div class="container-fluid py-2 position-relative" style="z-index: 2;">
+                    <h1 class="display-5 fw-bold mb-3">
+                        Bienvenido, <%= (miHC != null && miHC.getNombres() != null) ? miHC.getNombres().split(" ")[0] : "Paciente" %>
+                    </h1>
+                    <p class="fs-5 text-light opacity-75 mb-4" style="max-width: 800px; line-height: 1.6;">
+                        Bienvenido a NurseLogic. Tu ecosistema de salud digital dise&ntilde;ado para darte control total sobre tu historial cl&iacute;nico, facilitar el agendamiento de tus citas y mantener una comunicaci&oacute;n directa con tus especialistas.
+                    </p>
+                    <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow" onclick="document.getElementById('formAgendar').scrollIntoView({behavior: 'smooth'})">
+                        <i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita
+                    </button>
                 </div>
+            </div>
 
+                                    <!-- Contenedor de Datos Clinicos -->
+            <div class="card border-0 mb-5 rounded-4 shadow-sm" style="background: var(--bg-panel); overflow: hidden;">
+                <!-- Header -->
+                <div class="card-header border-0 px-3 py-3" style="background: rgba(16, 185, 129, 0.05); border-bottom: 1px solid rgba(16, 185, 129, 0.1) !important;">
+                    <h5 class="mb-0 fw-bold text-theme d-flex align-items-center">
+                        <div class="bg-success bg-opacity-10 rounded-circle p-2 me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <i class="bi bi-clipboard2-pulse-fill text-success fs-4"></i>
+                        </div>
+                        Mis Datos Cl&iacute;nicos
+                    </h5>
+                </div>
+                
+                <div class="card-body p-3 p-md-4">
+                    <!-- Datos Personales -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-3">
+                            <label class="text-muted small fw-semibold mb-1"><i class="bi bi-person me-2"></i>Nombres Completos</label>
+                            <div class="fw-bold fs-5 text-theme"><%= miHC.getNombres() %> <%= miHC.getApellidos() %></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-muted small fw-semibold mb-1"><i class="bi bi-card-text me-2"></i>C&eacute;dula</label>
+                            <div class="fw-bold fs-5 text-theme"><%= miHC.getCedula() %></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-muted small fw-semibold mb-1"><i class="bi bi-calendar3 me-2"></i>Fecha de Nacimiento</label>
+                            <div class="fw-bold fs-5 text-theme"><%= (miHC.getFechaNacimiento() != null) ? miHC.getFechaNacimiento() : "Sin registrar" %></div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-muted small fw-semibold mb-1"><i class="bi bi-clock-history me-2"></i>&Uacute;ltima Actualizaci&oacute;n</label>
+                            <div class="fw-bold fs-5 text-theme"><%= java.time.LocalDate.now().toString() %></div>
+                        </div>
+                    </div>
+
+                    <!-- Signos Vitales -->
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-4 text-center h-100 border-0" style="background-color: rgba(13, 110, 253, 0.05); border: none;">
+                                <i class="bi bi-rulers text-primary mb-2 d-block" style="font-size: 2.2rem;"></i>
+                                <label class="text-muted small fw-semibold mb-1">Estatura</label>
+                                <div class="fw-bolder fs-4 text-theme"><%= miHC.getEstatura() %><span class="fs-6 fw-normal ms-1 text-muted">m</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-4 text-center h-100 border-0" style="background-color: rgba(255, 193, 7, 0.05); border: none;">
+                                <i class="bi bi-speedometer2 text-warning mb-2 d-block" style="font-size: 2.2rem;"></i>
+                                <label class="text-muted small fw-semibold mb-1">Peso</label>
+                                <div class="fw-bolder fs-4 text-theme"><%= miHC.getPeso() %><span class="fs-6 fw-normal ms-1 text-muted">kg</span></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-4 text-center h-100 border-0" style="background-color: rgba(220, 53, 69, 0.05); border: none;">
+                                <i class="bi bi-activity text-danger mb-2 d-block" style="font-size: 2.2rem;"></i>
+                                <label class="text-muted small fw-semibold mb-1">Presi&oacute;n</label>
+                                <div class="fw-bolder fs-4 text-theme"><%= (miHC.getPresionArterial() != null && !miHC.getPresionArterial().trim().isEmpty()) ? miHC.getPresionArterial() : "--" %></div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 rounded-4 text-center h-100 border-0" style="background-color: rgba(25, 135, 84, 0.05); border: none;">
+                                <i class="bi bi-thermometer-half text-success mb-2 d-block" style="font-size: 2.2rem;"></i>
+                                <label class="text-muted small fw-semibold mb-1">Temperatura</label>
+                                <div class="fw-bolder fs-4 text-theme"><%= miHC.getTemperatura() %><span class="fs-6 fw-normal ms-1 text-muted">&deg;C</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <% } %>
 
 
 
-            <div class="row g-4">
-
+            <div class="row g-4 mb-4">
                 <div class="col-md-7">
-
                     <div class="form-section mt-0 h-100 d-flex flex-column">
+                          <div class="d-flex flex-column flex-grow-1">
+                              <h4 class="mb-4 fw-bold" style="color: #3b82f6;"><i class="bi bi-calendar-plus me-2"></i>Agendar Cita M&eacute;dica</h4>
+                            <p class="text-secondary mb-4">Selecciona la especialidad, fecha y hora para programar tu consulta con nuestros especialistas.</p>
+                            <form action="agendarCita" method="post" autocomplete="off" class="d-flex flex-column flex-grow-1">
+                                <div class="mb-4">
+                                    <label class="form-label small text-secondary fw-semibold">Especialidad</label>
+                                    <div class="dropdown">
+                                        <input type="hidden" name="especialidad" id="hiddenEspecialidad" required>
+                                        <button class="btn form-control form-control-lg border-secondary text-light text-start d-flex justify-content-between align-items-center dropdown-toggle" type="button" id="btnEspecialidad" data-bs-toggle="dropdown" aria-expanded="false" style="background: rgba(0,0,0,0.2);">
+                                            <span id="btnEspecialidadText">Elige un &aacute;rea m&eacute;dica...</span>
+                                        </button>
+                                        <ul class="dropdown-menu w-100 dropdown-menu-dark p-2 shadow-lg border-secondary" style="max-height: 200px; overflow-y: auto;" aria-labelledby="btnEspecialidad">
+                                            <li class="position-sticky top-0 bg-dark z-1 pb-2" style="margin-top: -8px; padding-top: 8px;">
+                                                <input type="text" id="buscadorEspecialidades" class="form-control form-control-sm border-secondary text-light bg-dark" placeholder="Buscar especialidad..." autocomplete="off">
+                                            </li>
+                                            <%
+                                                List<Map<String, String>> espMapPac = (List<Map<String, String>>) request.getAttribute("listaEspecialidadesMap");
+                                                if(espMapPac != null && !espMapPac.isEmpty()) {
+                                                    for(Map<String, String> mEsp : espMapPac) {
+                                                        out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='" + mEsp.get("id") + "'>" + mEsp.get("descripcion") + "</a></li>");
+                                                    }
+                                                } else {
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='1'>Medicina General</a></li>");
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='2'>Odontolog&iacute;a</a></li>");
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='3'>Pediatr&iacute;a</a></li>");
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='4'>Ginecolog&iacute;a</a></li>");
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='5'>Cardiolog&iacute;a</a></li>");
+                                                    out.print("<li><a class='dropdown-item especialidad-item rounded' href='#' data-value='6'>Urgencias y Triage</a></li>");
+                                                }
+                                            %>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="row g-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-secondary fw-semibold">Fecha</label>
+                                        <input type="date" name="fecha" class="form-control form-control-lg border-secondary text-light" style="background: rgba(0,0,0,0.2); color-scheme: dark;" min="<%= java.time.LocalDate.now().toString() %>" autocomplete="off" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small text-secondary fw-semibold">Hora</label>
+                                        <input type="time" name="hora" class="form-control form-control-lg border-secondary text-light" style="background: rgba(0,0,0,0.2); color-scheme: dark;" required autocomplete="off">
+                                    </div>
+                                </div>
 
-                        <h4 class="mb-4 fw-bold" style="color: #3b82f6;"><i class="bi bi-calendar-plus me-2"></i>Agendar Cita M&eacute;dica</h4>
+                                <div class="p-3 mt-3 mb-3 rounded bg-dark border border-secondary text-muted small">
+                                    <i class="bi bi-info-circle text-primary me-2"></i><strong>Nota importante:</strong> Por favor, pres&eacute;ntate 15 minutos antes de tu consulta programada. En caso de presentar s&iacute;ntomas graves o emergencias, dir&iacute;gete inmediatamente a nuestra &aacute;rea de Urgencias y Triage.
+                                </div>
 
-                        <p class="text-secondary mb-4">Selecciona la especialidad, fecha y hora para programar tu consulta con nuestros especialistas.</p>
+                                <button type="submit" class="btn btn-primary w-100 py-3 fs-5 mt-auto"><i class="bi bi-check2-circle me-2"></i>CONFIRMAR CITA</button>
+<script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const buscador = document.getElementById("buscadorEspecialidades");
+                                    const items = document.querySelectorAll(".especialidad-item");
+                                    const hiddenInput = document.getElementById("hiddenEspecialidad");
+                                    const btnText = document.getElementById("btnEspecialidadText");
 
-                        <form action="agendarCita" method="post" autocomplete="off">
+                                    if(buscador) {
+                                        buscador.addEventListener("input", function(e) {
+                                            const term = this.value.toLowerCase();
+                                            items.forEach(item => {
+                                                if(item.textContent.toLowerCase().includes(term)) {
+                                                    item.style.display = "block";
+                                                } else {
+                                                    item.style.display = "none";
+                                                }
+                                            });
+                                        });
 
-                            <div class="mb-4">
+                                        buscador.addEventListener("click", function(e) {
+                                            e.stopPropagation();
+                                        });
+                                    }
 
-                                <label class="form-label small text-secondary fw-semibold">Especialidad</label>
-
-                                <select name="especialidad" class="form-select form-select-lg" required>
-
-                                    <option value="" disabled selected>Elige un área médica...</option>
-
-                                    <%
-
-                                        List<Map<String, String>> espMapPac = (List<Map<String, String>>) request.getAttribute("listaEspecialidadesMap");
-
-                                        if(espMapPac != null && !espMapPac.isEmpty()) {
-
-                                            for(Map<String, String> mEsp : espMapPac) {
-
-                                                out.print("<option value='" + mEsp.get("id") + "'>" + mEsp.get("descripcion") + "</option>");
-
+                                    items.forEach(item => {
+                                        item.addEventListener("click", function(e) {
+                                            e.preventDefault();
+                                            hiddenInput.value = this.getAttribute("data-value");
+                                            btnText.textContent = this.textContent;
+                                            if(buscador) {
+                                                buscador.value = "";
+                                                items.forEach(i => i.style.display = "block");
                                             }
-
-                                        } else {
-
-                                            out.print("<option value='1'>Medicina General</option>");
-
-                                            out.print("<option value='2'>Odontología</option>");
-
-                                            out.print("<option value='3'>Pediatría</option>");
-
-                                            out.print("<option value='4'>Ginecología</option>");
-
-                                        }
-
-                                    %>
-
-                                </select>
-
-                            </div>
-
-
-
-                            <div class="row g-4 mb-5">
-
-                                <div class="col-md-6">
-
-                                    <label class="form-label small text-secondary fw-semibold">Fecha de la Cita</label>
-
-                                    <input type="date" name="fecha" class="form-control form-control-lg" min="<%= java.time.LocalDate.now().toString() %>" autocomplete="off" required>
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <label class="form-label small text-secondary fw-semibold">Hora</label>
-
-                                    <input type="time" name="hora" class="form-control form-control-lg" required autocomplete="off">
-
-                                </div>
-
-                            </div>
-
-
-
-                            <button type="submit" class="btn btn-primary w-100 py-3 fs-5 mt-auto"><i class="bi bi-check2-circle me-2"></i>CONFIRMAR CITA</button>
-
-                        </form>
-
+                                        });
+                                    });
+                                });
+                            </script>
+                            </form>
+                        </div>
                     </div>
-
                 </div>
-
-
 
                 <div class="col-md-5">
-
-                    <div class="form-section mt-0 h-100 d-flex flex-column">
-
-                        <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-calculator me-2"></i>Calculadora de IMC</h4>
-
-                        <p class="text-secondary mb-4">Conoce tu �ndice de Masa Corporal para un mejor seguimiento de tu salud.</p>
-
-                        
-
-                        <div class="mb-4">
-
-                            <label class="form-label small text-secondary fw-semibold">Estatura (metros)</label>
-
-                            <input type="text" id="estatura_pac" class="form-control form-control-lg" maxlength="4" oninput="formatearEstatura_pac(this)" placeholder="Ej: 1.75" required autocomplete="off">
-
+                    <div class="form-section mt-0 d-flex flex-column h-100 justify-content-between">
+                        <div>
+                            <h4 class="mb-4 fw-bold" style="color: #10b981;"><i class="bi bi-calculator me-2"></i>Calculadora de IMC</h4>
+                            <p class="text-secondary mb-4">Conoce tu &Iacute;ndice de Masa Corporal para un mejor seguimiento de tu salud.</p>
+                            
+                            <div class="mb-4">
+                                <label class="form-label small text-secondary fw-semibold">Estatura (metros)</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text border-secondary text-success border-end-0" style="background: rgba(0,0,0,0.3);"><i class="bi bi-rulers"></i></span>
+                                    <input type="text" id="estatura_pac" class="form-control border-secondary text-light border-start-0" style="background: rgba(0,0,0,0.15);" maxlength="4" oninput="formatearEstatura_pac(this)" placeholder="Ej: 1.75" required autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="mb-5">
+                                <label class="form-label small text-secondary fw-semibold">Peso (kg)</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text border-secondary text-success border-end-0" style="background: rgba(0,0,0,0.3);"><i class="bi bi-speedometer2"></i></span>
+                                    <input type="text" id="peso_pac" class="form-control border-secondary text-light border-start-0" style="background: rgba(0,0,0,0.15);" maxlength="5" oninput="formatearPeso_pac(this)" placeholder="Ej: 70.5" required autocomplete="off">
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="mb-5">
-
-                            <label class="form-label small text-secondary fw-semibold">Peso (kg)</label>
-
-                            <input type="text" id="peso_pac" class="form-control form-control-lg" maxlength="5" oninput="formatearPeso_pac(this)" placeholder="Ej: 70.5" required autocomplete="off">
-
-                        </div>
-
-
-
-                        <div class="imc-box flex-column align-items-center justify-content-center text-center p-4 mt-auto">
-
-                            <div class="small text-secondary mb-2">Tu Resultado IMC</div>
-
-                            <span id="imcValor_pac" class="fw-bold text-theme mb-2" style="font-size: 3.5rem; line-height: 1;">0.0</span>
-
+                        <div class="imc-box flex-column align-items-center justify-content-center text-center p-4 mt-auto rounded-4 shadow-sm" style="background: rgba(0,0,0,0.15); border: 1px dashed rgba(16,185,129,0.3);">
+                            <div class="small text-secondary mb-2 fw-semibold text-uppercase tracking-wide">Tu Resultado IMC</div>
+                            <span id="imcValor_pac" class="fw-bold mb-2" style="font-size: 3.5rem; line-height: 1; color: #10b981;">0.0</span>
                             <span id="imcEstado_pac" class="badge bg-secondary px-4 py-2 rounded-pill fs-6 mt-2">Introduce tus datos</span>
-
                         </div>
-
                     </div>
-
                 </div>
-
             </div>
-
-        </div>
 
 
 
