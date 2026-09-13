@@ -170,7 +170,11 @@ public class DashboardServlet extends HttpServlet {
                     map.put("cedula", c.getPaciente() != null && c.getPaciente().getCedula() != null ? c.getPaciente().getCedula() : "");
                     map.put("especialidad", c.getEspecialidad() != null ? c.getEspecialidad().getDescripcion() : "Medicina General");
                     map.put("diagnostico", c.getDiagnostico() != null ? c.getDiagnostico().replace("'", "\\'").replace("\n", " ") : "No registrado");
-                    map.put("receta", c.getReceta() != null ? c.getReceta().replace("'", "\\'").replace("\n", " ") : "Ninguna");
+                    
+                    com.nurselogic.dao.CitaDAO citaDAO = new com.nurselogic.dao.CitaDAO();
+                    String unificada = citaDAO.obtenerRecetaUnificada(c.getId(), c.getReceta());
+                    map.put("receta", unificada.replace("'", "\\'").replace("\n", " "));
+                    
                     listaCitas.add(map);
 
                     if (!"Paciente".equals(rolUsuario) && ("REGISTRADO".equals(c.getEstado()) || "EN SALA".equals(c.getEstado()))) {
@@ -182,6 +186,20 @@ public class DashboardServlet extends HttpServlet {
             } catch(Exception ex) {}
             request.setAttribute("listaCitas", listaCitas);
 
+            List<Map<String, String>> listaRecetas = new ArrayList<>();
+            List<Map<String, String>> listaResultados = new ArrayList<>();
+            for (Map<String, String> cMap : listaCitas) {
+                if (cMap.get("receta") != null && !cMap.get("receta").equals("Ninguna")) {
+                    listaRecetas.add(cMap);
+                }
+                if (cMap.get("diagnostico") != null && !cMap.get("diagnostico").equals("No registrado")) {
+                    Map<String, String> res = new HashMap<>(cMap);
+                    res.put("tipoExamen", "Consulta General");
+                    listaResultados.add(res);
+                }
+            }
+            request.setAttribute("listaRecetas", listaRecetas);
+            request.setAttribute("listaResultados", listaResultados);
 
             // Lista de Facturas
             List<Factura> listaFacturas = new ArrayList<>();

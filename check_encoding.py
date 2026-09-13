@@ -1,7 +1,7 @@
-import os
-for f in os.listdir('src/main/java/com/nurselogic/controller'):
-    if f.endswith('.java'):
-        with open('src/main/java/com/nurselogic/controller/' + f, 'r', encoding='utf-8') as file:
-            content = file.read()
-            if 'doPost' in content and 'setCharacterEncoding("UTF-8")' not in content:
-                print("Missing in: " + f)
+﻿# -*- coding: utf-8 -*-
+import io
+
+with io.open('src/main/webapp/views/dashboard.jsp', 'r', encoding='utf-8') as f:
+    for line in f:
+        if 'simularAperturaDocumento' in line:
+            print(line.strip())

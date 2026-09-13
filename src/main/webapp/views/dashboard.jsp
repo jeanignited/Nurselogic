@@ -627,7 +627,7 @@
                                     <td class="py-3 px-4"><%= res.get("tipoExamen") %></td>
                                     <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (res.get("medico") == null || res.get("medico").equals("null") || res.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : res.get("medico") %></td>
                                     <td class="py-3 px-4 text-center">
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf me-2"></i>Ver PDF</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="simularAperturaDocumento('Resultado/Examen')"><i class="bi bi-file-earmark-pdf me-2"></i>Ver PDF</button>
                                     </td>
                                 </tr>
                                 <%
@@ -676,7 +676,7 @@
                                     <td class="py-3 px-4"><%= (rec.get("receta") != null && !rec.get("receta").equals("null")) ? rec.get("receta") : rec.get("diagnostico") %></td>
                                     <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (rec.get("medico") == null || rec.get("medico").equals("null") || rec.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : rec.get("medico") %></td>
                                     <td class="py-3 px-4 text-center">
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-capsule me-2"></i>Ver Receta</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="simularAperturaDocumento('Receta Medica')"><i class="bi bi-capsule me-2"></i>Ver Receta</button>
                                     </td>
                                 </tr>
                                 <%
@@ -806,6 +806,10 @@ function switchPacienteTab(tabId, elementoClickeado) {
                 animate();
             }
             document.addEventListener("DOMContentLoaded", initPacienteParticles);
+
+window.simularAperturaDocumento = function(tipo) {
+    alert("Generando " + tipo + " en formato PDF... El documento se abrira en una nueva pestana.");
+};
         </script>
 <% } %>
 

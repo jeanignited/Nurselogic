@@ -14,7 +14,8 @@
     boolean permUsuarios   = Boolean.TRUE.equals(request.getAttribute("permUsuarios"));
     String correoLogueado  = (String) request.getAttribute("correoLogueado");
     String rolUsuario      = (String) request.getAttribute("rolUsuario");
-%>        <div id="agenda" class="vista-activa d-none">
+%>        <% if(!isPaciente) { %>
+        <div id="agenda" class="vista-activa d-none">
             <div class="form-section mt-5" id="seccionAgendaMedica">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h4 class="m-0 fw-bold" style="color: #38bdf8;"><i class="bi bi-calendar2-check me-2" style="color: #38bdf8;"></i>Agenda Médica y Citas Programadas</h4>
@@ -103,11 +104,4 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-
+        <% } %>
