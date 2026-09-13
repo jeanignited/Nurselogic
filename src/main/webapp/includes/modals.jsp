@@ -1,4 +1,4 @@
-﻿<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
 <%
     boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
@@ -449,7 +449,7 @@
           </div>
       </div>
       <div class="modal-footer border-0">
-        <button type="button" class="btn btn-outline-info px-4 me-auto" onclick="imprimirFactura()"><i class="bi bi-printer"></i> Imprimir</button>
+        <button type="button" class="btn btn-outline-info px-4 me-auto" onclick="imprimirHistorialMedico()"><i class="bi bi-printer"></i> Imprimir</button>
           <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>

@@ -23,7 +23,7 @@ new_logic = '''let cleanDiag = rawDiag.replace(/Â°C/g, '°C');
     finalHtml += restText.replace(/\\n/g, '<br>');
     document.getElementById('verDiagTexto').innerHTML = '<div class="card bg-dark border-secondary p-3 text-light" style="line-height: 1.8;">' + finalHtml + '</div>';'''
 
-c = re.sub(r'let formattedDiag = rawDiag\.replace.*?</div>\';', new_logic, c, flags=re.DOTALL)
+c = re.sub(r'let formattedDiag = rawDiag\.replace.*?</div>\';', lambda m: new_logic, c, flags=re.DOTALL)
 
 with io.open('src/main/webapp/includes/scripts.jsp', 'w', encoding='utf-8') as f:
     f.write(c)

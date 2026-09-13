@@ -4,23 +4,27 @@ import re
 with io.open('src/main/webapp/includes/sidebar.jsp', 'r', encoding='utf-8') as f:
     c = f.read()
 
-# Make the brand area clickable
-old_brand = '''<div class="p-4 d-flex align-items-center mb-2" style="border-bottom: var(--glass-border); flex-shrink: 0;">
-            <i class="bi bi-activity text-primary fs-3 me-3" style="filter: drop-shadow(0 0 8px var(--accent));"></i>
-            <span class="brand-title fw-bold fs-5 tracking-wide">NURSELOGIC</span>
-        </div>'''
+# Replace the single Agendar Cita li for patients
+pattern = r'<% if\(isPaciente\) \{ %>\s*<li class="nav-item"><a class="nav-link" onclick="cambiarVista\(\'dashboard_paciente\'\)">\s*<i class="bi bi-calendar-heart text-danger"></i><span class="texto-nav">Agendar Cita</span>\s*</a></li>\s*<% \} %>'
 
-new_brand = '''<div class="p-4 d-flex align-items-center mb-2" style="border-bottom: var(--glass-border); flex-shrink: 0; cursor: pointer; transition: 0.3s;" onclick="cambiarVista('dashboard')" onmouseover="this.style.background='rgba(56,189,248,0.1)'" onmouseout="this.style.background='transparent'">
-            <i class="bi bi-activity text-primary fs-3 me-3" style="filter: drop-shadow(0 0 8px var(--accent));"></i>
-            <span class="brand-title fw-bold fs-5 tracking-wide text-white">NURSELOGIC</span>
-        </div>'''
+replacement = '''<% if(isPaciente) { %>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-inicio')">
+                <i class="bi bi-calendar-heart text-danger"></i><span class="texto-nav">Agendar Cita</span>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-citas')">
+                <i class="bi bi-clock-history text-warning"></i><span class="texto-nav">Mis Citas Previas</span>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-resultados')">
+                <i class="bi bi-file-earmark-medical" style="color: var(--bs-purple, #6f42c1);"></i><span class="texto-nav">Resultados / Ex&aacute;menes</span>
+            </a></li>
+            <li class="nav-item"><a class="nav-link" href="#" onclick="switchPacienteTab('vista-recetas')">
+                <i class="bi bi-capsule text-success"></i><span class="texto-nav">Mis Recetas</span>
+            </a></li>
+            <% } %>'''
 
-c = c.replace(old_brand, new_brand)
-
-# Remove the inline styles from ul that might conflict, keep overflow-y-auto so ONLY the UL scrolls
-c = c.replace('<ul class="nav flex-column flex-nowrap overflow-y-auto" style="display: flex; flex-direction: column; flex-grow: 1; height: 100%;">', '<ul class="nav flex-column flex-nowrap overflow-y-auto" style="display: flex; flex-direction: column; flex-grow: 1; overflow-x: hidden;">')
+c = re.sub(pattern, replacement, c)
 
 with io.open('src/main/webapp/includes/sidebar.jsp', 'w', encoding='utf-8') as f:
     f.write(c)
 
-print('Updated sidebar.jsp brand click')
+print("sidebar.jsp updated.")

@@ -522,7 +522,8 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
 
-        document.getElementById('cedulaBusqueda').addEventListener('keyup', function() {
+        let cb = document.getElementById('cedulaBusqueda');
+        if (cb) cb.addEventListener('keyup', function() {
 
 
 
@@ -3412,7 +3413,28 @@ function aplicarPlantillaRol(tipo, el) {
 
 
 
-        function abrirModalVerDiagnostico(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta'); var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+        function abrirModalVerDiagnostico(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; let rawDiag = btnEl.getAttribute('data-diagnostico');
+if (rawDiag) {
+    let cleanDiag = rawDiag.replace(/Â°C/g, '°C');
+    let vitalSignsHtml = '';
+    let restText = cleanDiag;
+    
+    let regex = /(FC:|PA:|FR:|Temp:|IMC:|Glasgow:|SpO2:|Talla:|Peso:)\s*([^\n]+)\n?/gi;
+    let match;
+    while ((match = regex.exec(cleanDiag)) !== null) {
+         vitalSignsHtml += '<div class="col-md-4 col-6 mb-2"><i class="bi bi-activity text-info me-1"></i><span class="text-light fw-semibold">' + match[1] + '</span> <span class="text-light opacity-75">' + match[2] + '</span></div>';
+         restText = restText.replace(match[0], '');
+    }
+    
+    let finalHtml = '';
+    if (vitalSignsHtml !== '') {
+         finalHtml += '<div class="row mb-3">' + vitalSignsHtml + '</div><hr class="border-secondary opacity-25">';
+    }
+    finalHtml += restText.replace(/\n/g, '<br>');
+    document.getElementById('verDiagTexto').innerHTML = '<div class="card bg-dark border-secondary p-3 text-light" style="line-height: 1.8;">' + finalHtml + '</div>';
+} else {
+    document.getElementById('verDiagTexto').innerText = '';
+} document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta'); var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 
 
 
@@ -3427,7 +3449,28 @@ function aplicarPlantillaRol(tipo, el) {
         function filtrarFacturasAvanzado() { let input = document.getElementById('buscadorFacturas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaFacturas').value; let table = document.getElementById('tablaFacturas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('td')[1]; if(tdFecha) { let match = tdFecha.innerText.match(/(\d{4}-\d{2}-\d{2})/); if(match) dateValue = match[1]; } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; if (matchTexto && matchFecha) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } }
 
         function abrirModalVerFactura(id, cliente, fecha, total, btnEl) { document.getElementById('verFacId').innerText = id; document.getElementById('verFacCliente').innerText = cliente; document.getElementById('verFacFecha').innerText = fecha; document.getElementById('verFacTotal').innerText = total; document.getElementById('verFacDetalles').innerHTML = btnEl.getAttribute('data-detalles'); var mEl = document.getElementById('modalVerFactura'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
-function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; document.getElementById('verDiagTexto').innerText = btnEl.getAttribute('data-diagnostico'); var recetaEl = document.getElementById('verDiagReceta'); if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizacion)'; } var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; let rawDiag = btnEl.getAttribute('data-diagnostico');
+if (rawDiag) {
+    let cleanDiag = rawDiag.replace(/Â°C/g, '°C');
+    let vitalSignsHtml = '';
+    let restText = cleanDiag;
+    
+    let regex = /(FC:|PA:|FR:|Temp:|IMC:|Glasgow:|SpO2:|Talla:|Peso:)\s*([^\n]+)\n?/gi;
+    let match;
+    while ((match = regex.exec(cleanDiag)) !== null) {
+         vitalSignsHtml += '<div class="col-md-4 col-6 mb-2"><i class="bi bi-activity text-info me-1"></i><span class="text-light fw-semibold">' + match[1] + '</span> <span class="text-light opacity-75">' + match[2] + '</span></div>';
+         restText = restText.replace(match[0], '');
+    }
+    
+    let finalHtml = '';
+    if (vitalSignsHtml !== '') {
+         finalHtml += '<div class="row mb-3">' + vitalSignsHtml + '</div><hr class="border-secondary opacity-25">';
+    }
+    finalHtml += restText.replace(/\n/g, '<br>');
+    document.getElementById('verDiagTexto').innerHTML = '<div class="card bg-dark border-secondary p-3 text-light" style="line-height: 1.8;">' + finalHtml + '</div>';
+} else {
+    document.getElementById('verDiagTexto').innerText = '';
+} var recetaEl = document.getElementById('verDiagReceta'); if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizacion)'; } var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
 
 
 
@@ -3878,4 +3921,32 @@ function initDashboardParticles() {
 
 document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
+
+function imprimirHistorialMedico() {
+    let modalBody = document.querySelector('#modalVerDiagnostico .modal-body');
+    let contenido = modalBody ? modalBody.innerHTML : '';
+    let ventana = window.open('', '', 'width=800,height=600');
+    ventana.document.write('<html><head><title>Historial Clínico</title>');
+    ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+    ventana.document.write('</head><body><div class="container mt-4">');
+    ventana.document.write('<h2>Historial Clínico del Paciente</h2><hr>');
+    ventana.document.write(contenido.replace(/Â°C/g, '°C'));
+    ventana.document.write('</div></body></html>');
+    ventana.document.close();
+    setTimeout(() => { ventana.print(); ventana.close(); }, 500);
+}
+
+function imprimirHistorialMedico() {
+    let modalBody = document.querySelector('#modalVerDiagnostico .modal-body');
+    let contenido = modalBody ? modalBody.innerHTML : '';
+    let ventana = window.open('', '', 'width=800,height=600');
+    ventana.document.write('<html><head><title>Historial Clínico</title>');
+    ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+    ventana.document.write('</head><body><div class="container mt-4">');
+    ventana.document.write('<h2>Historial Clínico del Paciente</h2><hr>');
+    ventana.document.write(contenido.replace(/Â°C/g, '°C'));
+    ventana.document.write('</div></body></html>');
+    ventana.document.close();
+    setTimeout(() => { ventana.print(); ventana.close(); }, 500);
+}
 </script>

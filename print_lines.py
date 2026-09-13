@@ -1,5 +1,3 @@
-with open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8', errors='ignore') as f:
-    lines = f.readlines()
-
-for i in range(3260, 3275):
-    print(f"{i}: {lines[i].strip()}")
+with open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
+    for i, line in enumerate(f.readlines()[:5]):
+        print(f"Line {i+1}: {repr(line)}")

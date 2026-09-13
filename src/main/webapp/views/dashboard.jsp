@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
 <%@ page import="com.nurselogic.model.*" %>
 <%
@@ -288,6 +288,7 @@
         <!-- VISTA DASHBOARD PACIENTE -->
 
         <div id="dashboard_paciente" class="vista-activa">
+        <div id="vista-inicio">
 
             
 
@@ -478,17 +479,19 @@
                                         });
                                     }
 
-                                    items.forEach(item => {
-                                        item.addEventListener("click", function(e) {
-                                            e.preventDefault();
-                                            hiddenInput.value = this.getAttribute("data-value");
-                                            btnText.textContent = this.textContent;
-                                            if(buscador) {
-                                                buscador.value = "";
-                                                items.forEach(i => i.style.display = "block");
-                                            }
+                                    if(hiddenInput && btnText) {
+                                        items.forEach(item => {
+                                            item.addEventListener("click", function(e) {
+                                                e.preventDefault();
+                                                hiddenInput.value = this.getAttribute("data-value");
+                                                btnText.textContent = this.textContent;
+                                                if(buscador) {
+                                                    buscador.value = "";
+                                                    items.forEach(i => i.style.display = "block");
+                                                }
+                                            });
                                         });
-                                    });
+                                    }
                                 });
                             </script>
                             </form>
@@ -529,17 +532,209 @@
 
 
 
-        <% } %>
+        
+        </div> <!-- Fin vista-inicio -->
+
+        <!-- VISTA MIS CITAS PREVIAS -->
+        <div id="vista-citas" class="d-none">
+            <h3 class="fw-bold mb-4" style="color: #f59e0b;"><i class="bi bi-calendar-event me-2"></i>Historial de Citas M&eacute;dicas</h3>
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-4">
+                    <input type="date" class="form-control bg-dark text-white border-secondary" id="filtroFechaCitas" style="color-scheme: dark;">
+                </div>
+                <div class="col-md-8 text-md-end mt-3 mt-md-0 d-flex justify-content-md-end align-items-center">
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" id="switchOcultarHistorial" checked>
+                        <label class="form-check-label text-muted ms-2" for="switchOcultarHistorial">Ocultar Historial (Atendidos / Cancelados)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 rounded-4 shadow-sm" style="background: var(--bg-panel); overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-hover text-white align-middle mb-0 w-100" style="background: transparent;">
+                            <thead style="background: rgba(0,0,0,0.2);">
+                                <tr>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Horario</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Especialidad</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">M&eacute;dico Asignado</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%
+                                    List<Map<String, String>> listaCitas = (List<Map<String, String>>) request.getAttribute("listaCitas");
+                                    if(listaCitas != null && !listaCitas.isEmpty()) {
+                                        for(Map<String, String> cita : listaCitas) {
+                                            String estado = cita.get("estado") != null ? cita.get("estado").toUpperCase() : "PENDIENTE";
+                                            String badgeClass = "bg-warning text-dark";
+                                            if(estado.equals("ATENDIDO")) badgeClass = "bg-success";
+                                            else if(estado.equals("CANCELADO")) badgeClass = "bg-danger";
+                                %>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td class="py-3 px-4"><i class="bi bi-clock me-2 text-muted"></i><%= cita.get("fecha") %> <%= cita.get("hora") %></td>
+                                    <td class="py-3 px-4"><%= cita.get("especialidad") %></td>
+                                    <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (cita.get("medico") == null || cita.get("medico").equals("null") || cita.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : cita.get("medico") %></td>
+                                    <td class="py-3 px-4 text-center">
+                                        <span class="badge rounded-pill <%= badgeClass %>"><%= estado %></span>
+                                    </td>
+                                </tr>
+                                <%
+                                        }
+                                    } else {
+                                %>
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">No tienes citas m&eacute;dicas registradas.</td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <!-- VISTA RESULTADOS / EXAMENES -->
+        <div id="vista-resultados" class="d-none">
+            <h3 class="fw-bold mb-4" style="color: #a855f7;"><i class="bi bi-file-earmark-medical me-2"></i>Resultados y Ex&aacute;menes Cl&iacute;nicos</h3>
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-4">
+                    <input type="date" class="form-control bg-dark text-white border-secondary" id="filtroFechaResultados" style="color-scheme: dark;">
+                </div>
+            </div>
+            <div class="card border-0 rounded-4 shadow-sm" style="background: var(--bg-panel); overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-hover text-white align-middle mb-0 w-100" style="background: transparent;">
+                            <thead style="background: rgba(0,0,0,0.2);">
+                                <tr>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Fecha</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Tipo de Examen</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">M&eacute;dico Solicitante</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%
+                                    List<Map<String, String>> listaResultados = (List<Map<String, String>>) request.getAttribute("listaResultados");
+                                    if(listaResultados != null && !listaResultados.isEmpty()) {
+                                        for(Map<String, String> res : listaResultados) {
+                                %>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td class="py-3 px-4"><i class="bi bi-calendar me-2 text-muted"></i><%= res.get("fecha") %></td>
+                                    <td class="py-3 px-4"><%= res.get("tipoExamen") %></td>
+                                    <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (res.get("medico") == null || res.get("medico").equals("null") || res.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : res.get("medico") %></td>
+                                    <td class="py-3 px-4 text-center">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-pdf me-2"></i>Ver PDF</button>
+                                    </td>
+                                </tr>
+                                <%
+                                        }
+                                    } else {
+                                %>
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">No hay resultados registrados.</td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA MIS RECETAS -->
+        <div id="vista-recetas" class="d-none">
+            <h3 class="fw-bold mb-4" style="color: #10b981;"><i class="bi bi-capsule me-2"></i>Mis Recetas M&eacute;dicas</h3>
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-4">
+                    <input type="date" class="form-control bg-dark text-white border-secondary" id="filtroFechaRecetas" style="color-scheme: dark;">
+                </div>
+            </div>
+            <div class="card border-0 rounded-4 shadow-sm" style="background: var(--bg-panel); overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-borderless table-hover text-white align-middle mb-0 w-100" style="background: transparent;">
+                            <thead style="background: rgba(0,0,0,0.2);">
+                                <tr>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Fecha</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">Medicamento / Indicaciones</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary">M&eacute;dico</th>
+                                    <th class="py-3 px-4 fw-semibold text-secondary text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%
+                                    List<Map<String, String>> listaRecetas = (List<Map<String, String>>) request.getAttribute("listaRecetas");
+                                    if(listaRecetas != null && !listaRecetas.isEmpty()) {
+                                        for(Map<String, String> rec : listaRecetas) {
+                                %>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td class="py-3 px-4"><i class="bi bi-calendar me-2 text-muted"></i><%= rec.get("fecha") %></td>
+                                    <td class="py-3 px-4"><%= (rec.get("receta") != null && !rec.get("receta").equals("null")) ? rec.get("receta") : rec.get("diagnostico") %></td>
+                                    <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (rec.get("medico") == null || rec.get("medico").equals("null") || rec.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : rec.get("medico") %></td>
+                                    <td class="py-3 px-4 text-center">
+                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-capsule me-2"></i>Ver Receta</button>
+                                    </td>
+                                </tr>
+                                <%
+                                        }
+                                    } else {
+                                %>
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">No hay recetas m&eacute;dicas registradas.</td>
+                                </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+            function switchPacienteTab(tabId) {
+                const vistas = ['vista-inicio', 'vista-citas', 'vista-resultados', 'vista-recetas'];
+                vistas.forEach(v => {
+                    const el = document.getElementById(v);
+                    if (el) el.classList.add('d-none');
+                });
+                const seleccionada = document.getElementById(tabId);
+                if (seleccionada) seleccionada.classList.remove('d-none');
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
+                let today = new Date().toISOString().split('T')[0];
+                const filtros = ['filtroFechaCitas', 'filtroFechaResultados', 'filtroFechaRecetas'];
+                filtros.forEach(id => {
+                    const input = document.getElementById(id);
+                    if(input) input.setAttribute('max', today);
+                });
+            
+                const switchCitas = document.getElementById('switchOcultarHistorial');
+                if(switchCitas) {
+                    function filtrarHistorial() {
+                        const tbody = document.querySelector('#vista-citas tbody');
+                        if(!tbody) return;
+                        const trs = tbody.querySelectorAll('tr');
+                        trs.forEach(tr => {
+                            const txt = tr.textContent.toUpperCase();
+                            if (txt.includes('ATENDIDO') || txt.includes('CANCELADO') || txt.includes('DESPACHADO')) {
+                                if (switchCitas.checked) {
+                                    tr.classList.add('d-none');
+                                } else {
+                                    tr.classList.remove('d-none');
+                                }
+                            }
+                        });
+                    }
+                    switchCitas.addEventListener('change', filtrarHistorial);
+                    filtrarHistorial();
+                }
+            });
+        </script>
 
 
-
-
-
-
-
-
-
-
-
-
+<% } %>
 
