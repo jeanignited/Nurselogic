@@ -1,5 +1,10 @@
 import io
-with io.open('src/main/webapp/views/dashboard.jsp', 'r', encoding='utf-8') as f:
-    for line in f:
-        if 'simularAperturaDocumento' in line or 'alert(' in line:
-            print(line.strip())
+
+with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8') as f:
+    lines = f.readlines()
+
+for i, line in enumerate(lines):
+    if 'finalHtml =' in line:
+        for j in range(i, i+15):
+            print(lines[j].strip())
+        break

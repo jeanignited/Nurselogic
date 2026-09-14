@@ -1,12 +1,17 @@
-# -*- coding: utf-8 -*-
 import io
 
-with io.open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
+with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8') as f:
     c = f.read()
 
-import re
-pattern = r'(<option value="1">1 - Sin respuesta</option>\s*</select>\s*</div>\s*</div>)(\s*</div>\s*<!-- Tab Diagnostico y Receta -->)'
-c = re.sub(pattern, r'\1\n                      </div>\2', c)
+broken_regex = '''let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^
+]+)
+?/gi;'''
 
-with io.open('src/main/webapp/includes/modals.jsp', 'w', encoding='utf-8') as f:
+fixed_regex = r"let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;"
+
+c = c.replace(broken_regex, fixed_regex)
+
+with io.open('src/main/webapp/includes/scripts.jsp', 'w', encoding='utf-8') as f:
     f.write(c)
+    
+print("Fixed broken regex")

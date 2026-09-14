@@ -440,10 +440,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-          <div class="mb-4">
-              <h6 class="fw-bold text-secondary"><i class="bi bi-journal-medical me-2"></i>Diagnóstico</h6>
-              <div class="p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); white-space: pre-wrap;" id="verDiagTexto"></div>
-          </div>
+          <div class="mb-4" id="verDiagTexto"></div>
           <div>
               <h6 class="fw-bold text-secondary"><i class="bi bi-capsule me-2"></i>Receta Médica</h6>
               <div class="p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); white-space: pre-wrap;" id="verDiagReceta"></div>
@@ -630,7 +627,7 @@
                     <textarea name="diagnostico" id="diagnosticoFinal" class="form-control mb-3" rows="4" placeholder="Describa el diagn&oacute;stico, s&iacute;ntomas y observaciones..." required></textarea>
 
                     <label class="form-label small text-secondary">Receta M&eacute;dica / Prescripci&oacute;n (Opcional)</label>
-                    <textarea name="receta" id="recetaFinal" class="form-control" rows="3" placeholder="Medicamentos, dosis y recomendaciones..."></textarea>
+                    <textarea name="recetaCita" id="recetaFinal" class="form-control" rows="3" placeholder="Medicamentos, dosis y recomendaciones..."></textarea>
                 </div>
 
             </div>

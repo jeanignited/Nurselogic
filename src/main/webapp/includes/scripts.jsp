@@ -2583,43 +2583,46 @@ function evaluarVitales() {
         { id: 'temp_input', badge: 'temp_badge', parse: parseFloat, eval: v => v < 36.5 ? ["Hipotermia", "bg-info text-dark"] : v > 37.5 ? ["Fiebre", "bg-danger"] : ["Normal", "bg-success"] }
     ];
 
-    inputs.forEach(item => {
-        try {
-            let el = document.getElementById(item.id) || document.getElementById('atender_' + item.id);
-            let b  = document.getElementById(item.badge) || document.getElementById('atender_' + item.badge);
-            if (!el || !b) return;
-            if (!el.value || el.value.trim() === '') {
-                // Campo vacío → resetear badge a estado neutro
-                b.innerText   = 'Esperando...';
-                b.className   = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
-                return;
-            }
-            let num = item.parse(el.value);
-            if (!isNaN(num)) {
-                let res = item.eval(num);
-                b.innerText   = res[0];
-                b.className   = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
-            }
-        } catch(e) { /* campo individual no bloquea a los demás */ }
-    });
+    let prefixes = ['', 'atender_'];
 
-    // Presión Arterial — evaluación independiente
-    try {
-        let pa   = document.getElementById('pa_input') || document.getElementById('atender_pa_input');
-        let pa_b = document.getElementById('pa_badge') || document.getElementById('atender_pa_badge');
-        if (!pa || !pa_b) return;
-        if (!pa.value || pa.value.trim() === '') {
-            pa_b.innerText = 'Esperando...';
-            pa_b.className = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
-        } else if (pa.value.includes('/')) {
-            let sist = parseInt(pa.value.split('/')[0]);
-            if (!isNaN(sist)) {
-                let res = sist < 90 ? ["Hipotensión", "bg-warning text-dark"] : sist > 140 ? ["Hipertensión", "bg-danger"] : ["Normal", "bg-success"];
-                pa_b.innerText = res[0];
-                pa_b.className = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+    prefixes.forEach(prefix => {
+        inputs.forEach(item => {
+            try {
+                let el = document.getElementById(prefix + item.id);
+                let b  = document.getElementById(prefix + item.badge);
+                if (!el || !b) return;
+                if (!el.value || el.value.trim() === '') {
+                    b.innerText   = 'Esperando...';
+                    b.className   = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+                    return;
+                }
+                let num = item.parse(el.value);
+                if (!isNaN(num)) {
+                    let res = item.eval(num);
+                    b.innerText   = res[0];
+                    b.className   = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+                }
+            } catch(e) {}
+        });
+
+        // Presión Arterial
+        try {
+            let pa   = document.getElementById(prefix + 'pa_input');
+            let pa_b = document.getElementById(prefix + 'pa_badge');
+            if (!pa || !pa_b) return;
+            if (!pa.value || pa.value.trim() === '') {
+                pa_b.innerText = 'Esperando...';
+                pa_b.className = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+            } else if (pa.value.includes('/')) {
+                let sist = parseInt(pa.value.split('/')[0]);
+                if (!isNaN(sist)) {
+                    let res = sist < 90 ? ["Hipotensión", "bg-warning text-dark"] : sist > 140 ? ["Hipertensión", "bg-danger"] : ["Normal", "bg-success"];
+                    pa_b.innerText = res[0];
+                    pa_b.className = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+                }
             }
-        }
-    } catch(e) { /* ignorar */ }
+        } catch(e) {}
+    });
 }
 function calcularGlasgow() {
     let o = parseInt(document.getElementById('g_ocular').value);
@@ -3324,32 +3327,80 @@ function aplicarPlantillaRol(tipo, el) {
 
 
 
-        function abrirModalVerDiagnostico(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; let rawDiag = btnEl.getAttribute('data-diagnostico');
-if (rawDiag) {
-    let cleanDiag = rawDiag.replace(/Â°C/g, '°C');
-    let vitalSignsHtml = '';
-    let restText = cleanDiag;
-    
-    let regex = /(FC:|PA:|FR:|Temp:|IMC:|Glasgow:|SpO2:|Talla:|Peso:)\s*([^\n]+)\n?/gi;
-    let match;
-    while ((match = regex.exec(cleanDiag)) !== null) {
-         vitalSignsHtml += '<div class="col-md-4 col-6 mb-2"><i class="bi bi-activity text-info me-1"></i><span class="text-light fw-semibold">' + match[1] + '</span> <span class="text-light opacity-75">' + match[2] + '</span></div>';
-         restText = restText.replace(match[0], '');
+        function abrirModalVerDiagnostico(paciente, btnEl) {
+    document.getElementById('verDiagPaciente').innerText = paciente;
+    let rawDiag = btnEl.getAttribute('data-diagnostico');
+    if (rawDiag) {
+        let cleanDiag = rawDiag.replace(/'C/g, 'C');
+        let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
+        
+        let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
+        let match;
+        let restText = cleanDiag;
+        
+        while ((match = regex.exec(cleanDiag)) !== null) {
+            let key = match[1].toLowerCase();
+            let val = match[2].trim();
+            if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
+            else if (key === 'temp') vals.temp = val;
+            else if (vals[key] !== undefined) vals[key] = val;
+            restText = restText.replace(match[0], '');
+        }
+        
+        restText = restText.replace('--- Signos Vitales ---', '').trim();
+        
+        let finalHtml = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluaci\u00F3n Cl\u00EDnica (\u00DAltima Consulta)</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-dark-custom mb-0" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometr\u00EDa</td>
+                            <td class="fw-semibold text-light">\${vals.talla} / \${vals.peso} <span class="ms-2 badge bg-secondary">IMC: \${vals.imc}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
+                            <td class="fw-bold text-warning">\${vals.temp}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presi\u00F3n Arterial</td>
+                            <td class="fw-bold text-info">\${vals.pa}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
+                            <td class="fw-bold text-success">\${vals.fc} / \${vals.sato2}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-lungs me-2 text-secondary"></i>Frec. Respiratoria</td>
+                            <td class="fw-bold text-light">\${vals.fr}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary"></i>Escala Glasgow</td>
+                            <td class="fw-bold text-light">\${vals.glasgow}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info"></i>Diagn\u00F3stico Cl\u00EDnico</td>
+                            <td class="fw-normal text-light" style="white-space: pre-wrap;">\${restText}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>`;
+            
+        document.getElementById('verDiagTexto').innerHTML = finalHtml;
+    } else {
+        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico registrado.';
     }
+    document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta') || 'No aplica';
     
-    let finalHtml = '';
-    if (vitalSignsHtml !== '') {
-         finalHtml += '<div class="row mb-3">' + vitalSignsHtml + '</div><hr class="border-secondary opacity-25">';
+    var mEl = document.getElementById('modalVerDiagnostico');
+    if(mEl) {
+        var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+        m.show();
     }
-    finalHtml += restText.replace(/\n/g, '<br>');
-    document.getElementById('verDiagTexto').innerHTML = '<div class="card bg-dark border-secondary p-3 text-light" style="line-height: 1.8;">' + finalHtml + '</div>';
-} else {
-    document.getElementById('verDiagTexto').innerText = '';
-} document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta'); var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
-
-
-
-        function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
+}
+function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
 
 
 
@@ -3360,28 +3411,79 @@ if (rawDiag) {
         function filtrarFacturasAvanzado() { let input = document.getElementById('buscadorFacturas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaFacturas').value; let table = document.getElementById('tablaFacturas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('td')[1]; if(tdFecha) { let match = tdFecha.innerText.match(/(\d{4}-\d{2}-\d{2})/); if(match) dateValue = match[1]; } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; if (matchTexto && matchFecha) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } }
 
         function abrirModalVerFactura(id, cliente, fecha, total, btnEl) { document.getElementById('verFacId').innerText = id; document.getElementById('verFacCliente').innerText = cliente; document.getElementById('verFacFecha').innerText = fecha; document.getElementById('verFacTotal').innerText = total; document.getElementById('verFacDetalles').innerHTML = btnEl.getAttribute('data-detalles'); var mEl = document.getElementById('modalVerFactura'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
-function abrirModalVerDiagnosticoCama(paciente, btnEl) { document.getElementById('verDiagPaciente').innerText = paciente; let rawDiag = btnEl.getAttribute('data-diagnostico');
-if (rawDiag) {
-    let cleanDiag = rawDiag.replace(/Â°C/g, '°C');
-    let vitalSignsHtml = '';
-    let restText = cleanDiag;
-    
-    let regex = /(FC:|PA:|FR:|Temp:|IMC:|Glasgow:|SpO2:|Talla:|Peso:)\s*([^\n]+)\n?/gi;
-    let match;
-    while ((match = regex.exec(cleanDiag)) !== null) {
-         vitalSignsHtml += '<div class="col-md-4 col-6 mb-2"><i class="bi bi-activity text-info me-1"></i><span class="text-light fw-semibold">' + match[1] + '</span> <span class="text-light opacity-75">' + match[2] + '</span></div>';
-         restText = restText.replace(match[0], '');
+function abrirModalVerDiagnosticoCama(paciente, btnEl) {
+    document.getElementById('verDiagPaciente').innerText = paciente;
+    let rawDiag = btnEl.getAttribute('data-diagnostico');
+    if (rawDiag) {
+        let cleanDiag = rawDiag.replace(/'C/g, 'C');
+        let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
+        
+        let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
+        let match;
+        let restText = cleanDiag;
+        
+        while ((match = regex.exec(cleanDiag)) !== null) {
+            let key = match[1].toLowerCase();
+            let val = match[2].trim();
+            if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
+            else if (key === 'temp') vals.temp = val;
+            else if (vals[key] !== undefined) vals[key] = val;
+            restText = restText.replace(match[0], '');
+        }
+        
+        restText = restText.replace('--- Signos Vitales ---', '').trim();
+        
+        let finalHtml = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluaci\u00F3n Cl\u00EDnica (Cama)</h6>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-dark-custom mb-0" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
+                    <tbody>
+                        <tr>
+                            <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometr\u00EDa</td>
+                            <td class="fw-semibold text-light">\${vals.talla} / \${vals.peso} <span class="ms-2 badge bg-secondary">IMC: \${vals.imc}</span></td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
+                            <td class="fw-bold text-warning">\${vals.temp}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presi\u00F3n Arterial</td>
+                            <td class="fw-bold text-info">\${vals.pa}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
+                            <td class="fw-bold text-success">\${vals.fc} / \${vals.sato2}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-lungs me-2 text-secondary"></i>Frec. Respiratoria</td>
+                            <td class="fw-bold text-light">\${vals.fr}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary"></i>Escala Glasgow</td>
+                            <td class="fw-bold text-light">\${vals.glasgow}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info"></i>Diagn\u00F3stico Cl\u00EDnico</td>
+                            <td class="fw-normal text-light" style="white-space: pre-wrap;">\${restText}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>`;
+            
+        document.getElementById('verDiagTexto').innerHTML = finalHtml;
+    } else {
+        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico registrado.';
     }
-    
-    let finalHtml = '';
-    if (vitalSignsHtml !== '') {
-         finalHtml += '<div class="row mb-3">' + vitalSignsHtml + '</div><hr class="border-secondary opacity-25">';
+    var recetaEl = document.getElementById('verDiagReceta'); 
+    if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizaci\u00F3n)'; }
+    var mEl = document.getElementById('modalVerDiagnostico');
+    if(mEl) {
+        var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+        m.show();
     }
-    finalHtml += restText.replace(/\n/g, '<br>');
-    document.getElementById('verDiagTexto').innerHTML = '<div class="card bg-dark border-secondary p-3 text-light" style="line-height: 1.8;">' + finalHtml + '</div>';
-} else {
-    document.getElementById('verDiagTexto').innerText = '';
-} var recetaEl = document.getElementById('verDiagReceta'); if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizacion)'; } var mEl = document.getElementById('modalVerDiagnostico'); if(mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); } }
+}
 
 
 
@@ -3577,7 +3679,15 @@ window.verFichaClinica = function(cedula) {
                 document.getElementById('fichaNombre').innerText = data.nombres + ' ' + data.apellidos;
                 document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || '--') + ' | Sexo: ' + (data.sexo || '--');
                 document.getElementById('fichaFechaActualizacion').innerHTML = '<i class="bi bi-calendar3 me-1"></i> Fecha: ' + new Date().toLocaleDateString();
-                document.getElementById('fichaEstPeso').innerText = (data.estatura && data.estatura !== '0.0' ? data.estatura : '--') + ' cm / ' + (data.peso && data.peso !== '0.0' ? data.peso : '--') + ' kg';
+                let estFicha = (data.estatura && data.estatura !== '0.0' && data.estatura !== '0') ? parseFloat(data.estatura) : null;
+                let pesoFicha = (data.peso && data.peso !== '0.0' && data.peso !== '0') ? parseFloat(data.peso) : null;
+                let imcTextFicha = '';
+                if (estFicha && pesoFicha) {
+                    let imcCalc = (pesoFicha / (estFicha * estFicha)).toFixed(1);
+                    let st = imcCalc < 18.5 ? 'Bajo' : imcCalc < 25 ? 'Normal' : imcCalc < 30 ? 'Sobrepeso' : 'Obesidad';
+                    imcTextFicha = ' <span class="badge bg-secondary ms-2">IMC: ' + imcCalc + ' (' + st + ')</span>';
+                }
+                document.getElementById('fichaEstPeso').innerHTML = (estFicha ? estFicha : '--') + ' m / ' + (pesoFicha ? pesoFicha : '--') + ' kg' + imcTextFicha;
                 document.getElementById('fichaTemp').innerText = (data.temperatura && data.temperatura !== '0.0' ? data.temperatura : '--') + ' °C';
                 document.getElementById('fichaPresion').innerText = (data.presion || '--');
                 document.getElementById('fichaFcSat').innerText = (data.fc && data.fc !== 0 ? data.fc : '--') + ' lpm / ' + (data.sat && data.sat !== 0 ? data.sat : '--') + ' %';

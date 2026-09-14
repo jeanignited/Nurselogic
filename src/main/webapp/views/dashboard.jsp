@@ -352,15 +352,15 @@
             %>
 
                         <!-- Jumbotron de Bienvenida (Ahora por fuera de los Datos Clinicos) -->
-            <div class="p-5 mb-5 rounded-4 shadow-sm text-white position-relative overflow-hidden" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-left: 5px solid #3b82f6;">
+            <div class="p-5 mb-5 rounded-4 shadow-sm position-relative overflow-hidden" style="background: var(--bg-panel); border-left: 5px solid #3b82f6; border: var(--glass-border);">
                 <!-- Marca de Agua -->
                 <i class="bi bi-heart-pulse text-primary position-absolute" style="font-size: 15rem; opacity: 0.05; right: -2%; top: 50%; transform: translateY(-50%) rotate(-15deg); pointer-events: none;"></i>
                 
                 <div class="container-fluid py-2 position-relative" style="z-index: 2;">
-                    <h1 class="display-5 fw-bold mb-3">
+                    <h1 class="display-5 fw-bold mb-3 text-theme">
                         Bienvenido, <%= (miHC != null && miHC.getNombres() != null) ? miHC.getNombres().split(" ")[0] : "Paciente" %>
                     </h1>
-                    <p class="fs-5 text-light opacity-75 mb-4" style="max-width: 800px; line-height: 1.6;">
+                    <p class="fs-5 opacity-75 mb-4 text-secondary" style="max-width: 800px; line-height: 1.6;">
                         Bienvenido a NurseLogic. Tu ecosistema de salud digital dise&ntilde;ado para darte control total sobre tu historial cl&iacute;nico, facilitar el agendamiento de tus citas y mantener una comunicaci&oacute;n directa con tus especialistas.
                     </p>
                     <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow" onclick="document.getElementById('contenedor-agendar').scrollIntoView({behavior: 'smooth'})">
@@ -487,7 +487,7 @@
                                     </div>
                                 </div>
 
-                                <div class="p-3 mt-3 mb-3 rounded bg-dark border border-secondary text-muted small">
+                                <div class="p-3 mt-3 mb-3 rounded border border-secondary small" style="background: var(--bg-panel); color: var(--text-color);">
                                     <i class="bi bi-info-circle text-primary me-2"></i><strong>Nota importante:</strong> Por favor, pres&eacute;ntate 15 minutos antes de tu consulta programada. En caso de presentar s&iacute;ntomas graves o emergencias, dir&iacute;gete inmediatamente a nuestra &aacute;rea de Urgencias y Triage.
                                 </div>
 
