@@ -1001,9 +1001,15 @@
                 <option value="5">Ginecolog&iacute;a</option>
              </select>
           </div>
-          <div class="mb-3">
-             <label class="form-label small text-secondary">Fecha y Hora</label>
-             <input type="datetime-local" id="citaFechaHora" name="fechaHora" class="form-control" required autocomplete="off">
+          <div class="row g-2 mb-3">
+             <div class="col-6">
+                 <label class="form-label small text-secondary">Fecha</label>
+                 <input type="date" id="citaFecha" name="fecha" class="form-control" required autocomplete="off">
+             </div>
+             <div class="col-6">
+                 <label class="form-label small text-secondary">Hora</label>
+                 <input type="time" name="hora" class="form-control" required autocomplete="off">
+             </div>
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 mt-3">

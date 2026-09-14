@@ -1,0 +1,46 @@
+function evaluarVitales() {
+    let inputs = [
+        { id: 'fc_input',   badge: 'fc_badge',   parse: parseInt,   eval: v => v < 60 ? ["Bradicardia", "bg-warning text-dark"] : v > 100 ? ["Taquicardia", "bg-danger"] : ["Normal", "bg-success"] },
+        { id: 'fr_input',   badge: 'fr_badge',   parse: parseInt,   eval: v => v < 12 ? ["Bradipnea",   "bg-warning text-dark"] : v > 20  ? ["Taquipnea",   "bg-danger"] : ["Normal", "bg-success"] },
+        { id: 'sat_input',  badge: 'sat_badge',  parse: parseInt,   eval: v => v < 90 ? ["Hipoxia Severa", "bg-danger"] : v < 95 ? ["Hipoxia Leve", "bg-warning text-dark"] : ["Normal", "bg-success"] },
+        { id: 'temp_input', badge: 'temp_badge', parse: parseFloat, eval: v => v < 36.5 ? ["Hipotermia", "bg-info text-dark"] : v > 37.5 ? ["Fiebre", "bg-danger"] : ["Normal", "bg-success"] }
+    ];
+
+    inputs.forEach(item => {
+        try {
+            let el = document.getElementById(item.id) || document.getElementById('atender_' + item.id);
+            let b  = document.getElementById(item.badge) || document.getElementById('atender_' + item.badge);
+            if (!el || !b) return;
+            if (!el.value || el.value.trim() === '') {
+                // Campo vacío → resetear badge a estado neutro
+                b.innerText   = 'Esperando...';
+                b.className   = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+                return;
+            }
+            let num = item.parse(el.value);
+            if (!isNaN(num)) {
+                let res = item.eval(num);
+                b.innerText   = res[0];
+                b.className   = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+            }
+        } catch(e) { /* campo individual no bloquea a los demás */ }
+    });
+
+    // Presión Arterial — evaluación independiente
+    try {
+        let pa   = document.getElementById('pa_input') || document.getElementById('atender_pa_input');
+        let pa_b = document.getElementById('pa_badge') || document.getElementById('atender_pa_badge');
+        if (!pa || !pa_b) return;
+        if (!pa.value || pa.value.trim() === '') {
+            pa_b.innerText = 'Esperando...';
+            pa_b.className = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+        } else if (pa.value.includes('/')) {
+            let sist = parseInt(pa.value.split('/')[0]);
+            if (!isNaN(sist)) {
+                let res = sist < 90 ? ["Hipotensión", "bg-warning text-dark"] : sist > 140 ? ["Hipertensión", "bg-danger"] : ["Normal", "bg-success"];
+                pa_b.innerText = res[0];
+                pa_b.className = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+            }
+        }
+    } catch(e) { /* ignorar */ }
+}

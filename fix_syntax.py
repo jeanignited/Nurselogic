@@ -1,11 +1,11 @@
 import io
 
-with io.open('src/main/webapp/includes/scripts.jsp', 'r', encoding='utf-8', errors='ignore') as f:
+with io.open('src/main/java/com/nurselogic/controller/CitaServlet.java', 'r', encoding='utf-8') as f:
     c = f.read()
 
-c = c.replace('};\n\n};\n\n// Inicializar estado del dropdown si es que existe', '};\n\n// Inicializar estado del dropdown si es que existe')
+c = c.replace('request.getRequestDispatcher("/dashboard").forward(request, response); else {\n            response.sendRedirect("dashboard");\n        }', 'request.getRequestDispatcher("/dashboard").forward(request, response);')
 
-with io.open('src/main/webapp/includes/scripts.jsp', 'w', encoding='utf-8') as f:
+with io.open('src/main/java/com/nurselogic/controller/CitaServlet.java', 'w', encoding='utf-8') as f:
     f.write(c)
 
 print("Fixed syntax error")

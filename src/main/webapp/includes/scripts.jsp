@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
 
-            validarSignos();
+            
 
 
 
@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
 
-            validarSignos();
+            
 
 
 
@@ -510,7 +510,7 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
 
-            validarSignos();
+            
 
 
 
@@ -1287,134 +1287,6 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
             calcularIMCPaciente();
-
-
-
-        }
-
-
-
-
-
-
-
-        function validarSignos() {
-
-
-
-            // Validar Temperatura
-
-
-
-            let tempInput = document.getElementById('temp');
-
-
-
-            let alertaTemp = document.getElementById('alertaTemp');
-
-
-
-            if (tempInput.value) {
-
-
-
-                let temp = parseFloat(tempInput.value);
-
-
-
-                if (temp > 38.0) { alertaTemp.innerText = "Alta (Fiebre)"; alertaTemp.classList.remove('d-none'); }
-
-
-
-                else if (temp < 35.0) { alertaTemp.innerText = "Baja (Hipotermia)"; alertaTemp.classList.remove('d-none'); }
-
-
-
-                else { alertaTemp.classList.add('d-none'); }
-
-
-
-            } else { alertaTemp.classList.add('d-none'); }
-
-
-
-
-
-
-
-            // Validar Frecuencia card aca
-
-
-
-            let fcInput = document.getElementById('fc');
-
-
-
-            let alertaFc = document.getElementById('alertaFc');
-
-
-
-            if (fcInput.value) {
-
-
-
-                let fc = parseInt(fcInput.value);
-
-
-
-                if (fc > 100) { alertaFc.innerText = "Taquicardia"; alertaFc.classList.remove('d-none'); }
-
-
-
-                else if (fc < 60) { alertaFc.innerText = "Bradicardia"; alertaFc.classList.remove('d-none'); }
-
-
-
-                else { alertaFc.classList.add('d-none'); }
-
-
-
-            } else { alertaFc.classList.add('d-none'); }
-
-
-
-
-
-
-
-            // Validar Saturación
-
-
-
-            let satInput = document.getElementById('sat');
-
-
-
-            let alertaSat = document.getElementById('alertaSat');
-
-
-
-            if (satInput.value) {
-
-
-
-                let sat = parseInt(satInput.value);
-
-
-
-                if (sat < 90) { alertaSat.innerText = "Hipoxemia severa"; alertaSat.classList.remove('d-none'); }
-
-
-
-                else if (sat < 95) { alertaSat.innerText = "Hipoxemia leve"; alertaSat.classList.remove('d-none'); }
-
-
-
-                else { alertaSat.classList.add('d-none'); }
-
-
-
-            } else { alertaSat.classList.add('d-none'); }
 
 
 
@@ -2265,11 +2137,11 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
         }
 
         function configurarMinFechaCita() {
-            let input = document.getElementById('citaFechaHora');
+            let input = document.getElementById('citaFecha');
             if (input) {
                 let now = new Date();
                 now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-                input.min = now.toISOString().slice(0, 16);
+                input.min = now.toISOString().split('T')[0];
             }
         }
         
@@ -3712,8 +3584,23 @@ window.verFichaClinica = function(cedula) {
                 document.getElementById('fichaEnfermedades').innerText = data.enfermedad && data.enfermedad !== 'null' && data.enfermedad !== 'Ninguna' ? data.enfermedad : 'Ninguna registrada';
                 document.getElementById('fichaAlergias').innerText = data.alergias && data.alergias !== 'null' && data.alergias !== 'Ninguna' ? data.alergias : 'Ninguna registrada';
                 document.getElementById('fichaGlasgow').innerText = (data.glasgow && data.glasgow !== 'null' && data.glasgow !== '0') ? data.glasgow + ' / 15' : 'No registrado';
-                document.getElementById('fichaDiagnostico').innerText = (data.diagnosticoClinico && data.diagnosticoClinico !== 'null' && data.diagnosticoClinico.trim() !== '') ? data.diagnosticoClinico : 'No registrado';
-                document.getElementById('fichaReceta').innerText = (data.receta && data.receta !== 'null' && data.receta.trim() !== '') ? data.receta : 'No registrado';
+                let diagStr = (data.diagnosticoClinico && data.diagnosticoClinico !== 'null' && data.diagnosticoClinico.trim() !== '') ? data.diagnosticoClinico : 'No registrado';
+                if (diagStr.length > 80 && diagStr !== 'No registrado') {
+                    let safeDiag = diagStr.replace(/'/g, "\\'").replace(/\r?\n/g, "<br>").replace(/"/g, "&quot;");
+                    let btn = '<button class="btn btn-sm btn-outline-info ms-2 py-0" style="font-size: 0.75rem;" onclick="Swal.fire({title: \'Diagnóstico\', html: \'' + safeDiag + '\', background: \'var(--bg-panel)\', color: \'var(--text-color)\'})">Ver detalles</button>';
+                    document.getElementById('fichaDiagnostico').innerHTML = diagStr.substring(0, 80) + '...' + btn;
+                } else {
+                    document.getElementById('fichaDiagnostico').innerText = diagStr;
+                }
+
+                let recStr = (data.receta && data.receta !== 'null' && data.receta.trim() !== '') ? data.receta : 'No registrado';
+                if (recStr.length > 80 && recStr !== 'No registrado') {
+                    let safeRec = recStr.replace(/'/g, "\\'").replace(/\r?\n/g, "<br>").replace(/"/g, "&quot;");
+                    let btn = '<button class="btn btn-sm btn-outline-success ms-2 py-0" style="font-size: 0.75rem;" onclick="Swal.fire({title: \'Receta Médica\', html: \'' + safeRec + '\', background: \'var(--bg-panel)\', color: \'var(--text-color)\'})">Ver detalles</button>';
+                    document.getElementById('fichaReceta').innerHTML = recStr.substring(0, 80) + '...' + btn;
+                } else {
+                    document.getElementById('fichaReceta').innerText = recStr;
+                }
                 
                 let container = document.getElementById('fichaAlertasContenedor');
                 container.innerHTML = '';

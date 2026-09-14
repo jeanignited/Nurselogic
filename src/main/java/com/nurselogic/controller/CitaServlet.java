@@ -31,6 +31,13 @@ public class CitaServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String fecha = request.getParameter("fecha");
         String hora = request.getParameter("hora");
+        
+        String fechaHora = request.getParameter("fechaHora");
+        if (fechaHora != null && !fechaHora.trim().isEmpty() && fechaHora.contains("T")) {
+            String[] parts = fechaHora.split("T");
+            fecha = parts[0];
+            hora = parts[1];
+        }
         String idEspecialidad = request.getParameter("especialidad");
         String paramPac = request.getParameter("pacienteId");
         String sessPac = (String) request.getSession().getAttribute("pacienteId");
@@ -58,7 +65,7 @@ public class CitaServlet extends HttpServlet {
                 if (!pacienteDAO.registrarPaciente(p)) throw new Exception("No se pudo registrar el paciente.");
                 paramPac = String.valueOf(p.getId());
             } catch (Exception e) {
-                request.setAttribute("error", "Error al registrar el nuevo paciente: " + e.getMessage());
+                request.getSession().setAttribute("error", "Error al registrar el nuevo paciente: " + e.getMessage());
                 request.getRequestDispatcher("/dashboard").forward(request, response);
                 return;
             }
@@ -67,9 +74,9 @@ public class CitaServlet extends HttpServlet {
         CitaService.AgendarResult result = citaService.agendarCita(fecha, hora, idEspecialidad, paramPac, sessPac);
         
         if (result.success) {
-            request.setAttribute("mensaje", result.message);
+            request.getSession().setAttribute("mensaje", result.message);
         } else {
-            request.setAttribute("error", result.message);
+            request.getSession().setAttribute("error", result.message);
         }
 
         request.getRequestDispatcher("/dashboard").forward(request, response);
