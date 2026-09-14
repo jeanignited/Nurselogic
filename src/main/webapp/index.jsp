@@ -120,6 +120,12 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+          @media print {
+              .print-text-black, .text-warning, .text-info, .text-success, .text-danger, .text-primary, .text-secondary, .text-light, .text-white, .text-purple { color: black !important; }
+              .badge { color: black !important; border: 1px solid black !important; background: transparent !important; }
+              body { color: black !important; }
+          }
 </style>
 
     <script>

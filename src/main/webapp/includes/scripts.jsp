@@ -89,7 +89,23 @@ function initDashboardParticles() {
 
 document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
+
+function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
+    let modalBody = document.querySelector(modalId + ' .modal-body');
+    let contenido = modalBody ? modalBody.innerHTML : '';
+    let ventana = window.open('', '', 'width=800,height=600');
+    ventana.document.write('<html><head><title>Historial Clínico</title>');
+    ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+    ventana.document.write('<style>@media print { .print-text-black, .text-warning, .text-info, .text-success, .text-danger, .text-primary, .text-secondary, .text-light, .text-white, .text-purple { color: black !important; } .badge { color: black !important; border: 1px solid black !important; background: transparent !important; } body { color: black !important; } }</style>');
+    ventana.document.write('</head><body><div class="container mt-4">');
+    ventana.document.write('<h2>Historial Clínico del Paciente</h2><hr>');
+    ventana.document.write(contenido.replace(/´C/g, 'C'));
+    ventana.document.write('</div></body></html>');
+    ventana.document.close();
+    setTimeout(() => { ventana.print(); ventana.close(); }, 500);
+}
 </script>
+
 <script>
 
 
@@ -2950,7 +2966,7 @@ window.buscarPacienteReceta = function(cedula) {
                 }
             })
             .catch(err => {
-                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger print-text-black">Error al buscar cédula</span>';
                 if (btn) btn.disabled = false;
             });
     } else {
@@ -3169,7 +3185,7 @@ window.buscarPacienteCama = function(cedula) {
                 }
             })
             .catch(err => {
-                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger">Error al buscar cédula</span>';
+                if (infoDiv) infoDiv.innerHTML = '<span class="text-danger print-text-black">Error al buscar cédula</span>';
                 if (btn) btn.disabled = false;
             });
     } else {
@@ -3327,78 +3343,118 @@ function aplicarPlantillaRol(tipo, el) {
 
 
 
-        function abrirModalVerDiagnostico(paciente, btnEl) {
+        function abrirModalVerDiagnostico(paciente, cedula, btnEl) {
     document.getElementById('verDiagPaciente').innerText = paciente;
     let rawDiag = btnEl.getAttribute('data-diagnostico');
-    if (rawDiag) {
-        let cleanDiag = rawDiag.replace(/'C/g, 'C');
-        let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
-        
-        let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
-        let match;
-        let restText = cleanDiag;
-        
-        while ((match = regex.exec(cleanDiag)) !== null) {
-            let key = match[1].toLowerCase();
-            let val = match[2].trim();
-            if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
-            else if (key === 'temp') vals.temp = val;
-            else if (vals[key] !== undefined) vals[key] = val;
-            restText = restText.replace(match[0], '');
-        }
-        
-        restText = restText.replace('--- Signos Vitales ---', '').trim();
-        
-        let finalHtml = `
+    let recetaText = btnEl.getAttribute('data-receta') || 'Ninguna';
+    if (!rawDiag) {
+        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico';
+        return;
+    }
+    
+    let cleanDiag = rawDiag.replace(/'C/g, 'C');
+    let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
+    let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
+    let match;
+    let restText = cleanDiag;
+    
+    while ((match = regex.exec(cleanDiag)) !== null) {
+        let key = match[1].toLowerCase();
+        let val = match[2].trim();
+        if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
+        else if (key === 'temp') vals.temp = val;
+        else if (vals[key] !== undefined) vals[key] = val;
+        restText = restText.replace(match[0], '');
+    }
+    restText = restText.replace('--- Signos Vitales ---', '').trim();
+    
+    Swal.fire({title: 'Cargando...', text: 'Obteniendo historial completo...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
+    
+    fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
+        .then(r => r.json())
+        .then(data => {
+            Swal.close();
+            let enfText = (data.enfermedad && data.enfermedad !== 'null' && data.enfermedad !== 'Ninguna') ? data.enfermedad : 'Ninguna registrada';
+            let alergiasText = (data.alergias && data.alergias !== 'null' && data.alergias !== 'Ninguna') ? `<span class="text-danger fw-bold">${data.alergias}</span>` : '<span class="text-danger fw-bold">Ninguna registrada</span>';
+            
+            let aiHtml = '';
+            let alergiasVal = (data.alergias || '').trim().toLowerCase();
+            let tieneAlergiaReal = alergiasVal !== '' && alergiasVal !== 'ninguna' && alergiasVal !== 'null' && alergiasVal !== 'ninguna registrada';
+            if (tieneAlergiaReal) {
+                aiHtml += '<div class="alert alert-danger py-2 mb-2 border-0" style="background: rgba(220,38,38,0.1);"><i class="bi bi-exclamation-octagon-fill me-2"></i>Paciente reporta alergias. Riesgo de shock anafil\u00E1ctico.</div>';
+            }
+            if (vals.pa && vals.pa !== '--') {
+                let parts = vals.pa.split('/');
+                if (parts.length === 2 && parseInt(parts[0]) >= 140) {
+                    aiHtml += '<div class="alert alert-warning py-2 mb-2 border-0" style="background: rgba(245,158,11,0.1);"><i class="bi bi-heart-pulse-fill me-2"></i>Hipertensi\u00F3n detectada. Monitorear signos vitales.</div>';
+                }
+            }
+            if (aiHtml === '') {
+                aiHtml = '<div class="alert alert-success py-2 mb-0 border-0" style="background: rgba(16,185,129,0.1);"><i class="bi bi-check-circle-fill me-2"></i>Par\u00E1metros estables. Ninguna alerta cl\u00EDnica urgente.</div>';
+            }
+
+            let finalHtml = `
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluaci\u00F3n Cl\u00EDnica (\u00DAltima Consulta)</h6>
             </div>
             <div class="table-responsive">
-                <table class="table table-bordered table-dark-custom mb-0" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
+                <table class="table table-bordered table-dark-custom mb-4" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
                     <tbody>
                         <tr>
-                            <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometr\u00EDa</td>
+                            <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info print-text-black"></i>Antropometr\u00EDa</td>
                             <td class="fw-semibold text-light">\${vals.talla} / \${vals.peso} <span class="ms-2 badge bg-secondary">IMC: \${vals.imc}</span></td>
                         </tr>
                         <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
-                            <td class="fw-bold text-warning">\${vals.temp}</td>
+                            <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning print-text-black"></i>Temperatura</td>
+                            <td class="fw-bold text-warning print-text-black">\${vals.temp}</td>
                         </tr>
                         <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presi\u00F3n Arterial</td>
-                            <td class="fw-bold text-info">\${vals.pa}</td>
+                            <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger print-text-black"></i>Presi\u00F3n Arterial</td>
+                            <td class="fw-bold text-info print-text-black">\${vals.pa}</td>
                         </tr>
                         <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
-                            <td class="fw-bold text-success">\${vals.fc} / \${vals.sato2}</td>
+                            <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success print-text-black"></i>Pulso / Sat. O2</td>
+                            <td class="fw-bold text-success print-text-black">\${vals.fc} / \${vals.sato2}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-virus me-2" style="color: #a855f7;"></i>Enfermedades</td>
+                            <td class="fw-normal text-light">\${enfText}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-exclamation-triangle-fill me-2 text-danger print-text-black"></i>Alergias</td>
+                            <td class="fw-normal">\${alergiasText}</td>
                         </tr>
                         <tr>
                             <td class="fw-bold text-secondary"><i class="bi bi-lungs me-2 text-secondary"></i>Frec. Respiratoria</td>
                             <td class="fw-bold text-light">\${vals.fr}</td>
                         </tr>
                         <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary"></i>Escala Glasgow</td>
+                            <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary print-text-black"></i>Escala Glasgow</td>
                             <td class="fw-bold text-light">\${vals.glasgow}</td>
                         </tr>
                         <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info"></i>Diagn\u00F3stico Cl\u00EDnico</td>
+                            <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info print-text-black"></i>Diagn\u00F3stico Cl\u00EDnico</td>
                             <td class="fw-normal text-light" style="white-space: pre-wrap;">\${restText}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-bold text-secondary"><i class="bi bi-capsule me-2 text-success print-text-black"></i>Receta / Prescripci\u00F3n</td>
+                            <td class="fw-normal text-light" style="white-space: pre-wrap;">\${recetaText}</td>
                         </tr>
                     </tbody>
                 </table>
-            </div>`;
+            </div>
+            <h6 class="fw-bold text-info mb-3"><i class="bi bi-cpu me-2"></i>Inteligencia Cl\u00EDnica</h6>
+            \${aiHtml}
+            `;
             
-        document.getElementById('verDiagTexto').innerHTML = finalHtml;
-    } else {
-        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico registrado.';
-    }
-    document.getElementById('verDiagReceta').innerText = btnEl.getAttribute('data-receta') || 'No aplica';
-    
-    var mEl = document.getElementById('modalVerDiagnostico');
-    if(mEl) {
-        var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
-        m.show();
-    }
+            document.getElementById('verDiagTexto').innerHTML = finalHtml;
+            
+            var mEl = document.getElementById('modalVerDiagnostico');
+            if(mEl) {
+                var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+                m.show();
+            }
+        });
 }
 function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
 
@@ -3414,70 +3470,87 @@ function filtrarCitasAvanzado() { let input = document.getElementById('buscadorC
 function abrirModalVerDiagnosticoCama(paciente, btnEl) {
     document.getElementById('verDiagPaciente').innerText = paciente;
     let rawDiag = btnEl.getAttribute('data-diagnostico');
-    if (rawDiag) {
-        let cleanDiag = rawDiag.replace(/'C/g, 'C');
-        let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
-        
-        let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
-        let match;
-        let restText = cleanDiag;
-        
-        while ((match = regex.exec(cleanDiag)) !== null) {
-            let key = match[1].toLowerCase();
-            let val = match[2].trim();
-            if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
-            else if (key === 'temp') vals.temp = val;
-            else if (vals[key] !== undefined) vals[key] = val;
-            restText = restText.replace(match[0], '');
-        }
-        
-        restText = restText.replace('--- Signos Vitales ---', '').trim();
-        
-        let finalHtml = `
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluaci\u00F3n Cl\u00EDnica (Cama)</h6>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-bordered table-dark-custom mb-0" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
-                    <tbody>
-                        <tr>
-                            <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometr\u00EDa</td>
-                            <td class="fw-semibold text-light">\${vals.talla} / \${vals.peso} <span class="ms-2 badge bg-secondary">IMC: \${vals.imc}</span></td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
-                            <td class="fw-bold text-warning">\${vals.temp}</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presi\u00F3n Arterial</td>
-                            <td class="fw-bold text-info">\${vals.pa}</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
-                            <td class="fw-bold text-success">\${vals.fc} / \${vals.sato2}</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-lungs me-2 text-secondary"></i>Frec. Respiratoria</td>
-                            <td class="fw-bold text-light">\${vals.fr}</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary"></i>Escala Glasgow</td>
-                            <td class="fw-bold text-light">\${vals.glasgow}</td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info"></i>Diagn\u00F3stico Cl\u00EDnico</td>
-                            <td class="fw-normal text-light" style="white-space: pre-wrap;">\${restText}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>`;
-            
-        document.getElementById('verDiagTexto').innerHTML = finalHtml;
-    } else {
-        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico registrado.';
+    let recetaText = 'No aplica (Hospitalizaci\u00F3n)';
+    if (!rawDiag) {
+        document.getElementById('verDiagTexto').innerText = 'No hay diagn\u00F3stico';
+        return;
     }
-    var recetaEl = document.getElementById('verDiagReceta'); 
-    if(recetaEl) { recetaEl.innerText = 'No aplica (Hospitalizaci\u00F3n)'; }
+    
+    let cleanDiag = rawDiag.replace(/'C/g, 'C');
+    let vals = { talla: '--', peso: '--', imc: '--', fc: '--', pa: '--', fr: '--', sato2: '--', temp: '--', glasgow: '--' };
+    let regex = /(FC|PA|FR|Temp|IMC|Glasgow|SpO2|SatO2|Talla|Peso):\s*([^\n]+)\n?/gi;
+    let match;
+    let restText = cleanDiag;
+    
+    while ((match = regex.exec(cleanDiag)) !== null) {
+        let key = match[1].toLowerCase();
+        let val = match[2].trim();
+        if (key === 'sato2' || key === 'spo2') vals.sato2 = val;
+        else if (key === 'temp') vals.temp = val;
+        else if (vals[key] !== undefined) vals[key] = val;
+        restText = restText.replace(match[0], '');
+    }
+    restText = restText.replace('--- Signos Vitales ---', '').trim();
+    
+    let aiHtml = '';
+    if (vals.pa && vals.pa !== '--') {
+        let parts = vals.pa.split('/');
+        if (parts.length === 2 && parseInt(parts[0]) >= 140) {
+            aiHtml += '<div class="alert alert-warning py-2 mb-2 border-0" style="background: rgba(245,158,11,0.1);"><i class="bi bi-heart-pulse-fill me-2"></i>Hipertensi\u00F3n detectada. Monitorear signos vitales.</div>';
+        }
+    }
+    if (aiHtml === '') {
+        aiHtml = '<div class="alert alert-success py-2 mb-0 border-0" style="background: rgba(16,185,129,0.1);"><i class="bi bi-check-circle-fill me-2"></i>Par\u00E1metros estables. Ninguna alerta cl\u00EDnica urgente.</div>';
+    }
+
+    let finalHtml = `
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="fw-bold text-primary m-0"><i class="bi bi-heart-pulse-fill text-danger me-2"></i>Evaluaci\u00F3n Cl\u00EDnica (Cama)</h6>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered table-dark-custom mb-4" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
+            <tbody>
+                <tr>
+                    <td class="fw-bold text-secondary" style="width: 30%;"><i class="bi bi-person-bounding-box me-2 text-info print-text-black"></i>Antropometr\u00EDa</td>
+                    <td class="fw-semibold text-light">\${vals.talla} / \${vals.peso} <span class="ms-2 badge bg-secondary">IMC: \${vals.imc}</span></td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning print-text-black"></i>Temperatura</td>
+                    <td class="fw-bold text-warning print-text-black">\${vals.temp}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger print-text-black"></i>Presi\u00F3n Arterial</td>
+                    <td class="fw-bold text-info print-text-black">\${vals.pa}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success print-text-black"></i>Pulso / Sat. O2</td>
+                    <td class="fw-bold text-success print-text-black">\${vals.fc} / \${vals.sato2}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-lungs me-2 text-secondary"></i>Frec. Respiratoria</td>
+                    <td class="fw-bold text-light">\${vals.fr}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-eye me-2 text-primary print-text-black"></i>Escala Glasgow</td>
+                    <td class="fw-bold text-light">\${vals.glasgow}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-clipboard2-pulse me-2 text-info print-text-black"></i>Diagn\u00F3stico Cl\u00EDnico</td>
+                    <td class="fw-normal text-light" style="white-space: pre-wrap;">\${restText}</td>
+                </tr>
+                <tr>
+                    <td class="fw-bold text-secondary"><i class="bi bi-capsule me-2 text-success print-text-black"></i>Receta / Prescripci\u00F3n</td>
+                    <td class="fw-normal text-light" style="white-space: pre-wrap;">\${recetaText}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <h6 class="fw-bold text-info mb-3"><i class="bi bi-cpu me-2"></i>Inteligencia Cl\u00EDnica</h6>
+    \${aiHtml}
+    `;
+    
+    document.getElementById('verDiagTexto').innerHTML = finalHtml;
+    
     var mEl = document.getElementById('modalVerDiagnostico');
     if(mEl) {
         var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
@@ -3606,7 +3679,7 @@ window.renderizarTablaCarrito = function() {
         let tr = document.createElement('tr');
         tr.innerHTML = 
             '<td class="align-middle fw-semibold">' + item.nombre + '</td>' +
-            '<td class="align-middle text-info">$' + item.precio.toFixed(2) + '</td>' +
+            '<td class="align-middle text-info print-text-black">$' + item.precio.toFixed(2) + '</td>' +
             '<td class="align-middle">' +
                 '<div class="input-group input-group-sm" style="width: 100px;">' +
                     '<button class="btn btn-outline-secondary" type="button" onclick="cambiarCantidadCarrito(' + item.id + ', -1)">-</button>' +
@@ -3963,31 +4036,20 @@ function initDashboardParticles() {
 document.addEventListener('DOMContentLoaded', initDashboardParticles);
 
 
-function imprimirHistorialMedico() {
-    let modalBody = document.querySelector('#modalVerDiagnostico .modal-body');
-    let contenido = modalBody ? modalBody.innerHTML : '';
-    let ventana = window.open('', '', 'width=800,height=600');
-    ventana.document.write('<html><head><title>Historial Clínico</title>');
-    ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
-    ventana.document.write('</head><body><div class="container mt-4">');
-    ventana.document.write('<h2>Historial Clínico del Paciente</h2><hr>');
-    ventana.document.write(contenido.replace(/Â°C/g, '°C'));
-    ventana.document.write('</div></body></html>');
-    ventana.document.close();
-    setTimeout(() => { ventana.print(); ventana.close(); }, 500);
-}
 
-function imprimirHistorialMedico() {
-    let modalBody = document.querySelector('#modalVerDiagnostico .modal-body');
+function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
+    let modalBody = document.querySelector(modalId + ' .modal-body');
     let contenido = modalBody ? modalBody.innerHTML : '';
     let ventana = window.open('', '', 'width=800,height=600');
     ventana.document.write('<html><head><title>Historial Clínico</title>');
     ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+    ventana.document.write('<style>@media print { .print-text-black, .text-warning, .text-info, .text-success, .text-danger, .text-primary, .text-secondary, .text-light, .text-white, .text-purple { color: black !important; } .badge { color: black !important; border: 1px solid black !important; background: transparent !important; } body { color: black !important; } }</style>');
     ventana.document.write('</head><body><div class="container mt-4">');
     ventana.document.write('<h2>Historial Clínico del Paciente</h2><hr>');
-    ventana.document.write(contenido.replace(/Â°C/g, '°C'));
+    ventana.document.write(contenido.replace(/´C/g, 'C'));
     ventana.document.write('</div></body></html>');
     ventana.document.close();
     setTimeout(() => { ventana.print(); ventana.close(); }, 500);
 }
 </script>
+

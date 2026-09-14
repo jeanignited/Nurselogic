@@ -22,7 +22,7 @@
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">
-                    <i class="bi bi-shield-lock me-2 text-primary"></i>Cambiar Rol de Usuario
+                    <i class="bi bi-shield-lock me-2 text-primary print-text-black"></i>Cambiar Rol de Usuario
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="cerrarModalRol()"></button>
             </div>
@@ -58,7 +58,7 @@
         <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">
-                    <i class="bi bi-magic me-2 text-warning"></i>Asistente de Creación
+                    <i class="bi bi-magic me-2 text-warning print-text-black"></i>Asistente de Creación
                 </h5>
                 <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevoRol()"></button>
             </div>
@@ -436,15 +436,12 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-file-medical-fill me-2 text-info"></i>Historial Clínico - <span id="verDiagPaciente" class="text-info"></span></h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-file-medical-fill me-2 text-info print-text-black"></i>Historial Clínico - <span id="verDiagPaciente" class="text-info print-text-black"></span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
           <div class="mb-4" id="verDiagTexto"></div>
-          <div>
-              <h6 class="fw-bold text-secondary"><i class="bi bi-capsule me-2"></i>Receta Médica</h6>
-              <div class="p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); white-space: pre-wrap;" id="verDiagReceta"></div>
-          </div>
+          
       </div>
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-outline-info px-4 me-auto" onclick="imprimirHistorialMedico()"><i class="bi bi-printer"></i> Imprimir</button>
@@ -459,7 +456,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Consulta M&eacute;dica Avanzada - <span id="atenderCitaPaciente" class="text-info"></span></h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-heart-pulse-fill me-2 text-danger print-text-black"></i>Consulta M&eacute;dica Avanzada - <span id="atenderCitaPaciente" class="text-info print-text-black"></span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
@@ -519,7 +516,7 @@
                           </div>
                       </div>
 
-                      <h6 class="text-theme pb-2 mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-person-bounding-box me-2 text-primary"></i>Evaluación Antropométrica (IMC)</h6>
+                      <h6 class="text-theme pb-2 mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-person-bounding-box me-2 text-primary print-text-black"></i>Evaluación Antropométrica (IMC)</h6>
                       <div class="row g-3 mb-4 align-items-center">
                           <div class="col-md-3">
                               <label class="form-label small text-secondary">Estatura (m)</label>
@@ -584,7 +581,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid var(--theme-color);">
                         <h6 class="m-0 text-info fw-bold">Puntaje Total Glasgow:</h6>
                         <span id="glasgowTotal" class="badge bg-primary fs-5 px-3">15 / 15</span>
-                        <span id="glasgowDesc" class="fw-bold text-success">Normal</span>
+                        <span id="glasgowDesc" class="fw-bold text-success print-text-black">Normal</span>
                     </div>
                     <div class="row g-3">
                         <div class="col-12">
@@ -658,7 +655,7 @@
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content text-theme" style="background: var(--bg-panel); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-cart-check me-2 text-info"></i>Carrito de Facturación</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-cart-check me-2 text-info print-text-black"></i>Carrito de Facturación</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body pb-0">
@@ -809,7 +806,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-award me-2 text-warning"></i>Asignar Especialidad Clínica</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-award me-2 text-warning print-text-black"></i>Asignar Especialidad Clínica</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalEspecialidad()"></button>
       </div>
       <form action="adminAction" method="POST" autocomplete="off">
@@ -847,7 +844,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-award-fill me-2 text-info"></i>Crear Nueva Especialidad</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-award-fill me-2 text-info print-text-black"></i>Crear Nueva Especialidad</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalNuevaEspecialidad()"></button>
       </div>
       <form action="adminAction" method="POST" autocomplete="off">
@@ -872,7 +869,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-capsule me-2 text-success"></i>Registrar Nuevo Medicamento</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-capsule me-2 text-success print-text-black"></i>Registrar Nuevo Medicamento</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalMedicamento()"></button>
       </div>
       <form action="adminAction" method="POST" autocomplete="off">
@@ -909,7 +906,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold" id="catModalTitulo"><i class="bi bi-folder-plus me-2 text-info"></i>Nuevo Elemento de Catálogo</h5>
+        <h5 class="modal-title fw-bold" id="catModalTitulo"><i class="bi bi-folder-plus me-2 text-info print-text-black"></i>Nuevo Elemento de Catálogo</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCatalogos()"></button>
       </div>
       <form action="adminAction" method="POST" autocomplete="off">
@@ -950,7 +947,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-calendar-plus me-2 text-info"></i>Agendar Cita (Admin)</h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-calendar-plus me-2 text-info print-text-black"></i>Agendar Cita (Admin)</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCitaAdmin()"></button>
       </div>
       <form action="agendarCita" method="POST" autocomplete="off">
@@ -1024,7 +1021,7 @@
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0 pb-0">
         <div>
-          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Médica Integral</h4>
+          <h4 class="modal-title fw-bold text-info print-text-black"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Médica Integral</h4>
           <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
           <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
         </div>
@@ -1041,39 +1038,39 @@
             <table class="table table-bordered table-dark-custom mb-4" style="background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.1);">
                 <tbody>
                     <tr>
-                        <td class="fw-bold text-secondary" style="width: 25%;"><i class="bi bi-person-bounding-box me-2 text-info"></i>Antropometría</td>
+                        <td class="fw-bold text-secondary" style="width: 25%;"><i class="bi bi-person-bounding-box me-2 text-info print-text-black"></i>Antropometría</td>
                         <td id="fichaEstPeso" class="fw-semibold text-light">-- / --</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning"></i>Temperatura</td>
-                        <td id="fichaTemp" class="fw-bold text-warning">-- C</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-thermometer-half me-2 text-warning print-text-black"></i>Temperatura</td>
+                        <td id="fichaTemp" class="fw-bold text-warning print-text-black">-- C</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger"></i>Presión Arterial</td>
-                        <td id="fichaPresion" class="fw-bold text-info">--</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-heart-pulse-fill me-2 text-danger print-text-black"></i>Presión Arterial</td>
+                        <td id="fichaPresion" class="fw-bold text-info print-text-black">--</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success"></i>Pulso / Sat. O2</td>
-                        <td id="fichaFcSat" class="fw-bold text-success">-- / --</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-activity me-2 text-success print-text-black"></i>Pulso / Sat. O2</td>
+                        <td id="fichaFcSat" class="fw-bold text-success print-text-black">-- / --</td>
                     </tr>
                     <tr>
                         <td class="fw-bold text-secondary"><i class="bi bi-virus me-2" style="color: #c084fc;"></i>Enfermedades</td>
                         <td id="fichaEnfermedades" class="text-light">Ninguna</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Alergias</td>
-                        <td id="fichaAlergias" class="fw-bold text-danger">Ninguna</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-exclamation-triangle-fill me-2 text-danger print-text-black"></i>Alergias</td>
+                        <td id="fichaAlergias" class="fw-bold text-danger print-text-black">Ninguna</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-eye-fill me-2 text-primary"></i>Escala Glasgow</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-eye-fill me-2 text-primary print-text-black"></i>Escala Glasgow</td>
                         <td id="fichaGlasgow" class="fw-semibold text-light">No registrado</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-journal-medical me-2 text-info"></i>Diagnóstico Clínico</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-journal-medical me-2 text-info print-text-black"></i>Diagnóstico Clínico</td>
                         <td id="fichaDiagnostico" class="text-light" style="white-space: pre-wrap;">No registrado</td>
                     </tr>
                     <tr>
-                        <td class="fw-bold text-secondary"><i class="bi bi-capsule me-2 text-success"></i>Receta / Prescripción</td>
+                        <td class="fw-bold text-secondary"><i class="bi bi-capsule me-2 text-success print-text-black"></i>Receta / Prescripción</td>
                         <td id="fichaReceta" class="text-light" style="white-space: pre-wrap;">No registrado</td>
                     </tr>
                 </tbody>
@@ -1098,7 +1095,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0">
-        <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2 text-info"></i>Detalle de Venta <span id="verFacId" class="text-info"></span></h5>
+        <h5 class="modal-title fw-bold"><i class="bi bi-receipt me-2 text-info print-text-black"></i>Detalle de Venta <span id="verFacId" class="text-info print-text-black"></span></h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
@@ -1110,7 +1107,7 @@
           <h6 class="fw-bold text-secondary mb-3">Artículos</h6>
           <div class="p-3 rounded mb-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1);" id="verFacDetalles"></div>
           <div class="text-end fs-5">
-              <span class="text-secondary">Total Pagado:</span> <strong class="text-success">$<span id="verFacTotal"></span></strong>
+              <span class="text-secondary">Total Pagado:</span> <strong class="text-success print-text-black">$<span id="verFacTotal"></span></strong>
           </div>
       </div>
       <div class="modal-footer border-0">

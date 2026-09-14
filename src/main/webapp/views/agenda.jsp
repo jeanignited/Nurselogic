@@ -84,7 +84,7 @@
                                             } else {
                                                 out.print("<div class='d-flex align-items-center gap-2'>");
                                                 if ("ATENDIDO".equalsIgnoreCase(c.get("estado"))) {
-                                                    out.print("<button type='button' class='btn btn-sm btn-outline-info' title='Ver Diagnóstico' onclick=\"abrirModalVerDiagnostico('" + c.get("paciente") + "', this)\" data-diagnostico=\"" + c.get("diagnostico").replace("\"", "&quot;") + "\" data-receta=\"" + c.get("receta").replace("\"", "&quot;") + "\"><i class='bi bi-file-medical'></i> Diagnóstico</button>");
+                                                    out.print("<button type='button' class='btn btn-sm btn-outline-info' title='Ver Diagnóstico' onclick=\"abrirModalVerDiagnostico('" + c.get("paciente") + "', '" + c.get("cedula") + "', this)\" data-diagnostico=\"" + c.get("diagnostico").replace("\"", "&quot;") + "\" data-receta=\"" + c.get("receta").replace("\"", "&quot;") + "\"><i class='bi bi-file-medical'></i> Diagnóstico</button>");
                                                 }
                                                 if (isAdmin) {
                                                     out.print("<button type='button' class='btn btn-sm btn-outline-danger' title='Eliminar Cita del Historial' onclick=\"confirmarBorrado('cita', '" + c.get("id") + "')\"><i class='bi bi-trash'></i> Eliminar</button>");
