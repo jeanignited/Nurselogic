@@ -105,4 +105,10 @@ public class Paciente {
 
     public Integer getGlasgow() { return glasgow; }
     public void setGlasgow(Integer glasgow) { this.glasgow = glasgow; }
+    @Column(name = "receta", columnDefinition = "TEXT")
+    private String receta;
+
+    public String getReceta() { return receta; }
+    public void setReceta(String receta) { this.receta = receta; }
+
 }

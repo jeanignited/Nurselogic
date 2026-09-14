@@ -199,9 +199,9 @@
 
                     <div class="row g-4 mb-5 align-items-center">
 
-                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Estatura (m)</label><input type="text" id="estatura" name="estatura" class="form-control" maxlength="4" oninput="formatearEstatura(this)" placeholder="Ej: 1.85" required autocomplete="off"></div>
+                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Estatura (m)</label><input type="text" id="estatura" name="estatura" class="form-control" maxlength="4" oninput="formatearEstatura(this); calcularIMC('')" placeholder="Ej: 1.85" required autocomplete="off"></div>
 
-                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Peso (kg)</label><input type="text" id="peso" name="peso" class="form-control" maxlength="5" oninput="formatearPeso(this)" placeholder="Ej: 75.5" required autocomplete="off"></div>
+                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Peso (kg)</label><input type="text" id="peso" name="peso" class="form-control" maxlength="5" oninput="formatearPeso(this); calcularIMC('')" placeholder="Ej: 75.5" required autocomplete="off"></div>
 
                         <div class="col-md-6">
 
@@ -221,48 +221,32 @@
 
                     <h6 class="text-theme pb-2 mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-heart-pulse text-danger me-2"></i>Signos Vitales</h6>
 
-
-
                     <div class="row g-4">
-
-                        <div class="col-md-3">
-
-                            <label class="form-label small text-secondary fw-semibold">Temp (°C)</label>
-
-                            <input type="text" id="temp" name="temperatura" class="form-control" maxlength="4" oninput="formatearTemperatura(this)" placeholder="Ej: 36.5" required autocomplete="off">
-
-                            <div id="alertaTemp" class="small mt-1 fw-bold text-danger d-none"></div>
-
+                        <div class="col-md-4">
+                            <label class="form-label small text-secondary fw-semibold">Temperatura (°C)</label>
+                            <input type="text" id="temp_input" name="temperatura" class="form-control" maxlength="4" oninput="formatearTemperatura(this); evaluarVitales();" placeholder="Ej: 36.5" required autocomplete="off">
+                            <div id="temp_badge" class="badge bg-secondary mt-1 w-100">Esperando...</div>
                         </div>
-
-                        <div class="col-md-3">
-
-                            <label class="form-label small text-secondary fw-semibold">Presión Arterial (Ej: 120/80)</label>
-
-                            <input type="text" id="presion" name="presion" class="form-control" maxlength="7" oninput="formatearPresion(this)" pattern="\d{2,3}/\d{2,3}" title="Debe usar el formato 120/80" placeholder="Ej: 120/80" required autocomplete="off">
-
+                        <div class="col-md-4">
+                            <label class="form-label small text-secondary fw-semibold">Presión Arterial (Sist/Diast)</label>
+                            <input type="text" id="pa_input" name="presion" class="form-control" maxlength="7" oninput="formatearPresion(this); evaluarVitales();" pattern="\d{2,3}/\d{2,3}" placeholder="Ej: 120/80" required autocomplete="off">
+                            <div id="pa_badge" class="badge bg-secondary mt-1 w-100">Esperando...</div>
                         </div>
-
-                        <div class="col-md-3">
-
-                            <label class="form-label small text-secondary fw-semibold">Frec. Cardiaca (LPM)</label>
-
-                            <input type="text" id="fc" name="fc" class="form-control" oninput="formatearFC(this)" placeholder="Ej: 80" required autocomplete="off">
-
-                            <div id="alertaFc" class="small mt-1 fw-bold text-danger d-none"></div>
-
+                        <div class="col-md-4">
+                            <label class="form-label small text-secondary fw-semibold">Frec. Cardíaca (LPM)</label>
+                            <input type="text" id="fc_input" name="fc" class="form-control" oninput="formatearFC(this); evaluarVitales();" placeholder="Ej: 80" required autocomplete="off">
+                            <div id="fc_badge" class="badge bg-secondary mt-1 w-100">Esperando...</div>
                         </div>
-
-                        <div class="col-md-3">
-
+                        <div class="col-md-6">
+                            <label class="form-label small text-secondary fw-semibold">Frec. Respiratoria (RPM)</label>
+                            <input type="text" id="fr_input" name="fr" class="form-control" oninput="formatearFR(this); evaluarVitales();" placeholder="Ej: 16" required autocomplete="off">
+                            <div id="fr_badge" class="badge bg-secondary mt-1 w-100">Esperando...</div>
+                        </div>
+                        <div class="col-md-6">
                             <label class="form-label small text-secondary fw-semibold">Saturación O2 (%)</label>
-
-                            <input type="text" id="sat" name="sat" class="form-control" oninput="formatearSat(this)" placeholder="Ej: 98" required autocomplete="off">
-
-                            <div id="alertaSat" class="small mt-1 fw-bold text-danger d-none"></div>
-
+                            <input type="text" id="sat_input" name="sat" class="form-control" oninput="formatearSat(this); evaluarVitales();" placeholder="Ej: 98" required autocomplete="off">
+                            <div id="sat_badge" class="badge bg-secondary mt-1 w-100">Esperando...</div>
                         </div>
-
                     </div>
 
 
@@ -272,7 +256,9 @@
                     <div class="row g-4 mb-4">
                         <div class="col-md-12">
                             <label class="form-label small text-secondary fw-semibold">Diagnóstico Clínico Preliminar</label>
-                            <textarea name="diagnosticoClinico" class="form-control" rows="3" placeholder="Ej: Paciente presenta dolor abdominal..."></textarea>
+                            <textarea name="diagnosticoClinico" class="form-control mb-3" rows="3" placeholder="Describa el diagnóstico, síntomas y observaciones..."></textarea>
+                            <label class="form-label small text-secondary fw-semibold">Receta Médica / Prescripción (Opcional)</label>
+                            <textarea name="receta" class="form-control" rows="3" placeholder="Medicamentos, dosis y recomendaciones..."></textarea>
                         </div>
                         <div class="col-md-12">
                             <div class="d-flex justify-content-between align-items-center mb-2">

@@ -526,11 +526,11 @@
                       <div class="row g-3 mb-4 align-items-center">
                           <div class="col-md-3">
                               <label class="form-label small text-secondary">Estatura (m)</label>
-                              <input type="text" id="atender_estatura_input" name="estatura" class="form-control" maxlength="4" oninput="formatearEstatura(this)" placeholder="Ej: 1.85" autocomplete="off">
+                              <input type="text" id="atender_estatura_input" name="estatura" class="form-control" maxlength="4" oninput="formatearEstatura(this); calcularIMC('atender_')" placeholder="Ej: 1.85" autocomplete="off">
                           </div>
                           <div class="col-md-3">
                               <label class="form-label small text-secondary">Peso (kg)</label>
-                              <input type="text" id="atender_peso_input" name="peso" class="form-control" maxlength="5" oninput="formatearPeso(this)" placeholder="Ej: 75.5" autocomplete="off">
+                              <input type="text" id="atender_peso_input" name="peso" class="form-control" maxlength="5" oninput="formatearPeso(this); calcularIMC('atender_')" placeholder="Ej: 75.5" autocomplete="off">
                           </div>
                           <div class="col-md-6">
                               <div class="d-flex align-items-center p-2 rounded" style="background: rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.1);">
@@ -548,27 +548,27 @@
                       <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Frecuencia Card&iacute;aca (lpm)</label>
-                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" oninput="if(typeof formatearFC === 'function') formatearFC(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
+                            <input type="number" id="atender_fc_input" class="form-control" placeholder="Ej: 80" min="0" oninput="formatearFC(this); evaluarVitales();" autocomplete="off">
                             <div id="atender_fc_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small text-secondary">Presi&oacute;n Arterial (Sist/Diast)</label>
-                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" onkeyup="if(typeof formatearPresion === 'function') formatearPresion(this);" oninput="if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
+                            <input type="text" id="atender_pa_input" class="form-control" placeholder="Ej: 120/80" oninput="formatearPresion(this); evaluarVitales();" autocomplete="off">
                             <div id="atender_pa_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label small text-secondary">Frecuencia Respiratoria</label>
-                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" oninput="if(typeof formatearFR === 'function') formatearFR(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
+                            <label class="form-label small text-secondary">Frecuencia Respiratoria (rpm)</label>
+                            <input type="number" id="atender_fr_input" class="form-control" placeholder="Ej: 16" min="0" oninput="formatearFR(this); evaluarVitales();" autocomplete="off">
                             <div id="atender_fr_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Saturaci&oacute;n O2 (%)</label>
-                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" oninput="if(typeof formatearSat === 'function') formatearSat(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
+                            <input type="number" id="atender_sat_input" class="form-control" placeholder="Ej: 98" min="0" oninput="formatearSat(this); evaluarVitales();" autocomplete="off">
                             <div id="atender_sat_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small text-secondary">Temperatura (&deg;C)</label>
-                            <input type="number" step="0.1" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="0" oninput="if(typeof formatearTemperatura === 'function') formatearTemperatura(this); if(typeof evaluarVitales === 'function') evaluarVitales();" autocomplete="off">
+                            <input type="number" step="0.1" id="atender_temp_input" class="form-control" placeholder="Ej: 37.0" min="0" oninput="formatearTemperatura(this); evaluarVitales();" autocomplete="off">
                             <div id="atender_temp_badge" class="badge mt-1 w-100 p-2 text-wrap bg-secondary">Esperando...</div>
                         </div>
                     </div>
@@ -956,7 +956,7 @@
         <h5 class="modal-title fw-bold"><i class="bi bi-calendar-plus me-2 text-info"></i>Agendar Cita (Admin)</h5>
         <button type="button" class="btn-close btn-close-white" onclick="cerrarModalCitaAdmin()"></button>
       </div>
-      <form action="agendarCita" method="POST" onsubmit="return validarCitaAdmin(event)" autocomplete="off">
+      <form action="agendarCita" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
           <input type="hidden" name="action" value="crearCitaAdmin" autocomplete="off">
           <input type="hidden" id="citaEsNuevoPac" name="esNuevoPaciente" value="false" autocomplete="off">
@@ -1060,6 +1060,18 @@
                     <tr>
                         <td class="fw-bold text-secondary"><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Alergias</td>
                         <td id="fichaAlergias" class="fw-bold text-danger">Ninguna</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-eye-fill me-2 text-primary"></i>Escala Glasgow</td>
+                        <td id="fichaGlasgow" class="fw-semibold text-light">No registrado</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-journal-medical me-2 text-info"></i>Diagnóstico Clínico</td>
+                        <td id="fichaDiagnostico" class="text-light" style="white-space: pre-wrap;">No registrado</td>
+                    </tr>
+                    <tr>
+                        <td class="fw-bold text-secondary"><i class="bi bi-capsule me-2 text-success"></i>Receta / Prescripción</td>
+                        <td id="fichaReceta" class="text-light" style="white-space: pre-wrap;">No registrado</td>
                     </tr>
                 </tbody>
             </table>

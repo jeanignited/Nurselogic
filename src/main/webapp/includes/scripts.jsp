@@ -2676,67 +2676,79 @@ document.addEventListener('DOMContentLoaded', initDashboardParticles);
     }, 500);
 }
 
-function evaluarVitales() {
-    // Triage fields
-    let t_fc = document.getElementById('fc_input');
-    if (t_fc) window.evaluarFC(t_fc.value);
-    let t_pa = document.getElementById('pa_input');
-    if (t_pa) window.evaluarPA(t_pa.value);
-    let t_fr = document.getElementById('fr_input');
-    if (t_fr) window.evaluarFR(t_fr.value);
-    let t_sat = document.getElementById('sat_input');
-    if (t_sat) window.evaluarSat(t_sat.value);
-    let t_temp = document.getElementById('temp_input');
-    if (t_temp) window.evaluarTemp(t_temp.value);
-
-    // Atender fields
-    let fc = document.getElementById('atender_fc_input');
-    if (fc && fc.value) {
-        let v = parseInt(fc.value);
-        let b = document.getElementById('atender_fc_badge');
-        if (v < 60) { b.innerText = "Bradicardia"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
-        else if (v > 100) { b.innerText = "Taquicardia"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
-        else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
-    }
+function calcularIMC(prefix) {
+    let estInput = document.getElementById(prefix + 'estatura') || document.getElementById(prefix + 'estatura_input');
+    let pesoInput = document.getElementById(prefix + 'peso') || document.getElementById(prefix + 'peso_input');
+    let valEl = document.getElementById(prefix + 'imcValor');
+    let estEl = document.getElementById(prefix + 'imcEstado');
     
-    let pa = document.getElementById('atender_pa_input');
-    if (pa && pa.value && pa.value.includes('/')) {
-        let parts = pa.value.split('/');
-        let sist = parseInt(parts[0]);
-        let b = document.getElementById('atender_pa_badge');
-        if (sist < 90) { b.innerText = "Hipotensión"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
-        else if (sist > 140) { b.innerText = "Hipertensión"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
-        else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
-    }
+    if (!estInput || !pesoInput || !valEl || !estEl) return;
     
-    let fr = document.getElementById('atender_fr_input');
-    if (fr && fr.value) {
-        let v = parseInt(fr.value);
-        let b = document.getElementById('atender_fr_badge');
-        if (v < 12) { b.innerText = "Bradipnea"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
-        else if (v > 20) { b.innerText = "Taquipnea"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
-        else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
-    }
+    let e = parseFloat(estInput.value);
+    let p = parseFloat(pesoInput.value);
     
-    let sat = document.getElementById('atender_sat_input');
-    if (sat && sat.value) {
-        let v = parseInt(sat.value);
-        let b = document.getElementById('atender_sat_badge');
-        if (v < 90) { b.innerText = "Hipoxia Severa"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
-        else if (v < 95) { b.innerText = "Hipoxia Leve"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-warning text-dark"; }
-        else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
-    }
-    
-    let temp = document.getElementById('atender_temp_input');
-    if (temp && temp.value) {
-        let v = parseFloat(temp.value);
-        let b = document.getElementById('atender_temp_badge');
-        if (v < 36.5) { b.innerText = "Hipotermia"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-info text-dark"; }
-        else if (v > 37.5) { b.innerText = "Fiebre"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-danger"; }
-        else { b.innerText = "Normal"; b.className = "badge mt-1 w-100 p-2 text-wrap bg-success"; }
+    if (e > 0 && p > 0) {
+        let imc = (p / (e * e)).toFixed(1);
+        valEl.innerText = imc;
+        let estado = 'Normal'; let bg = 'bg-success';
+        if (imc < 18.5) { estado = 'Bajo peso'; bg = 'bg-warning text-dark'; }
+        else if (imc >= 25 && imc < 30) { estado = 'Sobrepeso'; bg = 'bg-warning text-dark'; }
+        else if (imc >= 30) { estado = 'Obesidad'; bg = 'bg-danger'; }
+        estEl.innerText = estado;
+        estEl.className = 'badge ms-3 px-3 py-2 rounded-pill ' + bg;
+    } else {
+        valEl.innerText = '0.0';
+        estEl.innerText = 'Sin datos';
+        estEl.className = 'badge bg-secondary ms-3 px-3 py-2 rounded-pill';
     }
 }
 
+function evaluarVitales() {
+    let inputs = [
+        { id: 'fc_input',   badge: 'fc_badge',   parse: parseInt,   eval: v => v < 60 ? ["Bradicardia", "bg-warning text-dark"] : v > 100 ? ["Taquicardia", "bg-danger"] : ["Normal", "bg-success"] },
+        { id: 'fr_input',   badge: 'fr_badge',   parse: parseInt,   eval: v => v < 12 ? ["Bradipnea",   "bg-warning text-dark"] : v > 20  ? ["Taquipnea",   "bg-danger"] : ["Normal", "bg-success"] },
+        { id: 'sat_input',  badge: 'sat_badge',  parse: parseInt,   eval: v => v < 90 ? ["Hipoxia Severa", "bg-danger"] : v < 95 ? ["Hipoxia Leve", "bg-warning text-dark"] : ["Normal", "bg-success"] },
+        { id: 'temp_input', badge: 'temp_badge', parse: parseFloat, eval: v => v < 36.5 ? ["Hipotermia", "bg-info text-dark"] : v > 37.5 ? ["Fiebre", "bg-danger"] : ["Normal", "bg-success"] }
+    ];
+
+    inputs.forEach(item => {
+        try {
+            let el = document.getElementById(item.id) || document.getElementById('atender_' + item.id);
+            let b  = document.getElementById(item.badge) || document.getElementById('atender_' + item.badge);
+            if (!el || !b) return;
+            if (!el.value || el.value.trim() === '') {
+                // Campo vacío → resetear badge a estado neutro
+                b.innerText   = 'Esperando...';
+                b.className   = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+                return;
+            }
+            let num = item.parse(el.value);
+            if (!isNaN(num)) {
+                let res = item.eval(num);
+                b.innerText   = res[0];
+                b.className   = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+            }
+        } catch(e) { /* campo individual no bloquea a los demás */ }
+    });
+
+    // Presión Arterial — evaluación independiente
+    try {
+        let pa   = document.getElementById('pa_input') || document.getElementById('atender_pa_input');
+        let pa_b = document.getElementById('pa_badge') || document.getElementById('atender_pa_badge');
+        if (!pa || !pa_b) return;
+        if (!pa.value || pa.value.trim() === '') {
+            pa_b.innerText = 'Esperando...';
+            pa_b.className = 'badge mt-1 w-100 p-2 text-wrap bg-secondary';
+        } else if (pa.value.includes('/')) {
+            let sist = parseInt(pa.value.split('/')[0]);
+            if (!isNaN(sist)) {
+                let res = sist < 90 ? ["Hipotensión", "bg-warning text-dark"] : sist > 140 ? ["Hipertensión", "bg-danger"] : ["Normal", "bg-success"];
+                pa_b.innerText = res[0];
+                pa_b.className = 'badge mt-1 w-100 p-2 text-wrap ' + res[1];
+            }
+        }
+    } catch(e) { /* ignorar */ }
+}
 function calcularGlasgow() {
     let o = parseInt(document.getElementById('g_ocular').value);
     let v = parseInt(document.getElementById('g_verbal').value);
@@ -3699,10 +3711,15 @@ window.verFichaClinica = function(cedula) {
                 document.getElementById('fichaFcSat').innerText = (data.fc && data.fc !== 0 ? data.fc : '--') + ' lpm / ' + (data.sat && data.sat !== 0 ? data.sat : '--') + ' %';
                 document.getElementById('fichaEnfermedades').innerText = data.enfermedad && data.enfermedad !== 'null' && data.enfermedad !== 'Ninguna' ? data.enfermedad : 'Ninguna registrada';
                 document.getElementById('fichaAlergias').innerText = data.alergias && data.alergias !== 'null' && data.alergias !== 'Ninguna' ? data.alergias : 'Ninguna registrada';
+                document.getElementById('fichaGlasgow').innerText = (data.glasgow && data.glasgow !== 'null' && data.glasgow !== '0') ? data.glasgow + ' / 15' : 'No registrado';
+                document.getElementById('fichaDiagnostico').innerText = (data.diagnosticoClinico && data.diagnosticoClinico !== 'null' && data.diagnosticoClinico.trim() !== '') ? data.diagnosticoClinico : 'No registrado';
+                document.getElementById('fichaReceta').innerText = (data.receta && data.receta !== 'null' && data.receta.trim() !== '') ? data.receta : 'No registrado';
                 
                 let container = document.getElementById('fichaAlertasContenedor');
                 container.innerHTML = '';
-                if (data.alergias && data.alergias.trim() !== '') {
+                let alergiasVal = (data.alergias || '').trim().toLowerCase();
+                let tieneAlergiaReal = alergiasVal !== '' && alergiasVal !== 'ninguna' && alergiasVal !== 'null' && alergiasVal !== 'ninguna registrada';
+                if (tieneAlergiaReal) {
                     container.innerHTML += '<div class="alert alert-danger py-2 mb-2 border-0" style="background: rgba(220,38,38,0.1);"><i class="bi bi-exclamation-octagon-fill me-2"></i>Paciente reporta alergias. Riesgo de shock anafiláctico.</div>';
                 }
                 if (data.presion) {

@@ -29,7 +29,7 @@ public class PacienteServlet extends HttpServlet {
             
             if (p != null) {
                 String json = String.format(
-                    "{\"encontrado\": true, \"id\": %d, \"nombres\": \"%s\", \"apellidos\": \"%s\", \"sexo\": \"%s\", \"fechaNacimiento\": \"%s\", \"enfermedad\": \"%s\", \"alergias\": \"%s\", \"presion\": \"%s\", \"estatura\": %s, \"peso\": %s, \"temperatura\": %s, \"fc\": %d, \"sat\": %d, \"glasgow\": %s, \"diagnosticoClinico\": \"%s\"}",
+                    "{\"encontrado\": true, \"id\": %d, \"nombres\": \"%s\", \"apellidos\": \"%s\", \"sexo\": \"%s\", \"fechaNacimiento\": \"%s\", \"enfermedad\": \"%s\", \"alergias\": \"%s\", \"presion\": \"%s\", \"estatura\": %s, \"peso\": %s, \"temperatura\": %s, \"fc\": %d, \"sat\": %d, \"glasgow\": %s, \"diagnosticoClinico\": \"%s\", \"receta\": \"%s\"}",
                     p.getId(), p.getNombres() != null ? p.getNombres() : "", 
                     p.getApellidos() != null ? p.getApellidos() : "", 
                     p.getSexo() != null ? p.getSexo() : "", 
@@ -43,7 +43,8 @@ public class PacienteServlet extends HttpServlet {
                     p.getFrecuenciaCardiaca(),
                     p.getSaturacionOxigeno(),
                     p.getGlasgow() != null ? String.valueOf(p.getGlasgow()) : "null",
-                    p.getDiagnosticoClinico() != null ? p.getDiagnosticoClinico().replace("\"", "\\\"").replace("\n", "\\n") : ""
+                    p.getDiagnosticoClinico() != null ? p.getDiagnosticoClinico().replace("\"", "\\\"").replace("\n", "\\n") : "",
+                    p.getReceta() != null ? p.getReceta().replace("\"", "\\\"").replace("\n", "\\n") : ""
                 );
                 out.print(json);
             } else {
@@ -116,6 +117,10 @@ public class PacienteServlet extends HttpServlet {
                 }
             }
 
+            String receta = request.getParameter("receta");
+            if (receta != null && !receta.trim().isEmpty()) {
+                p.setReceta(receta);
+            }
             if (isNew) {
                 dao.registrarPaciente(p);
             } else {
