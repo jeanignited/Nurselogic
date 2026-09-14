@@ -24,14 +24,21 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            height: 100vh; 
-            overflow: hidden; 
+            min-height: 100vh; 
+            overflow-y: auto; 
+            overflow-x: hidden;
             margin: 0; 
+            padding: 2rem 0;
         }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
         .login-container { 
             background: var(--glass-bg); 
             backdrop-filter: blur(16px);
-            padding: 3.5rem 3rem; 
+            padding: 2.5rem 2rem; 
             border-radius: 20px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05); 
             width: 100%; 
@@ -207,13 +214,25 @@
         <div id="panel-register" class="panel d-none">
             <form action="registroUsuario" method="post" autocomplete="off">
                 <div class="row g-2 mb-3">
-                    <div class="col-6"><input type="text" name="nombres" class="form-control" placeholder="Nombres" required autocomplete="off"></div>
-                    <div class="col-6"><input type="text" name="apellidos" class="form-control" placeholder="Apellidos" required autocomplete="off"></div>
+                    <div class="col-6"><input type="text" id="regNombres" name="nombres" class="form-control" placeholder="Nombres" required autocomplete="off"></div>
+                    <div class="col-6"><input type="text" id="regApellidos" name="apellidos" class="form-control" placeholder="Apellidos" required autocomplete="off"></div>
                     <div class="col-12"><input type="email" name="correo" class="form-control" placeholder="Correo Electrónico" required autocomplete="nope"></div>
-                    <div class="col-6"><input type="text" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off"></div>
+                    <div class="col-6">
+                        <input type="text" id="regCedula" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length===10) checkCedulaAPI(this.value);" required autocomplete="off">
+                        <div id="cedulaMsg" class="small mt-1 d-none"></div>
+                    </div>
                     <div class="col-6"><input type="text" name="telefono" class="form-control" placeholder="Teléfono (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off"></div>
                     <div class="col-12"><input type="text" name="direccion" class="form-control" placeholder="Dirección" required autocomplete="off"></div>
-                    <div class="col-12"><input type="password" name="clave" class="form-control" placeholder="Crear Contraseña" required autocomplete="new-password"></div>
+                    <div class="col-6"><input type="password" id="regClave" name="clave" class="form-control" placeholder="Crear Contraseña" required autocomplete="new-password"></div>
+                    <div class="col-6"><input type="password" id="regConfirmar" class="form-control" placeholder="Confirmar" required autocomplete="new-password"></div>
+                    <div class="col-12">
+                        <div id="regPassReqs" class="row g-1 mt-1 p-2 rounded-3 text-start text-secondary" style="font-size: 0.72rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                            <div class="col-6" id="reqLen" class="text-danger"><i class="bi bi-x-circle me-1"></i>Mín 8 chars</div>
+                            <div class="col-6" id="reqAlphaNum" class="text-danger"><i class="bi bi-x-circle me-1"></i>Letras y Nros</div>
+                            <div class="col-6" id="reqSpec" class="text-danger"><i class="bi bi-x-circle me-1"></i>1 Especial (@#$)</div>
+                            <div class="col-6" id="reqMatch" class="text-danger"><i class="bi bi-x-circle me-1"></i>Coinciden</div>
+                        </div>
+                    </div>
                     <div class="col-12">
                         <select name="tipoUsuario" class="form-select" required>
                             <option value="" disabled selected>Seleccione el tipo de cuenta...</option>
@@ -222,7 +241,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-success"><i class="bi bi-person-plus me-2"></i>REGISTRAR USUARIO</button>
+                <button type="submit" id="btnRegistrar" class="btn btn-success" disabled><i class="bi bi-person-plus me-2"></i>REGISTRAR USUARIO</button>
             </form>
             <div class="text-center mt-4">
                 <a href="#" class="text-decoration-none small text-secondary" onclick="mostrarPanel('panel-login')"><i class="bi bi-arrow-left me-1"></i>Volver al Login</a>
@@ -255,11 +274,18 @@
                     <label class="form-label small text-secondary fw-semibold">Código de Verificación</label>
                     <input type="text" name="codigo" class="form-control text-center fs-4 letter-spacing-2" placeholder="000000" maxlength="6" pattern="\d{6}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off">
                 </div>
-                <div class="mb-4">
-                    <label class="form-label small text-secondary fw-semibold">Nueva Contraseña</label>
-                    <input type="password" name="nuevaClave" class="form-control" placeholder="••••••••" required autocomplete="new-password">
-                </div>
-                <button type="submit" class="btn btn-success"><i class="bi bi-key me-2"></i>ACTUALIZAR CONTRASEÑA</button>
+                <div class="mb-4 text-start">
+                      <label class="form-label small text-secondary fw-semibold">Nueva Contraseña</label>
+                      <input type="password" id="resetClave" name="nuevaClave" class="form-control mb-2" placeholder="••••••••" required autocomplete="new-password">
+                      <input type="password" id="resetConfirmar" class="form-control" placeholder="Confirmar Nueva Contraseña" required autocomplete="new-password">
+                      <div id="resetPassReqs" class="row g-1 mt-2 p-2 rounded-3 text-start text-secondary" style="font-size: 0.72rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);">
+                          <div class="col-6" id="reqLenR" class="text-danger"><i class="bi bi-x-circle me-1"></i>Mín 8 chars</div>
+                          <div class="col-6" id="reqAlphaNumR" class="text-danger"><i class="bi bi-x-circle me-1"></i>Letras y Nros</div>
+                          <div class="col-6" id="reqSpecR" class="text-danger"><i class="bi bi-x-circle me-1"></i>1 Especial (@#$)</div>
+                          <div class="col-6" id="reqMatchR" class="text-danger"><i class="bi bi-x-circle me-1"></i>Coinciden</div>
+                      </div>
+                  </div>
+                  <button type="submit" id="btnReset" class="btn btn-success" disabled><i class="bi bi-key me-2"></i>ACTUALIZAR CONTRASEñA</button>
             </form>
             <div class="text-center mt-4">
                 <a href="#" class="text-decoration-none small text-secondary" onclick="mostrarPanel('panel-login')"><i class="bi bi-arrow-left me-1"></i>Volver al Login</a>
@@ -308,5 +334,101 @@
             });
         })();
     </script>
+
+<script>
+    // Validation Logic
+    function setupPasswordValidation(claveId, confId, btnId, reqIds) {
+        let clave = document.getElementById(claveId);
+        let conf = document.getElementById(confId);
+        let btn = document.getElementById(btnId);
+        if(!clave || !conf || !btn) return;
+        
+        function validate() {
+            let v = clave.value;
+            let c = conf.value;
+            
+            let hasLen = v.length >= 8;
+            let hasAlphaNum = /[a-zA-Z]/.test(v) && /[0-9]/.test(v);
+            let hasSpec = /[^a-zA-Z0-9]/.test(v);
+            let match = (v !== '') && (v === c);
+            
+            function setReq(id, valid) {
+                let el = document.getElementById(id);
+                if(valid) {
+                    el.className = 'col-6 text-success fw-semibold';
+                    el.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>' + el.innerText;
+                } else {
+                    el.className = 'col-6 text-danger';
+                    el.innerHTML = '<i class="bi bi-x-circle me-1"></i>' + el.innerText;
+                }
+            }
+            
+            setReq(reqIds[0], hasLen);
+            setReq(reqIds[1], hasAlphaNum);
+            setReq(reqIds[2], hasSpec);
+            setReq(reqIds[3], match);
+            
+            // Check if cedula is valid (only for register form)
+            let isCedulaValid = true;
+            if(btnId === 'btnRegistrar') {
+                let msg = document.getElementById('cedulaMsg');
+                if(msg && msg.classList.contains('text-danger')) {
+                    isCedulaValid = false;
+                }
+            }
+            
+            btn.disabled = !(hasLen && hasAlphaNum && hasSpec && match && isCedulaValid);
+        }
+        
+        clave.addEventListener('input', validate);
+        conf.addEventListener('input', validate);
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        setupPasswordValidation('regClave', 'regConfirmar', 'btnRegistrar', ['reqLen', 'reqAlphaNum', 'reqSpec', 'reqMatch']);
+        setupPasswordValidation('resetClave', 'resetConfirmar', 'btnReset', ['reqLenR', 'reqAlphaNumR', 'reqSpecR', 'reqMatchR']);
+    });
+
+    function checkCedulaAPI(cedula) {
+        let msg = document.getElementById('cedulaMsg');
+        let btn = document.getElementById('btnRegistrar');
+        msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-info';
+        msg.style.background = 'rgba(14, 165, 233, 0.1)';
+        msg.style.border = '1px solid rgba(14, 165, 233, 0.2)';
+        msg.style.fontSize = '0.75rem';
+        msg.innerHTML = '<i class="bi bi-hourglass-split me-1"></i>Verificando...';
+        msg.classList.remove('d-none');
+        btn.disabled = true;
+        
+        fetch('checkCedulaApi.jsp?cedula=' + cedula)
+            .then(r => r.json())
+            .then(data => {
+                if(data.userExists) {
+                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-bold text-danger';
+                    msg.style.background = 'rgba(239, 68, 68, 0.1)';
+                    msg.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    msg.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i>Cédula en uso.';
+                    btn.disabled = true;
+                } else if(data.patientExists) {
+                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-success';
+                    msg.style.background = 'rgba(16, 185, 129, 0.1)';
+                    msg.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                    msg.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Autocompletado.';
+                    document.getElementById('regNombres').value = data.nombres;
+                    document.getElementById('regApellidos').value = data.apellidos;
+                    document.getElementById('regClave').dispatchEvent(new Event('input'));
+                } else {
+                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-success';
+                    msg.style.background = 'rgba(16, 185, 129, 0.1)';
+                    msg.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                    msg.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Cédula disponible.';
+                    document.getElementById('regClave').dispatchEvent(new Event('input'));
+                }
+            }).catch(e => {
+                msg.className = 'd-none';
+            });
+    }
+</script>
 </body>
+
 </html>
