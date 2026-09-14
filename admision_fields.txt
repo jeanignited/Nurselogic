@@ -1,0 +1,85 @@
+<label class="form-label small text-secondary fw-semibold">Enfermedades Preexistentes (Usa Ctrl para elegir varias)</label>
+
+                            <select name="enfermedad" class="form-select" multiple size="4">
+
+                                <option value="Ninguna">Ninguna</option>
+
+                                <% 
+
+                                    List<Map<String, String>> enfermedades = (List<Map<String, String>>) request.getAttribute("listaEnfermedades");
+
+                                    if(enfermedades != null) {
+
+                                        for(Map<String, String> e : enfermedades) {
+
+                                            out.print("<option value='" + e.get("nombre") + "'>" + e.get("nombre") + "</option>");
+
+                                        }
+
+                                    }
+
+                                %>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label class="form-label small text-secondary fw-semibold">Alergias Conocidas (Usa Ctrl para elegir varias)</label>
+
+                            <select name="alergias" class="form-select" multiple size="4">
+
+                                <option value="Ninguna">Ninguna</option>
+
+                                <% 
+
+                                    List<Map<String, String>> alergias = (List<Map<String, String>>) request.getAttribute("listaAlergias");
+
+                                    if(alergias != null) {
+
+                                        for(Map<String, String> a : alergias) {
+
+                                            out.print("<option value='" + a.get("nombre") + "'>" + a.get("nombre") + " (" + a.get("gravedad") + ")</option>");
+
+                                        }
+
+                                    }
+
+                                %>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <h6 class="text-theme pb-2 mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-person-bounding-box me-2 text-primary"></i>Evaluación Antropométrica (IMC)</h6>
+
+
+
+                    <div class="row g-4 mb-5 align-items-center">
+
+                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Estatura (m)</label><input type="text" id="estatura" name="estatura" class="form-control" maxlength="4" oninput="formatearEstatura(this)" placeholder="Ej: 1.85" required autocomplete="off"></div>
+
+                        <div class="col-md-3"><label class="form-label small text-secondary fw-semibold">Peso (kg)</label><input type="text" id="peso" name="peso" class="form-control" maxlength="5" oninput="formatearPeso(this)" placeholder="Ej: 75.5" required autocomplete="off"></div>
+
+                        <div class="col-md-6">
+
+                            <div class="imc-box">
+
+                                <i class="bi bi-calculator text-primary fs-2 me-4" style="filter: drop-shadow(0 0 5px var(--accent));"></i>
+
+                                <div><div class="small text-secondary mb-1">Resultado IMC</div><span id="imcValor" class="fw-bold text-theme" style="font-size: 2rem;">0.0</span><span id="imcEstado" class="badge bg-secondary ms-3 px-3 py-2 rounded-pill" style="font-size: 0.9rem;">Sin datos</span></div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <h6 class="text-theme pb-2 mb-4" style="border-bottom: 1px solid rgba(255,255,255,0.1);"><i class="bi bi-heart-pulse text-danger me-2"></i>Signos Vitales</h6>
