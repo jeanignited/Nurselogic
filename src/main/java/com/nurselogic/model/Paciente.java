@@ -50,6 +50,12 @@ public class Paciente {
     @Column(name = "saturacionOxigeno")
     private int saturacionOxigeno;
 
+    @Column(name = "diagnosticoClinico", columnDefinition = "TEXT")
+    private String diagnosticoClinico;
+
+    @Column(name = "glasgow")
+    private Integer glasgow;
+
     public Paciente() {}
 
     public int getId() { return id; }
@@ -93,4 +99,10 @@ public class Paciente {
 
     public int getSaturacionOxigeno() { return saturacionOxigeno; }
     public void setSaturacionOxigeno(int saturacionOxigeno) { this.saturacionOxigeno = saturacionOxigeno; }
+
+    public String getDiagnosticoClinico() { return diagnosticoClinico; }
+    public void setDiagnosticoClinico(String diagnosticoClinico) { this.diagnosticoClinico = diagnosticoClinico; }
+
+    public Integer getGlasgow() { return glasgow; }
+    public void setGlasgow(Integer glasgow) { this.glasgow = glasgow; }
 }

@@ -520,7 +520,15 @@
 
                 <!-- Tab Glasgow -->
                 <div class="tab-pane fade" id="glasgow" role="tabpanel">
-                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid var(--theme-color);">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label small text-secondary fw-semibold mb-0">Evaluación Glasgow</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="glasgowCheckAtender" onchange="toggleGlasgow('Atender')">
+                            <label class="form-check-label text-muted small" for="glasgowCheckAtender">No aplica / No evaluado</label>
+                        </div>
+                    </div>
+                    <div id="glasgowContainerAtender">
+                        <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid var(--theme-color);">
                         <h6 class="m-0 text-info fw-bold">Puntaje Total Glasgow:</h6>
                         <span id="glasgowTotal" class="badge bg-primary fs-5 px-3">15 / 15</span>
                         <span id="glasgowDesc" class="fw-bold text-success">Normal</span>
@@ -557,6 +565,7 @@
                             </select>
                         </div>
                     </div>
+                      </div>
                 </div>
 
                 <!-- Tab Diagnostico y Receta -->
@@ -956,7 +965,7 @@
     <div class="modal-content text-theme" style="background: var(--bg-panel); backdrop-filter: blur(15px); border: var(--glass-border);">
       <div class="modal-header border-0 pb-0">
         <div>
-          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Mdica Integral</h4>
+          <h4 class="modal-title fw-bold text-info"><i class="bi bi-file-earmark-medical me-2"></i>Ficha Médica Integral</h4>
           <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
           <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
         </div>

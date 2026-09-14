@@ -53,6 +53,7 @@ public class PacienteServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         try {
             String cedula = request.getParameter("cedula");
             Paciente p = dao.buscarPorCedula(cedula);
@@ -96,6 +97,22 @@ public class PacienteServlet extends HttpServlet {
 
             String sat = request.getParameter("sat");
             try { p.setSaturacionOxigeno(sat != null && !sat.trim().isEmpty() ? Integer.parseInt(sat.replaceAll("[^\\d]", "")) : 0); } catch (Exception e) { p.setSaturacionOxigeno(0); }
+
+            String diag = request.getParameter("diagnosticoClinico");
+            if (diag != null && !diag.trim().isEmpty()) {
+                p.setDiagnosticoClinico(diag);
+            }
+
+            String glasgowStr = request.getParameter("glasgow");
+            if (glasgowStr == null || glasgowStr.trim().isEmpty() || glasgowStr.equals("NA") || glasgowStr.equals("null")) {
+                p.setGlasgow(null);
+            } else {
+                try {
+                    p.setGlasgow(Integer.parseInt(glasgowStr));
+                } catch (Exception e) {
+                    p.setGlasgow(null);
+                }
+            }
 
             if (isNew) {
                 dao.registrarPaciente(p);

@@ -1,16 +1,29 @@
+# -*- coding: utf-8 -*-
 import io
 
 with io.open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
-    lines = f.readlines()
+    c = f.read()
 
-# Remove the broken first few lines
-while lines and (lines[0].strip().startswith('<%@ page') or lines[0].strip() == '' or '\xef\xbb\xbf' in lines[0] or '' in lines[0]):
-    lines.pop(0)
+# Add the closing div to glasgowContainerAtender
+old_str = '''                              </select>
+                          </div>
+                      </div>
+                  </div>
+  
+                  <!-- Tab Diagnostico y Receta -->'''
 
-# Prepend a clean directive
-new_content = '<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>\n' + ''.join(lines)
+new_str = '''                              </select>
+                          </div>
+                      </div>
+                      </div>
+                  </div>
+  
+                  <!-- Tab Diagnostico y Receta -->'''
 
-with io.open('src/main/webapp/includes/modals.jsp', 'w', encoding='utf-8') as f:
-    f.write(new_content)
-
-print("modals.jsp fixed.")
+if old_str in c:
+    c = c.replace(old_str, new_str)
+    with io.open('src/main/webapp/includes/modals.jsp', 'w', encoding='utf-8') as f:
+        f.write(c)
+    print("Success")
+else:
+    print("Not found")
