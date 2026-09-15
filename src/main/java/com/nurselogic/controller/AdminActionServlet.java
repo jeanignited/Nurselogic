@@ -78,13 +78,25 @@ public class AdminActionServlet extends HttpServlet {
             } else if ("eliminarFactura".equals(action)) {
                 result = adminService.eliminarFactura(request.getParameter("id"));
             } else if ("crearMedicamento".equals(action)) {
-                result = adminService.crearMedicamento(request.getParameter("nombreMed"), request.getParameter("stockMed"), request.getParameter("precioMed"));
-                          } else if ("buscarClienteCedula".equals(action)) {
-                  String json = adminService.buscarClientePorCedula(request.getParameter("cedula"));
-                  response.setContentType("application/json");
-                  response.setCharacterEncoding("UTF-8");
-                  response.getWriter().write(json);
-                  return;
+                result = adminService.crearMedicamento(
+                    request.getParameter("nombreMed"),
+                    request.getParameter("stockMed"),
+                    request.getParameter("precioMed"),
+                    request.getParameter("numeroLote"),
+                    request.getParameter("fechaElab"),
+                    request.getParameter("fechaCad"));
+            } else if ("listarLotes".equals(action)) {
+                String json = adminService.listarLotesJson(request.getParameter("idMed"));
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(json);
+                return;
+            } else if ("buscarClienteCedula".equals(action)) {
+                String json = adminService.buscarClientePorCedula(request.getParameter("cedula"));
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(json);
+                return;
               } else if ("facturarCarrito".equals(action)) {
                   result = adminService.procesarVentaCarrito(request.getParameter("payload"), request.getParameter("cliente"), request.getParameter("cedula"));
               } else if ("ajustarStockMultiple".equals(action)) {

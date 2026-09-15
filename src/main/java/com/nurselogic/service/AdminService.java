@@ -136,17 +136,97 @@ public class AdminService {
         }
     }
 
-    public ActionResult crearMedicamento(String nomMed, String stockMedStr, String precioMedStr) {
-        if (nomMed != null && !nomMed.trim().isEmpty() && stockMedStr != null) {
-            MedicamentoDAO mDao = new MedicamentoDAO();
-            Medicamento m = new Medicamento();
-            m.setNombre(nomMed.trim());
-            try { m.setStock(Integer.parseInt(stockMedStr)); } catch(Exception ex) { m.setStock(0); }
-            try { m.setPrecio(precioMedStr != null && !precioMedStr.isEmpty() ? Double.parseDouble(precioMedStr) : 0.0); } catch(Exception ex) { m.setPrecio(0.0); }
-            if (mDao.guardarMedicamento(m)) return new ActionResult(true, "Medicamento '" + nomMed + "' registrado en farmacia.");
+    public ActionResult crearMedicamento(String nomMed, String stockMedStr, String precioMedStr,
+                                          String numeroLote, String fechaElabStr, String fechaCadStr) {
+        if (nomMed == null || nomMed.trim().isEmpty() || stockMedStr == null)
+            return new ActionResult(false, "Datos inválidos para medicamento.");
+
+        MedicamentoDAO mDao = new MedicamentoDAO();
+        Medicamento m = new Medicamento();
+        m.setNombre(nomMed.trim());
+        int stockInicial = 0;
+        try { stockInicial = Integer.parseInt(stockMedStr); } catch (Exception ex) {}
+        m.setStock(0); // Se actualizará al guardar el lote
+        try { m.setPrecio(precioMedStr != null && !precioMedStr.isEmpty() ? Double.parseDouble(precioMedStr) : 0.0); }
+        catch (Exception ex) { m.setPrecio(0.0); }
+
+        if (!mDao.guardarMedicamento(m))
             return new ActionResult(false, "Error al guardar el medicamento.");
+
+        // Crear primer lote
+        LoteMedicamento lote = new LoteMedicamento();
+        lote.setMedicamento(m);
+        lote.setStockLote(stockInicial);
+
+        String numLote = (numeroLote != null && !numeroLote.trim().isEmpty())
+            ? numeroLote.trim()
+            : "LOT-" + java.time.LocalDate.now().getYear() + "-" + String.format("%03d", m.getId());
+        lote.setNumeroLote(numLote);
+
+        LocalDate hoy = LocalDate.now();
+        try { lote.setFechaElaboracion(fechaElabStr != null && !fechaElabStr.isEmpty()
+            ? LocalDate.parse(fechaElabStr) : hoy); }
+        catch (Exception ex) { lote.setFechaElaboracion(hoy); }
+
+        try { lote.setFechaCaducidad(fechaCadStr != null && !fechaCadStr.isEmpty()
+            ? LocalDate.parse(fechaCadStr) : hoy.plusYears(2)); }
+        catch (Exception ex) { lote.setFechaCaducidad(hoy.plusYears(2)); }
+
+        if (!mDao.guardarLote(lote))
+            return new ActionResult(false, "Medicamento guardado pero error al registrar el lote.");
+
+        return new ActionResult(true, "Medicamento '" + nomMed + "' registrado en farmacia con lote " + numLote + ".");
+    }
+
+    /** Devuelve JSON array con los lotes de un medicamento para uso en AJAX */
+    public String listarLotesJson(String idMedStr) {
+        try {
+            int idMed = Integer.parseInt(idMedStr);
+            MedicamentoDAO mDao = new MedicamentoDAO();
+            List<LoteMedicamento> lotes = mDao.listarTodosLosPorMedicamento(idMed);
+            LocalDate hoy = LocalDate.now();
+            
+            // Compatibilidad hacia atrás: crear lote físico si el medicamento tiene stock pero no tiene lotes
+            if (lotes.isEmpty()) {
+                EntityManager em = JPAUtil.getEntityManager();
+                Medicamento med = em.find(Medicamento.class, idMed);
+                if (med != null) {
+                    EntityTransaction tx = em.getTransaction();
+                    tx.begin();
+                    LoteMedicamento loteMigracion = new LoteMedicamento();
+                    loteMigracion.setMedicamento(med);
+                    loteMigracion.setNumeroLote("LOT-EXISTENTE");
+                    loteMigracion.setFechaElaboracion(hoy);
+                    loteMigracion.setFechaCaducidad(hoy.plusYears(2));
+                    loteMigracion.setStockLote(med.getStock());
+                    em.persist(loteMigracion);
+                    tx.commit();
+                    lotes.add(loteMigracion);
+                }
+                em.close();
+            }
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < lotes.size(); i++) {
+                LoteMedicamento l = lotes.get(i);
+                String estado = "vigente";
+                if (l.getFechaCaducidad() != null) {
+                    if (l.getFechaCaducidad().isBefore(hoy)) estado = "vencido";
+                    else if (l.getFechaCaducidad().isBefore(hoy.plusDays(30))) estado = "por_vencer";
+                }
+                sb.append(i > 0 ? "," : "").append("{")
+                  .append("\"id\":").append(l.getId()).append(",")
+                  .append("\"numeroLote\":\"").append(l.getNumeroLote()).append("\",")
+                  .append("\"fechaElab\":\"").append(l.getFechaElaboracion() != null ? l.getFechaElaboracion().toString() : "").append("\",")
+                  .append("\"fechaCad\":\"").append(l.getFechaCaducidad() != null ? l.getFechaCaducidad().toString() : "").append("\",")
+                  .append("\"stockLote\":").append(l.getStockLote()).append(",")
+                  .append("\"estado\":\"").append(estado).append("\"")
+                  .append("}");
+            }
+            sb.append("]");
+            return sb.toString();
+        } catch (Exception e) {
+            return "[]";
         }
-        return new ActionResult(false, "Datos inválidos para medicamento.");
     }
 
     
@@ -169,7 +249,19 @@ public class AdminService {
                 return new ActionResult(false, "Stock insuficiente.");
             }
             
-            // Reducir stock
+            // Reducir stock (FEFO)
+            int cantRestante = cantidad;
+            MedicamentoDAO mDao = new MedicamentoDAO();
+            List<LoteMedicamento> lotes = mDao.listarLotesPorMedicamento(idMed);
+            for (LoteMedicamento lote : lotes) {
+                if (cantRestante <= 0) break;
+                if (lote.getStockLote() > 0) {
+                    int aDescontar = Math.min(cantRestante, lote.getStockLote());
+                    lote.setStockLote(lote.getStockLote() - aDescontar);
+                    em.merge(lote);
+                    cantRestante -= aDescontar;
+                }
+            }
             med.setStock(med.getStock() - cantidad);
             
             // Generar factura
@@ -622,6 +714,23 @@ public class AdminService {
                                         .getResultList();
                                 if (!mList.isEmpty()) {
                                     Medicamento m = mList.get(0);
+                                    
+                                    // Descontar stock (FEFO en lotes)
+                                    int cantRestante = cant;
+                                    MedicamentoDAO mDao = new MedicamentoDAO();
+                                    List<LoteMedicamento> lotes = mDao.listarLotesPorMedicamento(m.getId());
+                                    for (LoteMedicamento lote : lotes) {
+                                        if (cantRestante <= 0) break;
+                                        if (lote.getStockLote() > 0) {
+                                            int aDescontar = Math.min(cantRestante, lote.getStockLote());
+                                            lote.setStockLote(lote.getStockLote() - aDescontar);
+                                            em.merge(lote);
+                                            cantRestante -= aDescontar;
+                                        }
+                                    }
+                                    m.setStock(Math.max(0, m.getStock() - cant));
+                                    em.merge(m);
+                                    
                                     FacturaDetalle det = new FacturaDetalle();
                                     det.setFactura(fac);
                                     det.setMedicamento(m);
@@ -721,12 +830,19 @@ public class AdminService {
             for (String item : items) {
                 String[] parts = item.split(":");
                 if (parts.length != 2) continue;
-                int id = Integer.parseInt(parts[0]);
+                int idLote = Integer.parseInt(parts[0]);
                 int cant = Integer.parseInt(parts[1]);
 
-                Medicamento med = em.find(Medicamento.class, id);
-                if (med != null && med.getStock() >= cant) {
-                    med.setStock(med.getStock() - cant);
+                LoteMedicamento lote = em.find(LoteMedicamento.class, idLote);
+                if (lote != null && lote.getStockLote() >= cant) {
+                    Medicamento med = lote.getMedicamento();
+                    
+                    // Descontar del lote
+                    lote.setStockLote(lote.getStockLote() - cant);
+                    em.merge(lote);
+                    
+                    // Descontar del total del medicamento
+                    med.setStock(Math.max(0, med.getStock() - cant));
                     em.merge(med);
 
                     FacturaDetalle det = new FacturaDetalle();

@@ -2161,16 +2161,28 @@ function filtrarTicketsTI(checked) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     var formData = new URLSearchParams();
-                    formData.append("action", tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia');
-                    formData.append("id", id);
+                    // El servlet AdminActionServlet espera "idAle" para alergias e "idEnf" para enfermedades
+                    if (tipo === 'enfermedad') {
+                        formData.append("action", "borrarEnfermedad");
+                        formData.append("idEnf", id);
+                    } else {
+                        formData.append("action", "borrarAlergia");
+                        formData.append("idAle", id);
+                    }
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
                     }).then(function(response) {
+                        if (!response.ok) {
+                            Swal.fire({title: 'Error', text: 'No se pudo eliminar el elemento. Intente de nuevo.', icon: 'error', background: 'var(--bg-panel)', color: 'var(--text-color)'});
+                            return;
+                        }
                         Swal.fire({title: 'Eliminado', text: 'El elemento ha sido eliminado.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
                             window.location.href = "dashboard";
                         });
+                    }).catch(function() {
+                        Swal.fire({title: 'Error de red', text: 'No se pudo conectar con el servidor.', icon: 'error', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                     });
                 }
             });
@@ -4301,5 +4313,129 @@ document.addEventListener("DOMContentLoaded", function() {
             document.body.style.overflow = '';
         });
 
-</script>
+        // ════ SISTEMA DE LOTES FARMACÉUTICOS ════
+        
+        function actualizarMinCaducidad(el) {
+            let cad = document.getElementById('inputFechaCad');
+            if(cad && el.value) {
+                cad.min = el.value;
+                if(cad.value && cad.value < el.value) {
+                    cad.value = el.value;
+                }
+            }
+        }
 
+        function validarFechasMedicamento() {
+            let elab = document.getElementById('inputFechaElab').value;
+            let cad = document.getElementById('inputFechaCad').value;
+            let errorMsg = document.getElementById('errorFechaCad');
+            if(elab && cad && cad < elab) {
+                errorMsg.classList.remove('d-none');
+                return false;
+            }
+            if(errorMsg) errorMsg.classList.add('d-none');
+            return true;
+        }
+
+        function verLotesMedicamento(idMed, nombreMed) {
+            document.getElementById('lotesNombreMed').innerText = nombreMed;
+            let container = document.getElementById('lotesTableContainer');
+            container.innerHTML = '<div class="text-center py-4 text-secondary"><i class="bi bi-hourglass-split fs-3 d-block mb-2"></i>Cargando lotes...</div>';
+
+            let mEl = document.getElementById('modalLotesMedicamento');
+            let m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+            m.show();
+
+            fetch('adminAction?action=listarLotes&idMed=' + idMed)
+                .then(res => res.json())
+                .then(data => {
+                    if(!data || data.length === 0) {
+                        container.innerHTML = '<div class="alert alert-warning m-3 text-center">No hay lotes registrados para este medicamento.</div>';
+                        return;
+                    }
+                    let html = '<table class="table table-sm table-hover text-theme mt-3"><thead><tr><th>Nº Lote</th><th>Elaboración</th><th>Caducidad</th><th>Stock</th><th>Estado</th></tr></thead><tbody>';
+                    data.forEach(l => {
+                        let badge = 'bg-success';
+                        let estadoTxt = 'Vigente';
+                        if(l.estado === 'vencido') { badge = 'bg-danger'; estadoTxt = 'Vencido'; }
+                        else if(l.estado === 'por_vencer') { badge = 'bg-warning text-dark'; estadoTxt = 'Por Vencer'; }
+
+                        html += `<tr>
+                            <td class="fw-bold">${l.numeroLote}</td>
+                            <td>${l.fechaElab || '--'}</td>
+                            <td>${l.fechaCad || '--'}</td>
+                            <td>${l.stockLote}</td>
+                            <td><span class="badge ${badge}">${estadoTxt}</span></td>
+                        </tr>`;
+                    });
+                    html += '</tbody></table>';
+                    container.innerHTML = html;
+                })
+                .catch(err => {
+                    container.innerHTML = '<div class="alert alert-danger m-3 text-center">Error al cargar los lotes.</div>';
+                });
+        }
+
+        window.abrirSelectorLoteCarrito = function(idMed, nombreMed, precio, stockTotal) {
+            Swal.fire({
+                title: 'Cargando lotes...',
+                background: 'var(--bg-panel)',
+                color: 'var(--text-color)',
+                didOpen: () => {
+                    Swal.showLoading();
+                    fetch('adminAction?action=listarLotes&idMed=' + idMed)
+                        .then(res => res.json())
+                        .then(data => {
+                            let lotesValidos = data.filter(l => l.stockLote > 0 && l.estado !== 'vencido');
+                            if(lotesValidos.length === 0) {
+                                Swal.fire({title: 'Sin stock', text: 'No hay lotes vigentes con stock para despachar.', icon: 'warning', background: 'var(--bg-panel)', color: 'var(--text-color)'});
+                                return;
+                            }
+                            
+                            let optionsHtml = '<select id="swalLoteSelect" class="form-select mb-3" style="background:var(--bg-panel); color:var(--text-color); border:1px solid rgba(255,255,255,0.2)">';
+                            lotesValidos.forEach(l => {
+                                optionsHtml += `<option value="${l.id}" data-caducidad="${l.fechaCad}" data-stock="${l.stockLote}">
+                                    ${l.numeroLote} (Vence: ${l.fechaCad || 'N/A'} - Stock: ${l.stockLote})
+                                </option>`;
+                            });
+                            optionsHtml += '</select>';
+                            
+                            Swal.fire({
+                                title: 'Seleccionar Lote',
+                                html: `<div class="text-start">
+                                        <p class="mb-2">Seleccione el lote a despachar para <b>${nombreMed}</b>:</p>
+                                        ${optionsHtml}
+                                       </div>`,
+                                icon: 'info',
+                                showCancelButton: true,
+                                confirmButtonText: 'Agregar al Carrito',
+                                cancelButtonText: 'Cancelar',
+                                background: 'var(--bg-panel)',
+                                color: 'var(--text-color)',
+                                preConfirm: () => {
+                                    let select = document.getElementById('swalLoteSelect');
+                                    let selectedOption = select.options[select.selectedIndex];
+                                    return {
+                                        idLote: parseInt(select.value),
+                                        numeroLote: selectedOption.text.split(' (')[0].trim(),
+                                        stockLote: parseInt(selectedOption.getAttribute('data-stock'))
+                                    };
+                                }
+                            }).then((result) => {
+                                if(result.isConfirmed) {
+                                    let lote = result.value;
+                                    let nombreConLote = nombreMed + " (" + lote.numeroLote + ")";
+                                    if(window.agregarAlCarrito) {
+                                        window.agregarAlCarrito(lote.idLote, nombreConLote, precio, lote.stockLote);
+                                    }
+                                }
+                            });
+                        })
+                        .catch(err => {
+                            Swal.fire({title: 'Error', text: 'No se pudieron cargar los lotes.', icon: 'error', background: 'var(--bg-panel)', color: 'var(--text-color)'});
+                        });
+                }
+            });
+        };
+
+</script>

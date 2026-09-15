@@ -193,6 +193,8 @@
 
                                 <th>Estado de Bodega</th>
 
+                                <th class="text-center"><i class="bi bi-layers me-1"></i>Lotes</th>
+
                                 <% if(canSellStock) { out.print("<th class='text-center'><i class='bi bi-cart-plus me-1'></i></th>"); } %>
 
                             </tr>
@@ -245,15 +247,18 @@
 
                                         out.print("<td><span class='text-theme'><i class='bi " + icon + " me-1'></i> " + estadoText + "</span></td>");
 
+                                        // Columna Lotes — siempre visible
+                                        out.print("<td class='text-center'><button class='btn btn-sm btn-outline-info rounded-circle px-2' title='Ver Lotes' onclick=\"verLotesMedicamento(" + m.get("id") + ", '" + m.get("nombre").replace("'", "\\'") + "')\"><i class='bi bi-layers'></i></button></td>");
+
                                         if (canSellStock) {
                                             out.print("<td class='text-center'>");
                                             if (st > 0) {
                                                 out.print("<div class='d-flex justify-content-center gap-2'>");
-out.print("<button class='btn btn-sm btn-outline-info rounded-circle px-2' title='Añadir al carrito' onclick=\"agregarAlCarrito(" + m.get("id") + ", '" + m.get("nombre").replace("'", "\\'") + "', " + m.get("precio") + ", " + m.get("stock") + ")\"><i class='bi bi-cart-plus'></i></button>");
-if(isAdmin) {
-    out.print("<button class='btn btn-sm btn-outline-danger rounded-circle px-2' title='Eliminar Fármaco' onclick=\"borrarMedicamento(" + m.get("id") + ")\"><i class='bi bi-trash'></i></button>");
-}
-out.print("</div>");
+                                                out.print("<button class='btn btn-sm btn-outline-success rounded-circle px-2' title='Añadir al carrito' onclick=\"abrirSelectorLoteCarrito(" + m.get("id") + ", '" + m.get("nombre").replace("'", "\\'") + "', " + m.get("precio") + ", " + m.get("stock") + ")\"><i class='bi bi-cart-plus'></i></button>");
+                                                if(isAdmin) {
+                                                    out.print("<button class='btn btn-sm btn-outline-danger rounded-circle px-2' title='Eliminar Fármaco' onclick=\"borrarMedicamento(" + m.get("id") + ")\"><i class='bi bi-trash'></i></button>");
+                                                }
+                                                out.print("</div>");
                                             } else {
                                                 out.print("<button class='btn btn-sm btn-outline-secondary rounded-circle px-2' disabled><i class='bi bi-cart-x'></i></button>");
                                             }

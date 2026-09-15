@@ -875,28 +875,78 @@
       <form action="adminAction" method="POST" autocomplete="off">
         <div class="modal-body pb-0">
           <input type="hidden" name="action" value="crearMedicamento" autocomplete="off">
+
           <div class="mb-3">
-             <label class="form-label small text-secondary">Nombre Farmacológico</label>
-             <input type="text" name="nombreMed" class="form-control" required autocomplete="off">
+            <label class="form-label small text-secondary">Nombre Farmacológico</label>
+            <input type="text" name="nombreMed" class="form-control" required autocomplete="off">
           </div>
           <div class="mb-3">
-             <label class="form-label small text-secondary">Presentación</label>
-             <input type="text" name="presentacion" class="form-control" placeholder="Ej: Tabletas 500mg" required autocomplete="off">
+            <label class="form-label small text-secondary">Presentación</label>
+            <input type="text" name="presentacion" class="form-control" placeholder="Ej: Tabletas 500mg" required autocomplete="off">
           </div>
-          <div class="mb-3">
-             <label class="form-label small text-secondary">Stock Inicial</label>
-             <input type="number" name="stockMed" class="form-control" min="0" value="0" required autocomplete="off">
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small text-secondary">Stock Inicial</label>
+              <input type="number" name="stockMed" class="form-control" min="0" value="0" required autocomplete="off">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-secondary">Precio Unitario ($)</label>
+              <input type="number" name="precioMed" step="0.01" class="form-control" min="0" value="0.00" required autocomplete="off">
+            </div>
           </div>
+
+          <hr style="border-color: rgba(255,255,255,0.1);" class="my-3">
+          <p class="small text-secondary mb-2"><i class="bi bi-layers me-1 text-info"></i>Datos del Primer Lote</p>
+
           <div class="mb-3">
-             <label class="form-label small text-secondary">Precio Unitario ($)</label>
-             <input type="number" name="precioMed" step="0.01" class="form-control" min="0" value="0.00" required autocomplete="off">
+            <label class="form-label small text-secondary">Número de Lote</label>
+            <input type="text" name="numeroLote" id="inputNumeroLote" class="form-control"
+                   placeholder="Ej: LOT-2025-001" autocomplete="off">
+            <div class="form-text text-secondary" style="font-size: 0.75rem;">Se genera automáticamente si se deja vacío.</div>
+          </div>
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label small text-secondary">Fecha de Elaboración <span class="text-danger">*</span></label>
+              <input type="date" name="fechaElab" id="inputFechaElab" class="form-control" required
+                     oninput="actualizarMinCaducidad(this)">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-secondary">Fecha de Caducidad <span class="text-danger">*</span></label>
+              <input type="date" name="fechaCad" id="inputFechaCad" class="form-control" required>
+              <div id="errorFechaCad" class="text-danger small d-none"><i class="bi bi-exclamation-circle me-1"></i>No puede ser anterior a la elaboración.</div>
+            </div>
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 mt-3">
           <button type="button" class="btn btn-secondary px-4" onclick="cerrarModalMedicamento()">Cancelar</button>
-          <button type="submit" class="btn btn-success px-4">Guardar</button>
+          <button type="submit" class="btn btn-success px-4" onclick="return validarFechasMedicamento()">
+            <i class="bi bi-floppy me-1"></i>Guardar
+          </button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Lotes de Medicamento -->
+<div class="modal fade" id="modalLotesMedicamento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content text-theme" style="background: var(--bg-panel); border: var(--glass-border);">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-layers me-2 text-info"></i>Lotes de:
+          <span id="lotesNombreMed" class="text-info ms-1"></span>
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="lotesTableContainer">
+          <div class="text-center py-4 text-secondary"><i class="bi bi-hourglass-split fs-3 d-block mb-2"></i>Cargando lotes...</div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cerrar</button>
+      </div>
     </div>
   </div>
 </div>

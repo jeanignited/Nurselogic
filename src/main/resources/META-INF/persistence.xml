@@ -18,6 +18,7 @@
         <class>com.nurselogic.model.Factura</class>
         <class>com.nurselogic.model.FacturaDetalle</class>
         <class>com.nurselogic.model.Cama</class>
+        <class>com.nurselogic.model.LoteMedicamento</class>
 
         <properties>
 
