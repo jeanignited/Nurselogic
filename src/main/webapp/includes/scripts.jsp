@@ -3392,12 +3392,10 @@ function aplicarPlantillaRol(tipo, el) {
     }
     restText = restText.replace('--- Signos Vitales ---', '').trim();
     
-    Swal.fire({title: 'Cargando...', text: 'Obteniendo historial completo...', allowOutsideClick: false, didOpen: () => Swal.showLoading()});
-    
+    // Quitamos Swal.fire para evitar conflictos de backdrops y freezes
     fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
         .then(r => r.json())
         .then(data => {
-            Swal.close();
             let enfText = (data.enfermedad && data.enfermedad !== 'null' && data.enfermedad !== 'Ninguna') ? data.enfermedad : 'Ninguna registrada';
             let alergiasText = (data.alergias && data.alergias !== 'null' && data.alergias !== 'Ninguna') ? `<span class="text-danger fw-bold">${data.alergias}</span>` : '<span class="text-danger fw-bold">Ninguna registrada</span>';
             
@@ -3480,6 +3478,8 @@ function aplicarPlantillaRol(tipo, el) {
                     m.show();
                 }, 300);
             }
+        }).catch(e => {
+            Swal.fire('Error', 'Problema al cargar el historial.', 'error');
         });
 }
 function filtrarCitasAvanzado() { let input = document.getElementById('buscadorCitas').value.toLowerCase(); let fechaFiltro = document.getElementById('filtroFechaCitas').value; let ocultarCerradas = document.getElementById('checkOcultarCerradas').checked; let table = document.getElementById('tablaCitas'); if(!table) return; let tr = table.getElementsByTagName('tr'); for (let i = 1; i < tr.length; i++) { let txtValue = tr[i].textContent || tr[i].innerText; txtValue = txtValue.toLowerCase(); let rowHtml = tr[i].innerHTML.toLowerCase(); let dateValue = ''; let tdFecha = tr[i].getElementsByTagName('small')[0]; if(tdFecha) { dateValue = tdFecha.innerText.trim(); } let matchTexto = txtValue.indexOf(input) > -1; let matchFecha = fechaFiltro === '' || dateValue === fechaFiltro; let estadoCelda = tr[i].getElementsByTagName('td')[3]; let estado = estadoCelda ? estadoCelda.innerText.trim().toLowerCase() : ''; let esCerrada = estado === 'atendido' || estado === 'cancelado'; let matchEstado = !(ocultarCerradas && esCerrada); if (matchTexto && matchFecha && matchEstado) { tr[i].style.display = ''; } else { tr[i].style.display = 'none'; } } } document.addEventListener('DOMContentLoaded', function() { setTimeout(function(){ if(document.getElementById('tablaCitas')) filtrarCitasAvanzado(); }, 100); });
@@ -3769,11 +3769,10 @@ window.procesarCheckout = function() {
 
 window.verFichaClinica = function(cedula) {
     if (!cedula) return;
-    Swal.fire({title: 'Cargando Ficha...', text: 'Obteniendo información del paciente...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+    // Quitamos Swal.fire para evitar conflictos de backdrops y freezes
     fetch('registroPaciente?action=buscarCedula&cedula=' + cedula)
         .then(r => r.json())
         .then(data => {
-            Swal.close();
             if (data.id) {
                 document.getElementById('fichaNombre').innerText = data.nombres + ' ' + data.apellidos;
                 document.getElementById('fichaInfo').innerText = 'Cédula: ' + cedula + ' | Nacimiento: ' + (data.fechaNacimiento || '--') + ' | Sexo: ' + (data.sexo || '--');
