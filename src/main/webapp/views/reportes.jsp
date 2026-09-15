@@ -11,17 +11,17 @@
 <div id="reportes" class="vista-activa d-none">
     <% if (isAdmin) { %>
         <!-- PANEL DE SOPORTE T.I. PARA ADMINISTRADORES -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 w-100 mb-4">
             <div>
                 <h2 class="fw-bold text-theme m-0"><i class="bi bi-display me-2 text-primary"></i>Panel de Control T.I.</h2>
                 <p class="text-secondary mt-1 mb-0">Sistema de Ticketing y Visualización de Reportes (Vista estilo cámaras de seguridad)</p>
             </div>
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap align-items-center gap-3 w-100">
                 <div class="form-check form-switch d-flex align-items-center me-3">
-                    <input class="form-check-input mt-0 me-2" type="checkbox" role="switch" id="switchOcultarResueltosTI" checked onchange="filtrarTicketsTI()" style="cursor:pointer; transform: scale(1.2);">
+                    <input class="form-check-input mt-0 me-2" type="checkbox" role="switch" id="switchOcultarResueltosTI" checked onchange="filtrarTicketsTI(this.checked)" style="cursor:pointer; transform: scale(1.2);">
                     <label class="form-check-label text-theme fw-semibold" for="switchOcultarResueltosTI" style="cursor:pointer;">Ocultar tickets atendidos/cerrados</label>
                 </div>
-                <select id="filtroNivelTI" class="form-select bg-dark text-white rounded-pill px-3 shadow-sm border-0" style="border: 1px solid rgba(255,255,255,0.1) !important;" onchange="filtrarTicketsTI()">
+                <select id="filtroNivelTI" class="form-select w-auto bg-dark text-white rounded-pill px-3 shadow-sm border-0" style="border: 1px solid rgba(255,255,255,0.1) !important;" onchange="filtrarTicketsTI()">
                     <option value="todos">Todos los niveles</option>
                     <option value="leve">Leve</option>
                     <option value="moderado">Moderado</option>
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <div class="row g-4" id="contenedorTicketsTI">
+        <div class="row g-4 w-100" id="contenedorTicketsTI">
             <%
                 try {
                     EntityManager em = JPAUtil.getEntityManager();
@@ -301,32 +301,7 @@
 
 
 <script>
-function filtrarTicketsTI() {
-    let select = document.getElementById('filtroNivelTI');
-    let switchOcultar = document.getElementById('switchOcultarResueltosTI');
-    if(!select || !switchOcultar) return;
-    
-    let filterNivel = select.value.toLowerCase();
-    let hideResolved = switchOcultar.checked;
-    
-    let cards = document.querySelectorAll('.ticket-card');
-    
-    cards.forEach(card => {
-        let nivel = card.getAttribute('data-nivel') || "";
-        let estado = card.getAttribute('data-estado') || "";
-        
-        let showNivel = (filterNivel === 'todos' || nivel.includes(filterNivel) || (filterNivel === 'critico' && nivel.includes('cr')));
-        
-        let isResolved = estado.includes('cerrado') || estado.includes('atendido') || estado.includes('resuelto');
-        let showEstado = hideResolved ? !isResolved : true;
-        
-        if(showNivel && showEstado) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
+
 
 document.addEventListener("DOMContentLoaded", function() {
     filtrarTicketsTI();

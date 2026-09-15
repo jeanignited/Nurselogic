@@ -105,14 +105,29 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
     setTimeout(() => { ventana.print(); ventana.close(); }, 500);
 }
 function mostrarAlertaSoporte() {
+    let isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
     Swal.fire({
         title: '¿Necesitas ayuda con NurseLogic?',
         html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
         icon: 'info',
-        background: 'var(--bg-panel)',
-        color: 'var(--text-color)',
+        background: isDark ? '#1e293b' : '#ffffff',
+        color: isDark ? '#ffffff' : '#000000',
         confirmButtonText: 'Entendido',
         confirmButtonColor: 'var(--accent)'
+    });
+}
+
+function filtrarTicketsTI(checked) {
+    let cards = document.querySelectorAll('.ticket-card');
+    cards.forEach(card => {
+        let content = (card.innerHTML || card.innerText || "").toLowerCase();
+        let isResolved = content.includes('cerrado') || content.includes('resuelto') || content.includes('atendido');
+        
+        if (checked && isResolved) {
+            card.style.display = 'none';
+        } else {
+            card.style.display = 'block';
+        }
     });
 }
 </script>
@@ -4063,15 +4078,49 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
     setTimeout(() => { ventana.print(); ventana.close(); }, 500);
 }
 function mostrarAlertaSoporte() {
+    let isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
     Swal.fire({
         title: '¿Necesitas ayuda con NurseLogic?',
         html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
         icon: 'info',
-        background: 'var(--bg-panel)',
-        color: 'var(--text-color)',
+        background: isDark ? '#1e293b' : '#ffffff',
+        color: isDark ? '#ffffff' : '#000000',
         confirmButtonText: 'Entendido',
         confirmButtonColor: 'var(--accent)'
     });
 }
+
+function filtrarTicketsTI(checked) {
+    if (typeof checked === 'undefined') {
+        let switchEl = document.getElementById('switchOcultarResueltosTI');
+        checked = switchEl ? switchEl.checked : true;
+    }
+    
+    let select = document.getElementById('filtroNivelTI');
+    let filterNivel = select ? select.value.toLowerCase() : 'todos';
+    
+    let cards = document.querySelectorAll('.ticket-card');
+    cards.forEach(card => {
+        let nivel = (card.getAttribute('data-nivel') || "").toLowerCase();
+        let estado = (card.getAttribute('data-estado') || "").toLowerCase();
+        
+        let isResolved = estado === 'cerrado' || estado === 'resuelto' || estado === 'atendido';
+        
+        let showNivel = (filterNivel === 'todos' || nivel.includes(filterNivel) || (filterNivel === 'critico' && nivel.includes('cr')));
+        let showEstado = checked ? !isResolved : true;
+        
+        if (showNivel && showEstado) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    if (document.getElementById('contenedorTicketsTI')) {
+        filtrarTicketsTI();
+    }
+});
 </script>
 
