@@ -3849,6 +3849,31 @@ window.editarPacienteDesdeFicha = function() {
     }
 };
 
+window.imprimirFichaMedica = function(idPaciente) {
+    if (idPaciente === 'ID_PACIENTE' || !idPaciente) {
+        let cedulaText = document.getElementById('fichaInfo').innerText;
+        let match = cedulaText.match(/Cédula: (\d+)/);
+        if (match && match[1]) {
+            idPaciente = match[1];
+        } else {
+            idPaciente = '';
+        }
+    }
+    
+    let modalBody = document.querySelector('#modalFichaClinica .modal-body');
+    let contenido = modalBody ? modalBody.innerHTML : '';
+    let ventana = window.open('', '', 'width=800,height=600');
+    ventana.document.write('<html><head><title>Ficha Médica Integral</title>');
+    ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">');
+    ventana.document.write('<style>@media print { .print-text-black, .text-warning, .text-info, .text-success, .text-danger, .text-primary, .text-secondary, .text-light, .text-white, .text-purple { color: black !important; } .badge { color: black !important; border: 1px solid black !important; background: transparent !important; } body { background: white !important; color: black !important; } .table-dark-custom { color: black !important; background-color: white !important; border-color: #dee2e6 !important; } .table-dark-custom td, .table-dark-custom th { border-color: #dee2e6 !important; background-color: white !important; color: black !important; } }</style>');
+    ventana.document.write('</head><body><div class="container mt-4">');
+    ventana.document.write('<h2>Ficha Médica Integral' + (idPaciente ? ' - Paciente ' + idPaciente : '') + '</h2><hr>');
+    ventana.document.write(contenido);
+    ventana.document.write('</div></body></html>');
+    ventana.document.close();
+    setTimeout(() => { ventana.print(); ventana.close(); }, 500);
+};
+
 window.cerrarModalFicha = function() {
     var mEl = document.getElementById('modalFichaClinica');
     if (mEl) { var m = bootstrap.Modal.getInstance(mEl); if(m) m.hide(); }

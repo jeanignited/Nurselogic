@@ -1084,6 +1084,7 @@
       </div>
 
       <div class="modal-footer border-0 pt-0">
+        <button type="button" class="btn btn-outline-info rounded-pill px-4 me-auto" onclick="imprimirFichaMedica('ID_PACIENTE')" id="btnImprimirFicha"><i class="bi bi-printer"></i> Imprimir</button>
         <button type="button" class="btn btn-outline-warning rounded-pill px-4" onclick="editarPacienteDesdeFicha()"><i class="bi bi-pencil-square me-1"></i>Editar Paciente</button>
         <button type="button" class="btn btn-secondary rounded-pill px-4" onclick="cerrarModalFicha()">Cerrar</button>
       </div>
