@@ -1,11 +1,12 @@
 import io
-with io.open('src/main/java/com/nurselogic/model/Factura.java', 'r', encoding='utf-8') as f:
-    c = f.read()
 
-# Add cliente_cedula
-c = c.replace('private String clienteNombre;', 'private String clienteNombre;\n\n    @Column(name = "cliente_cedula", length = 20)\n    private String clienteCedula;')
-c = c.replace('public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }', 'public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }\n    public String getClienteCedula() { return clienteCedula; }\n    public void setClienteCedula(String clienteCedula) { this.clienteCedula = clienteCedula; }')
+with io.open('src/main/webapp/views/facturas.jsp', 'r', encoding='utf-8') as f:
+    fac = f.read()
 
-with io.open('src/main/java/com/nurselogic/model/Factura.java', 'w', encoding='utf-8') as f:
-    f.write(c)
-print('Updated Factura.java')
+old_td = 'out.print("<td style=\'font-size: 0.85rem;\'>" + detalles.toString() + "</td>");'
+new_td = 'out.print("<td style=\'font-size: 0.85rem;\'><div style=\'display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; max-height: 2.8em; line-height: 1.4em; min-width: 250px;\'>" + detalles.toString() + "</div></td>");'
+
+fac = fac.replace(old_td, new_td)
+
+with io.open('src/main/webapp/views/facturas.jsp', 'w', encoding='utf-8') as f:
+    f.write(fac)

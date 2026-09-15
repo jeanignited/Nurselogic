@@ -1533,8 +1533,7 @@ function filtrarTicketsTI(checked) {
                     var formData = new URLSearchParams();
                     formData.append("action", "eliminar");
                     formData.append("target", tipo);
-                    formData.append("idEnf", id);
-                    formData.append("idAle", id);
+                    formData.append("id", id);
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2163,8 +2162,7 @@ function filtrarTicketsTI(checked) {
                 if (result.isConfirmed) {
                     var formData = new URLSearchParams();
                     formData.append("action", tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia');
-                    formData.append("idEnf", id);
-                    formData.append("idAle", id);
+                    formData.append("id", id);
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -3909,8 +3907,7 @@ window.confirmarBorradoFactura = function(id) {
         if (result.isConfirmed) {
             var formData = new URLSearchParams();
             formData.append("action", "eliminarFactura");
-            formData.append("idEnf", id);
-                    formData.append("idAle", id);
+            formData.append("id", id);
             fetch('adminAction', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
