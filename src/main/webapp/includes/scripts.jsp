@@ -3473,6 +3473,7 @@ function aplicarPlantillaRol(tipo, el) {
             
             var mEl = document.getElementById('modalVerDiagnostico');
             if(mEl) {
+                document.body.appendChild(mEl); // Mover al final del body para evitar conflictos de z-index
                 var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
                 m.show();
             }
@@ -3827,6 +3828,7 @@ window.verFichaClinica = function(cedula) {
                 
                 var mEl = document.getElementById('modalFichaClinica');
                 if (mEl) { 
+                    document.body.appendChild(mEl); // Mover al final del body para evitar conflictos de z-index
                     var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); 
                     m.show(); 
                 }
