@@ -3,6 +3,8 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
 <%@ page import="com.nurselogic.model.*" %>
+<%@ page import="com.nurselogic.config.JPAUtil" %>
+<%@ page import="jakarta.persistence.EntityManager" %>
 <%
     String rolUsuario = (String) session.getAttribute("rol");
     if(rolUsuario == null) {
@@ -11,36 +13,89 @@
     }
     rolUsuario = rolUsuario.trim();
     String correoLogueado = (String) session.getAttribute("correo");
-    boolean isAdmin = "Admin".equalsIgnoreCase(rolUsuario);
-    boolean isPaciente = "Paciente".equalsIgnoreCase(rolUsuario);
-    boolean isFarmaceutico = "Farmaceutico".equalsIgnoreCase(rolUsuario);
+    boolean isAdmin        = "Admin".equalsIgnoreCase(rolUsuario);
+    boolean isPaciente     = "Paciente".equalsIgnoreCase(rolUsuario);
+    boolean isFarmaceutico = "Farmaceutico".equalsIgnoreCase(rolUsuario)
+                          || "Farmac\u00e9utico".equalsIgnoreCase(rolUsuario);
 
-    boolean permPac = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Enfermero".equalsIgnoreCase(rolUsuario);
-    boolean permMed = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || isFarmaceutico || "Bodeguero".equalsIgnoreCase(rolUsuario);
-    boolean permCat = isAdmin || "Medico".equalsIgnoreCase(rolUsuario);
-    boolean canSellStock = isAdmin || isFarmaceutico || "Recepcionista".equalsIgnoreCase(rolUsuario);
+    // ── Permisos legacy por nombre de rol (fallback hardcodeado) ──────────────
+    boolean permPac        = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Enfermero".equalsIgnoreCase(rolUsuario);
+    boolean permMed        = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || isFarmaceutico || "Bodeguero".equalsIgnoreCase(rolUsuario);
+    boolean permCat        = isAdmin || "Medico".equalsIgnoreCase(rolUsuario);
+    boolean canSellStock   = isAdmin || isFarmaceutico || "Recepcionista".equalsIgnoreCase(rolUsuario);
     boolean canManageStock = isAdmin || isFarmaceutico || "Bodeguero".equalsIgnoreCase(rolUsuario);
-    boolean permCitas = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Recepcionista".equalsIgnoreCase(rolUsuario);
-    boolean permUsuarios = isAdmin;
+    boolean permCitas      = isAdmin || "Medico".equalsIgnoreCase(rolUsuario) || "Recepcionista".equalsIgnoreCase(rolUsuario);
+    boolean permUsuarios   = isAdmin;
+    // ── 5 permisos granulares nuevos (default: solo Admin) ───────────────────
+    boolean permHosp        = isAdmin;
+    boolean permRepVentas   = isAdmin;
+    boolean permDirPac      = isAdmin;
+    boolean permCatClinicos = isAdmin;
+    boolean permSoporteTI   = isAdmin;
+
+    // ── Enriquecer con permisos del objeto Rol en BD (string CSV + booleanos) ─
+    if (!isAdmin && !isPaciente && rolUsuario != null) {
+        EntityManager em = null;
+        try {
+            em = JPAUtil.getEntityManager();
+            com.nurselogic.model.Rol rolObj = em
+                .createQuery("SELECT r FROM Rol r WHERE r.nombre = :nombre", com.nurselogic.model.Rol.class)
+                .setParameter("nombre", rolUsuario)
+                .getResultStream()
+                .findFirst()
+                .orElse(null);
+            if (rolObj != null) {
+                // Booleanos granulares (columnas nuevas en BD)
+                permHosp        = rolObj.isPermHospitalizacionCamas();
+                permRepVentas   = rolObj.isPermReporteVentas();
+                permDirPac      = rolObj.isPermDirectorioPacientes();
+                permCatClinicos = rolObj.isPermCatalogosPersonal();
+                permSoporteTI   = rolObj.isPermSoporteTI();
+                // String CSV legacy — compatibilidad con permisos ya almacenados
+                String p = rolObj.getPermisos() != null ? rolObj.getPermisos() : "";
+                if (p.contains("Admision"))   permPac        = true;
+                if (p.contains("Inventario")) { permMed = true; canManageStock = true; }
+                if (p.contains("Cat\u00e1logos") || p.contains("Catalogos")) permCat = true;
+                if (p.contains("Reportes"))   canSellStock   = true;
+                if (p.contains("Citas"))      permCitas      = true;
+                if (p.contains("Usuarios"))   permUsuarios   = true;
+                // Fallback: si permisos granulares activos, activar también los legacy
+                if (permDirPac)      permPac      = true;
+                if (permRepVentas)   canSellStock = true;
+                if (permCatClinicos) permCat      = true;
+            }
+        } catch (Exception ex) {
+            // Si falla la consulta, se mantienen los valores por defecto del rol string
+        } finally {
+            if (em != null && em.isOpen()) em.close();
+        }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
 
     if("Pendiente".equalsIgnoreCase(rolUsuario)) {
         out.println("<div style='background:#0f172a; color:#fff; height:100vh; display:flex; align-items:center; justify-content:center; font-family:sans-serif;'><div style='text-align:center;'><h2>Acceso Restringido</h2><p>Su cuenta est&aacute; pendiente de revisi&oacute;n.</p><a href='login.jsp' style='color:#3b82f6;'>Volver</a></div></div>");
         return;
     }
 
-    // Store permission flags in request scope for dynamically-included JSPs
-    request.setAttribute("isAdmin", isAdmin);
-    request.setAttribute("isPaciente", isPaciente);
-    request.setAttribute("isFarmaceutico", isFarmaceutico);
-    request.setAttribute("permPac", permPac);
-    request.setAttribute("permMed", permMed);
-    request.setAttribute("permCat", permCat);
-    request.setAttribute("canSellStock", canSellStock);
-    request.setAttribute("canManageStock", canManageStock);
-    request.setAttribute("permCitas", permCitas);
-    request.setAttribute("permUsuarios", permUsuarios);
-    request.setAttribute("correoLogueado", correoLogueado);
-    request.setAttribute("rolUsuario", rolUsuario);
+    // Propagar TODOS los permisos al request scope (sidebar, vistas y modals los leen aquí)
+    request.setAttribute("isAdmin",         isAdmin);
+    request.setAttribute("isPaciente",      isPaciente);
+    request.setAttribute("isFarmaceutico",  isFarmaceutico);
+    request.setAttribute("permPac",         permPac);
+    request.setAttribute("permMed",         permMed);
+    request.setAttribute("permCat",         permCat);
+    request.setAttribute("canSellStock",    canSellStock);
+    request.setAttribute("canManageStock",  canManageStock);
+    request.setAttribute("permCitas",       permCitas);
+    request.setAttribute("permUsuarios",    permUsuarios);
+    // 5 permisos granulares nuevos:
+    request.setAttribute("permHosp",        permHosp);
+    request.setAttribute("permRepVentas",   permRepVentas);
+    request.setAttribute("permDirPac",      permDirPac);
+    request.setAttribute("permCatClinicos", permCatClinicos);
+    request.setAttribute("permSoporteTI",   permSoporteTI);
+    request.setAttribute("correoLogueado",  correoLogueado);
+    request.setAttribute("rolUsuario",      rolUsuario);
 %>
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="dark">

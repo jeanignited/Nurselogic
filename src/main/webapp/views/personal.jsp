@@ -113,8 +113,7 @@
 
             </div>
 
-        </div>
-
+            <%-- ✅ TABLA: Roles Creados en el Sistema — DENTRO del div#personal --%>
             <div class="d-flex justify-content-between align-items-center mt-5 mb-4">
                 <h3 class="m-0 fw-bold"><i class="bi bi-person-badge me-2 text-warning"></i>Roles Creados en el Sistema</h3>
             </div>
@@ -134,7 +133,7 @@
                                             out.print("<td class='text-secondary'>" + (rObj.getDescripcion() != null ? rObj.getDescripcion() : "") + "</td>");
                                             out.print("<td class='text-secondary'>" + (rObj.getPermisos() != null ? rObj.getPermisos() : "") + "</td>");
                                             out.print("<td>");
-                                            out.print("<button class='btn btn-sm btn-outline-danger' onclick="confirmarBorrado('rol', '" + rObj.getId() + "')"><i class='bi bi-trash'></i></button>");
+                                            out.print("<button class='btn btn-sm btn-outline-danger' onclick=\"confirmarBorrado('rol', '" + rObj.getId() + "')\"><i class='bi bi-trash'></i></button>");
                                             out.print("</td></tr>");
                                         }
                                     } else {
@@ -147,5 +146,6 @@
                 </div>
             </div>
 
+        </div><%-- fin div#personal --%>
 
 

@@ -1,19 +1,12 @@
 import io
 
-with io.open('src/main/webapp/views/dashboard.jsp', 'r', encoding='utf-8') as f:
-    c = f.read()
+with io.open('src/main/webapp/views/personal.jsp', 'r', encoding='utf-8') as f:
+    personal = f.read()
 
-c = c.replace('calcularIMC(\\\'\\\')', "calcularIMC('')")
-c = c.replace('calcularIMC(\\\'atender_\\\')', "calcularIMC('atender_')")
+bad = 'out.print("<button class=\'btn btn-sm btn-outline-danger\' onclick="confirmarBorrado(\'rol\', \'" + rObj.getId() + "\')"><i class=\'bi bi-trash\'></i></button>");'
+good = 'out.print("<button class=\'btn btn-sm btn-outline-danger\' onclick=\\"confirmarBorrado(\'rol\', \'" + rObj.getId() + "\')\\"><i class=\'bi bi-trash\'></i></button>");'
 
-with io.open('src/main/webapp/views/dashboard.jsp', 'w', encoding='utf-8') as f:
-    f.write(c)
+personal = personal.replace(bad, good)
 
-with io.open('src/main/webapp/includes/modals.jsp', 'r', encoding='utf-8') as f:
-    c = f.read()
-
-c = c.replace('calcularIMC(\\\'\\\')', "calcularIMC('')")
-c = c.replace('calcularIMC(\\\'atender_\\\')', "calcularIMC('atender_')")
-
-with io.open('src/main/webapp/includes/modals.jsp', 'w', encoding='utf-8') as f:
-    f.write(c)
+with io.open('src/main/webapp/views/personal.jsp', 'w', encoding='utf-8') as f:
+    f.write(personal)
