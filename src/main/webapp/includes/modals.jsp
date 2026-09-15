@@ -14,7 +14,7 @@
     boolean permUsuarios   = Boolean.TRUE.equals(request.getAttribute("permUsuarios"));
     String correoLogueado  = (String) request.getAttribute("correoLogueado");
     String rolUsuario      = (String) request.getAttribute("rolUsuario");
-%><%@ page import="java.util.List, java.util.Map, java.util.ArrayList, com.nurselogic.model.*" %>
+%><%@ page import="java.util.List, java.util.Map, java.util.ArrayList, com.nexusmed.model.*" %>
 
         <!-- Modal Cambio de Rol -->
 <div class="modal fade" id="modalRol" tabindex="-1" aria-hidden="true">
@@ -306,7 +306,7 @@
 <!-- AREA OCULTA DE IMPRESION PARA RECETA PDF (@media print) -->
 <div id="areaImpresionReceta" class="d-none">
     <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
-        <h1 style="margin:0; font-size: 28px; color: #0b0f19;">CENTRO HOSPITALARIO NURSELOGIC</h1>
+        <h1 style="margin:0; font-size: 28px; color: #0b0f19;">CENTRO HOSPITALARIO NEXUSMED</h1>
         <p style="margin:5px 0 0 0; font-size: 14px; color: #666;">Direcci&oacute;n M&eacute;dica Integral | Receta Oficial Electr&oacute;nica</p>
     </div>
     <div style="margin-bottom: 30px; line-height: 1.8; font-size: 16px;">
@@ -323,7 +323,7 @@
     <div style="margin-top: 80px; text-align: center;">
         <div style="display:inline-block; border-top: 1px solid #000; width: 300px; padding-top: 10px;">
             <strong>Firma del M&eacute;dico / Sello Cl&iacute;nico</strong><br>
-            <small>Nurselogic Sistema de Gesti&oacute;n Hospitalaria</small>
+            <small>Nexusmed Sistema de Gesti&oacute;n Hospitalaria</small>
         </div>
     </div>
 </div>
@@ -774,7 +774,7 @@
 </div>
 
 <div id="areaImpresionFactura" style="display:none; font-family: monospace; color:#000; background:#fff; padding:20px; width:400px;">
-    <h2 style="text-align:center; font-family:sans-serif; margin-bottom:5px;">NURSELOGIC FARMACIA</h2>
+    <h2 style="text-align:center; font-family:sans-serif; margin-bottom:5px;">NEXUSMED FARMACIA</h2>
     <p style="text-align:center; font-size:12px; margin-top:0;">FACTURA DE VENTA ELECTRÓNICA</p>
     <hr style="border: 1px dashed #000;">
     <p><strong>Fecha: </strong> <span id="facFecha"></span></p>

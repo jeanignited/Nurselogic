@@ -1,7 +1,7 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
-<%@ page import="com.nurselogic.model.*" %>
-<%@ page import="com.nurselogic.config.JPAUtil" %>
+<%@ page import="com.nexusmed.model.*" %>
+<%@ page import="com.nexusmed.config.JPAUtil" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%
     boolean isAdmin = Boolean.TRUE.equals(request.getAttribute("isAdmin"));

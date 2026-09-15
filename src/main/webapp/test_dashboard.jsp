@@ -1,6 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
-﻿<%@ page import="com.nurselogic.model.Paciente" %>
-<%@ page import="com.nurselogic.config.JPAUtil" %>
+﻿<%@ page import="com.nexusmed.model.Paciente" %>
+<%@ page import="com.nexusmed.config.JPAUtil" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%@ page import="java.util.List" %>
 <%

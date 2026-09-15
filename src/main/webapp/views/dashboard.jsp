@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
-<%@ page import="com.nurselogic.model.*" %>
+<%@ page import="com.nexusmed.model.*" %>
 <%
     boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
     boolean isPaciente     = Boolean.TRUE.equals(request.getAttribute("isPaciente"));
@@ -361,7 +361,7 @@
                         Bienvenido, <%= (miHC != null && miHC.getNombres() != null) ? miHC.getNombres().split(" ")[0] : "Paciente" %>
                     </h1>
                     <p class="fs-5 opacity-75 mb-4 text-secondary" style="max-width: 800px; line-height: 1.6;">
-                        Bienvenido a NurseLogic. Tu ecosistema de salud digital dise&ntilde;ado para darte control total sobre tu historial cl&iacute;nico, facilitar el agendamiento de tus citas y mantener una comunicaci&oacute;n directa con tus especialistas.
+                        Bienvenido a NexusMed. Tu ecosistema de salud digital dise&ntilde;ado para darte control total sobre tu historial cl&iacute;nico, facilitar el agendamiento de tus citas y mantener una comunicaci&oacute;n directa con tus especialistas.
                     </p>
                     <button class="btn btn-primary btn-lg rounded-pill px-4 py-3 fw-bold shadow" onclick="document.getElementById('contenedor-agendar').scrollIntoView({behavior: 'smooth'})">
                         <i class="bi bi-calendar-plus me-2"></i>Agendar Nueva Cita
@@ -851,11 +851,11 @@ window.simularAperturaDocumento = function(tipo, elementoBoton) {
     var medico = fila.cells[2].innerText;
 
     var ventana = window.open('', '_blank');
-    ventana.document.write('<html><head><title>' + tipo + ' - NurseLogic</title>');
+    ventana.document.write('<html><head><title>' + tipo + ' - NexusMed</title>');
     ventana.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"></head>');
     ventana.document.write('<body class="p-5"><div class="container border p-5 shadow-sm">');
     ventana.document.write('<div class="d-flex justify-content-between align-items-center mb-4">');
-    ventana.document.write('<h2 class="text-primary mb-0"><strong>NURSELOGIC</strong></h2>');
+    ventana.document.write('<h2 class="text-primary mb-0"><strong>NEXUSMED</strong></h2>');
     ventana.document.write('<span class="badge bg-secondary">Documento Oficial</span></div><hr>');
 
     ventana.document.write('<h3 class="mb-4 text-uppercase">' + tipo + '</h3>');
@@ -868,7 +868,7 @@ window.simularAperturaDocumento = function(tipo, elementoBoton) {
     ventana.document.write('<h5 class="text-dark">Detalle / Indicaciones:</h5>');
     ventana.document.write('<p class="mb-0 fs-5">' + detalle + '</p></div>');
 
-    ventana.document.write('<div class="mt-5 text-center text-muted"><p><small>Impreso el: ' + new Date().toLocaleDateString() + ' - Generado automáticamente por el Sistema de Salud NurseLogic</small></p></div>');
+    ventana.document.write('<div class="mt-5 text-center text-muted"><p><small>Impreso el: ' + new Date().toLocaleDateString() + ' - Generado automáticamente por el Sistema de Salud NexusMed</small></p></div>');
     ventana.document.write('</div><script>window.onload = function() { setTimeout(function() { window.print(); }, 500); }<\/script></body></html>');
     ventana.document.close();
 };

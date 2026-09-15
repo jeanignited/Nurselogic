@@ -4,7 +4,7 @@
     out.println("<h2>Fixing MySQL Pacientes Table</h2>");
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nurselogic_db", "root", "Tobbysql2006.");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nexusmed_db", "root", "Tobbysql2006.");
         Statement stmt = conn.createStatement();
         
         try { stmt.executeUpdate("ALTER TABLE pacientes DROP COLUMN edad"); out.println("<p>Dropped edad</p>"); } catch(Exception e) { out.println("<p>edad already dropped or err: " + e.getMessage() + "</p>"); }

@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>NURSELOGIC - Acceso Seguro</title>
+    <title>NEXUSMED - Acceso Seguro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -144,7 +144,7 @@
 <body>
     <script>
         (function() {
-            let saved = localStorage.getItem('nurselogic_theme') || 'auto';
+            let saved = localStorage.getItem('nexusmed_theme') || 'auto';
             let actual = saved === 'auto' ? (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : saved;
             document.documentElement.setAttribute('data-theme', actual);
         })();
@@ -172,7 +172,7 @@
     <div class="login-container">
         <div class="text-center mb-4">
             <i class="bi bi-activity text-primary" style="font-size: 2.5rem; filter: drop-shadow(0 0 10px var(--accent));"></i>
-            <h3 class="fw-bold mt-2 mb-1" style="color: #fff; letter-spacing: 2px;">NURSELOGIC</h3>
+            <h3 class="fw-bold mt-2 mb-1" style="color: #fff; letter-spacing: 2px;">NEXUSMED</h3>
             <p style="color: #94a3b8; font-size: 0.85rem; letter-spacing: 1px;">SISTEMA CLÍNICO INTEGRADO</p>
         </div>
 
@@ -304,7 +304,7 @@
         }
 
         function setTheme(theme) {
-            localStorage.setItem('nurselogic_theme', theme);
+            localStorage.setItem('nexusmed_theme', theme);
             applyTheme(theme);
         }
 
@@ -327,10 +327,10 @@
         }
 
         (function() {
-            let savedTheme = localStorage.getItem('nurselogic_theme') || 'auto';
+            let savedTheme = localStorage.getItem('nexusmed_theme') || 'auto';
             applyTheme(savedTheme);
             window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
-                if (localStorage.getItem('nurselogic_theme') === 'auto') {
+                if (localStorage.getItem('nexusmed_theme') === 'auto') {
                     applyTheme('auto');
                 }
             });

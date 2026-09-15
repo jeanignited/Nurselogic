@@ -107,8 +107,8 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
 function mostrarAlertaSoporte() {
     let isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
     Swal.fire({
-        title: '¿Necesitas ayuda con NurseLogic?',
-        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
+        title: '¿Necesitas ayuda con NexusMed?',
+        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nexusmedsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
         icon: 'info',
         background: isDark ? '#1e293b' : '#ffffff',
         color: isDark ? '#ffffff' : '#000000',
@@ -929,7 +929,7 @@ function filtrarTicketsTI(checked) {
 
 
 
-            sessionStorage.setItem('ultima_vista_nurselogic', vistaId);
+            sessionStorage.setItem('ultima_vista_nexusmed', vistaId);
             changingActiveNav(vistaId);
 
 
@@ -3296,7 +3296,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (vista) {
             cambiarVista(vista);
         } else {
-            var ultimaVista = sessionStorage.getItem('ultima_vista_nurselogic');
+            var ultimaVista = sessionStorage.getItem('ultima_vista_nexusmed');
             if (ultimaVista) {
                 cambiarVista(ultimaVista);
             }
@@ -3556,7 +3556,7 @@ function abrirModalVerDiagnosticoCama(paciente, btnEl) {
 
 // Lgica de Tema Claro / Oscuro
 function setTheme(theme) {
-    localStorage.setItem('nurselogic_theme', theme);
+    localStorage.setItem('nexusmed_theme', theme);
     applyTheme(theme);
 }
 
@@ -3846,7 +3846,7 @@ window.cerrarModalFicha = function() {
 
 // Inicializar estado del dropdown si es que existe
 document.addEventListener('DOMContentLoaded', function() {
-    var savedTheme = localStorage.getItem('nurselogic_theme') || 'dark';
+    var savedTheme = localStorage.getItem('nexusmed_theme') || 'dark';
     applyTheme(savedTheme);
 });
 
@@ -3967,7 +3967,7 @@ window.imprimirFactura = function() {
     var w = window.open('', '', 'width=800,height=600');
     w.document.write('<html><head><title>Factura ' + id + '</title>');
     w.document.write('<style>body{font-family:sans-serif;padding:20px;} .factura-box{border:1px solid #ccc;padding:20px;} .header{text-align:center;} .tot{text-align:right;font-size:1.2em;font-weight:bold;}</style>');
-    w.document.write('</head><body><div class="factura-box"><div class="header"><h2>Farmacia NurseLogic</h2><h3>Factura ' + id + '</h3></div>');
+    w.document.write('</head><body><div class="factura-box"><div class="header"><h2>Farmacia NexusMed</h2><h3>Factura ' + id + '</h3></div>');
     w.document.write('<p><strong>Cliente:</strong> ' + cliente + '</p>');
     w.document.write('<p><strong>Fecha:</strong> ' + fecha + '</p><hr>');
     w.document.write('<div>' + detalles + '</div><hr>');
@@ -4067,8 +4067,8 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
 function mostrarAlertaSoporte() {
     let isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
     Swal.fire({
-        title: '¿Necesitas ayuda con NurseLogic?',
-        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
+        title: '¿Necesitas ayuda con NexusMed?',
+        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nexusmedsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
         icon: 'info',
         background: isDark ? '#1e293b' : '#ffffff',
         color: isDark ? '#ffffff' : '#000000',

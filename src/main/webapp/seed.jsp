@@ -1,8 +1,8 @@
 <%@ page pageEncoding="UTF-8" %>
-﻿<%@ page import="com.nurselogic.config.JPAUtil" %>
-<%@ page import="com.nurselogic.model.Enfermedad" %>
-<%@ page import="com.nurselogic.model.Alergia" %>
-<%@ page import="com.nurselogic.model.Medicamento" %>
+﻿<%@ page import="com.nexusmed.config.JPAUtil" %>
+<%@ page import="com.nexusmed.model.Enfermedad" %>
+<%@ page import="com.nexusmed.model.Alergia" %>
+<%@ page import="com.nexusmed.model.Medicamento" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%@ page import="jakarta.persistence.EntityTransaction" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

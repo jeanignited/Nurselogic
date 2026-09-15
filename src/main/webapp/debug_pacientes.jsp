@@ -4,7 +4,7 @@
     out.println("<h2>Testing MySQL Pacientes Table</h2>");
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nurselogic_db", "root", "Tobbysql2006.");
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nexusmed_db", "root", "Tobbysql2006.");
         
         // Let's see the columns
         DatabaseMetaData meta = conn.getMetaData();
@@ -27,7 +27,7 @@
         // Test JPA Insert
         out.println("<h3>Testing JPA Insert:</h3>");
         try {
-            com.nurselogic.model.Paciente p = new com.nurselogic.model.Paciente();
+            com.nexusmed.model.Paciente p = new com.nexusmed.model.Paciente();
             p.setNombres("Test");
             p.setApellidos("Test");
             p.setCedula("0000000000");
@@ -40,7 +40,7 @@
             p.setFrecuenciaCardiaca(80);
             p.setSaturacionOxigeno(98);
             
-            boolean ok = new com.nurselogic.dao.PacienteDAO().registrarPaciente(p);
+            boolean ok = new com.nexusmed.dao.PacienteDAO().registrarPaciente(p);
             out.println("<p>Insert successful? " + ok + "</p>");
         } catch(Exception ex) {
             out.println("<p style='color:red;'>JPA Error: " + ex.getMessage() + "</p>");

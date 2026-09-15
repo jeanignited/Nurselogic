@@ -1,7 +1,7 @@
 <%@ page contentType="application/json;charset=UTF-8" %>
-<%@ page import="com.nurselogic.config.JPAUtil" %>
-<%@ page import="com.nurselogic.model.Usuario" %>
-<%@ page import="com.nurselogic.model.Paciente" %>
+<%@ page import="com.nexusmed.config.JPAUtil" %>
+<%@ page import="com.nexusmed.model.Usuario" %>
+<%@ page import="com.nexusmed.model.Paciente" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%@ page import="jakarta.persistence.NoResultException" %>
 <%

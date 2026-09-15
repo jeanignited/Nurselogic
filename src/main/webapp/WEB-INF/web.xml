@@ -5,7 +5,7 @@
          version="4.0"
          metadata-complete="false">
 
-  <display-name>Nurselogic Web Application</display-name>
+  <display-name>Nexusmed Web Application</display-name>
 
   <error-page>
       <error-code>404</error-code>

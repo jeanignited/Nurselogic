@@ -1,7 +1,7 @@
 <%@ page pageEncoding="UTF-8" %>
 ﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.nurselogic.config.JPAUtil" %>
-<%@ page import="com.nurselogic.model.Medicamento" %>
+<%@ page import="com.nexusmed.config.JPAUtil" %>
+<%@ page import="com.nexusmed.model.Medicamento" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%@ page import="jakarta.persistence.EntityTransaction" %>
 <%

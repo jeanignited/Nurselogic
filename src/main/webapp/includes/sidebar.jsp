@@ -1,6 +1,6 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
-<%@ page import="com.nurselogic.model.*" %>
+<%@ page import="com.nexusmed.model.*" %>
 <%
     boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
     boolean isPaciente     = Boolean.TRUE.equals(request.getAttribute("isPaciente"));
@@ -26,7 +26,7 @@
 
         <div class="p-4 d-flex align-items-center mb-2" style="border-bottom: var(--glass-border); flex-shrink: 0; cursor: pointer; transition: 0.3s;" onclick="cambiarVista('dashboard')" onmouseover="this.style.background='rgba(56,189,248,0.1)'" onmouseout="this.style.background='transparent'">
             <i class="bi bi-activity text-primary fs-3 me-3" style="filter: drop-shadow(0 0 8px var(--accent));"></i>
-            <span class="brand-title fw-bold fs-5 tracking-wide text-white">NURSELOGIC</span>
+            <span class="brand-title fw-bold fs-5 tracking-wide text-white">NEXUSMED</span>
         </div>
 
         <ul class="nav flex-column flex-nowrap overflow-y-auto" style="display: flex; flex-direction: column; flex-grow: 1; overflow-x: hidden;">

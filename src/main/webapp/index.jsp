@@ -2,8 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="com.nurselogic.model.*" %>
-<%@ page import="com.nurselogic.config.JPAUtil" %>
+<%@ page import="com.nexusmed.model.*" %>
+<%@ page import="com.nexusmed.config.JPAUtil" %>
 <%@ page import="jakarta.persistence.EntityManager" %>
 <%
     String rolUsuario = (String) session.getAttribute("rol");
@@ -38,8 +38,8 @@
         EntityManager em = null;
         try {
             em = JPAUtil.getEntityManager();
-            com.nurselogic.model.Rol rolObj = em
-                .createQuery("SELECT r FROM Rol r WHERE r.nombre = :nombre", com.nurselogic.model.Rol.class)
+            com.nexusmed.model.Rol rolObj = em
+                .createQuery("SELECT r FROM Rol r WHERE r.nombre = :nombre", com.nexusmed.model.Rol.class)
                 .setParameter("nombre", rolUsuario)
                 .getResultStream()
                 .findFirst()
@@ -101,7 +101,7 @@
 <html lang="es" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <title>NURSELOGIC - Workspace</title>
+    <title>NEXUSMED - Workspace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -185,7 +185,7 @@
               body { color: black !important; }
           }
 
-        /* ── TomSelect: integración con el tema dark/light de NurseLogic ── */
+        /* ── TomSelect: integración con el tema dark/light de NexusMed ── */
         .ts-wrapper .ts-control {
             background: rgba(15,23,42,0.6) !important;
             border: var(--glass-border) !important;
@@ -222,7 +222,7 @@
 
     <script>
         (function() {
-            var theme = localStorage.getItem('nurselogic_theme') || 'dark';
+            var theme = localStorage.getItem('nexusmed_theme') || 'dark';
             var actualTheme = theme;
             if (theme === 'auto') {
                 actualTheme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';

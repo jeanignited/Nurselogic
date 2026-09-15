@@ -4,26 +4,26 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
 
-    <persistence-unit name="nurselogicPU" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="nexusmedPU" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-        <class>com.nurselogic.model.Rol</class>
-        <class>com.nurselogic.model.Usuario</class>
-        <class>com.nurselogic.model.Paciente</class>
-        <class>com.nurselogic.model.Medicamento</class>
-        <class>com.nurselogic.model.Especialidad</class>
-        <class>com.nurselogic.model.Cita</class>
-        <class>com.nurselogic.model.Enfermedad</class>
-                <class>com.nurselogic.model.Alergia</class>
-        <class>com.nurselogic.model.Factura</class>
-        <class>com.nurselogic.model.FacturaDetalle</class>
-        <class>com.nurselogic.model.Cama</class>
-        <class>com.nurselogic.model.LoteMedicamento</class>
+        <class>com.nexusmed.model.Rol</class>
+        <class>com.nexusmed.model.Usuario</class>
+        <class>com.nexusmed.model.Paciente</class>
+        <class>com.nexusmed.model.Medicamento</class>
+        <class>com.nexusmed.model.Especialidad</class>
+        <class>com.nexusmed.model.Cita</class>
+        <class>com.nexusmed.model.Enfermedad</class>
+                <class>com.nexusmed.model.Alergia</class>
+        <class>com.nexusmed.model.Factura</class>
+        <class>com.nexusmed.model.FacturaDetalle</class>
+        <class>com.nexusmed.model.Cama</class>
+        <class>com.nexusmed.model.LoteMedicamento</class>
 
         <properties>
 
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/nurselogic_db?useSSL=false&amp;serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/nexusmed_db?useSSL=false&amp;serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
 
             <property name="jakarta.persistence.jdbc.password" value="Tobbysql2006."/>

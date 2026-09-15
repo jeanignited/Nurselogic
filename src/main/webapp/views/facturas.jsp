@@ -1,6 +1,6 @@
 ﻿<%@ page pageEncoding="UTF-8" %>
 <%@ page import="java.util.List,java.util.Map" %>
-<%@ page import="com.nurselogic.model.*" %>
+<%@ page import="com.nexusmed.model.*" %>
 <%
     boolean isAdmin        = Boolean.TRUE.equals(request.getAttribute("isAdmin"));
     boolean isPaciente     = Boolean.TRUE.equals(request.getAttribute("isPaciente"));
@@ -17,8 +17,8 @@
 %><%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Map" %>
-<%@ page import="com.nurselogic.model.Factura" %>
-<%@ page import="com.nurselogic.model.FacturaDetalle" %>
+<%@ page import="com.nexusmed.model.Factura" %>
+<%@ page import="com.nexusmed.model.FacturaDetalle" %>
 
 <div id="facturas" class="vista-activa d-none">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">

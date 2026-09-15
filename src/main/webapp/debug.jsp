@@ -14,7 +14,7 @@
     try {
         Context initContext = new InitialContext();
         Context envContext  = (Context)initContext.lookup("java:/comp/env");
-        DataSource ds = (DataSource)envContext.lookup("jdbc/nurselogicDB");
+        DataSource ds = (DataSource)envContext.lookup("jdbc/nexusmedDB");
         conn = ds.getConnection();
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT * FROM especialidades");

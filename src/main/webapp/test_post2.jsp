@@ -5,7 +5,7 @@
 <%
     out.println("<h2>Testing POST with exact user data</h2>");
     try {
-        URL url = new URL("http://localhost:8080/nurselogic/registroPaciente");
+        URL url = new URL("http://localhost:8080/nexusmed/registroPaciente");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);

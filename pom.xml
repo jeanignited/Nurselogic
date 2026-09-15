@@ -2,10 +2,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.example</groupId>
-  <artifactId>nurselogic-web</artifactId>
+  <artifactId>nexusmed-web</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>nurselogic-web Maven Webapp</name>
+  <name>nexusmed-web Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
   <dependencies>
@@ -72,7 +72,7 @@
   </properties>
 
   <build>
-    <finalName>nurselogic-web</finalName>
+    <finalName>nexusmed-web</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
