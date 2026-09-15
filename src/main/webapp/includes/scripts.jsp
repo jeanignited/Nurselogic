@@ -3473,10 +3473,8 @@ function aplicarPlantillaRol(tipo, el) {
             
             var mEl = document.getElementById('modalVerDiagnostico');
             if(mEl) {
-                setTimeout(function() {
-                    var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
-                    m.show();
-                }, 300);
+                var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+                m.show();
             }
         }).catch(e => {
             Swal.fire('Error', 'Problema al cargar el historial.', 'error');
@@ -3829,10 +3827,8 @@ window.verFichaClinica = function(cedula) {
                 
                 var mEl = document.getElementById('modalFichaClinica');
                 if (mEl) { 
-                    setTimeout(function() {
-                        var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); 
-                        m.show(); 
-                    }, 300);
+                    var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); 
+                    m.show(); 
                 }
             } else {
                 Swal.fire('Error', 'Paciente no encontrado.', 'error');

@@ -663,7 +663,7 @@
                                     <td class="py-3 px-4"><%= res.get("tipoExamen") %></td>
                                     <td class="py-3 px-4"><i class="bi bi-person-badge me-2 text-muted"></i><%= (res.get("medico") == null || res.get("medico").equals("null") || res.get("medico").trim().isEmpty()) ? "<span class=\"text-muted fst-italic\">Por asignar</span>" : res.get("medico") %></td>
                                     <td class="py-3 px-4 text-center">
-                                        <button class="btn btn-sm btn-outline-primary" onclick="abrirModalVerDiagnostico('<%= (res.get("paciente") != null ? res.get("paciente").replace("'", "\\'") : "") %>', '<%= res.get("cedula") %>', this)" data-diagnostico="<%= res.get("diagnostico") != null ? res.get("diagnostico").replace("\"", "&quot;") : "" %>" data-receta="<%= res.get("receta") != null ? res.get("receta").replace("\"", "&quot;") : "" %>"><i class="bi bi-file-earmark-pdf me-2"></i>Ver PDF</button>
+                                        <button class="btn btn-sm btn-outline-info" onclick="abrirModalVerDiagnostico('<%= (res.get("paciente") != null ? res.get("paciente").replace("'", "\\'") : "") %>', '<%= res.get("cedula") %>', this)" data-diagnostico="<%= res.get("diagnostico") != null ? res.get("diagnostico").replace("\"", "&quot;") : "" %>" data-receta="<%= res.get("receta") != null ? res.get("receta").replace("\"", "&quot;") : "" %>"><i class="bi bi-eye me-2"></i>Ver</button>
                                     </td>
                                 </tr>
                                 <%
