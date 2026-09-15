@@ -120,24 +120,28 @@
             <div class="form-section p-0">
                 <div class="table-responsive">
                     <table class="table table-dark-custom table-hover m-0">
-                        <thead><tr><th>ID</th><th>Nombre del Rol</th><th>Descripcion</th><th>Permisos Legacy</th><th>Acciones</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Nombre del Rol</th><th>Descripcion</th><th>Acciones</th></tr></thead>
                         <tbody>
                             <%
                                 try {
                                     List<Rol> rolesObj = (List<Rol>) request.getAttribute("listaRolesObj");
                                     if(rolesObj != null && !rolesObj.isEmpty()) {
                                         for(Rol rObj : rolesObj) {
+                                            String permStr = rObj.getPermisos() != null ? rObj.getPermisos() : "";
+                                            // Escapar comillas simples para que no rompan el atributo onclick inline
+                                            String permSafe = permStr.replace("'", "\\'");
+                                            String nombreSafe = rObj.getNombre().replace("'", "\\'");
                                             out.print("<tr>");
                                             out.print("<td class='fw-semibold'>ROL-" + rObj.getId() + "</td>");
                                             out.print("<td class='fw-bold'>" + rObj.getNombre() + "</td>");
                                             out.print("<td class='text-secondary'>" + (rObj.getDescripcion() != null ? rObj.getDescripcion() : "") + "</td>");
-                                            out.print("<td class='text-secondary'>" + (rObj.getPermisos() != null ? rObj.getPermisos() : "") + "</td>");
-                                            out.print("<td>");
-                                            out.print("<button class='btn btn-sm btn-outline-danger' onclick=\"confirmarBorrado('rol', '" + rObj.getId() + "')\"><i class='bi bi-trash'></i></button>");
+                                            out.print("<td class='text-nowrap'>");
+                                            out.print("<button class='btn btn-sm btn-outline-primary me-2' title='Ver Permisos' onclick=\"verDetallePermisos('" + nombreSafe + "', '" + permSafe + "')\"><i class='bi bi-eye'></i> Permisos</button>");
+                                            out.print("<button class='btn btn-sm btn-outline-danger' title='Eliminar Rol' onclick=\"confirmarBorrado('rol', '" + rObj.getId() + "')\"><i class='bi bi-trash'></i></button>");
                                             out.print("</td></tr>");
                                         }
                                     } else {
-                                        out.print("<tr><td colspan='5' class='text-center py-5 text-secondary'>No hay roles registrados.</td></tr>");
+                                        out.print("<tr><td colspan='4' class='text-center py-5 text-secondary'>No hay roles registrados.</td></tr>");
                                     }
                                 } catch(Exception e) {}
                             %>

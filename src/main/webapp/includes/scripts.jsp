@@ -4119,5 +4119,39 @@ document.addEventListener("DOMContentLoaded", function() {
         filtrarTicketsTI();
     }
 });
+
+        function verDetallePermisos(nombreRol, stringPermisos) {
+            var htmlBody;
+            if (!stringPermisos || stringPermisos.trim() === '') {
+                htmlBody = '<p class="text-secondary fst-italic">Este rol no tiene permisos legacy asignados.</p>';
+            } else {
+                var items = stringPermisos.split(',');
+                var listItems = items
+                    .map(function(p) { return p.trim(); })
+                    .filter(function(p) { return p.length > 0; })
+                    .map(function(p) {
+                        var label = p.replace(/_/g, ' ').toLowerCase();
+                        label = label.charAt(0).toUpperCase() + label.slice(1);
+                        return '<li style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.07);">'
+                             + '<i class="bi bi-check-circle-fill me-2" style="color:#22c55e;"></i>'
+                             + label
+                             + '</li>';
+                    })
+                    .join('');
+                htmlBody = '<ul style="list-style:none; padding:0; margin:0; text-align:left;">' + listItems + '</ul>';
+            }
+
+            Swal.fire({
+                title: '<i class="bi bi-shield-check me-2 text-primary"></i>Permisos de: <strong>' + nombreRol + '</strong>',
+                html: htmlBody,
+                icon: 'info',
+                confirmButtonText: 'Cerrar',
+                confirmButtonColor: '#3b82f6',
+                background: 'var(--bg-panel)',
+                color: 'var(--text-color)',
+                width: '520px'
+            });
+        }
+
 </script>
 

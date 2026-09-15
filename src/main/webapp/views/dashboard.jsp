@@ -33,7 +33,7 @@
             </div>
 
 
-            <div class="row g-4 mb-5">
+            <div class="row g-4 mb-5 justify-content-center">
 
                 <% if(permPac) { %>
 
@@ -85,8 +85,6 @@
 
             </div>
 
-            
-
             <div class="d-flex justify-content-end gap-3 mb-4">
 
                 <% if(permPac) { %>
@@ -99,11 +97,13 @@
 
                 <% } %>
 
+                <% if(permCitas || isAdmin) { %>
                 <button type="button" class="btn btn-info btn-lg text-dark fw-bold shadow-sm" style="background: linear-gradient(135deg, #38bdf8, #0ea5e9); border: none;" onclick="cambiarVista('agenda')">
 
                     <i class="bi bi-calendar2-week-fill me-2"></i>Ver Agenda M&eacute;dica
 
                 </button>
+                <% } %>
 
             </div>
 
