@@ -3475,8 +3475,10 @@ function aplicarPlantillaRol(tipo, el) {
             
             var mEl = document.getElementById('modalVerDiagnostico');
             if(mEl) {
-                var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
-                m.show();
+                setTimeout(function() {
+                    var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl);
+                    m.show();
+                }, 300);
             }
         });
 }
@@ -3827,7 +3829,12 @@ window.verFichaClinica = function(cedula) {
                 }
                 
                 var mEl = document.getElementById('modalFichaClinica');
-                if (mEl) { var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); m.show(); }
+                if (mEl) { 
+                    setTimeout(function() {
+                        var m = bootstrap.Modal.getInstance(mEl) || new bootstrap.Modal(mEl); 
+                        m.show(); 
+                    }, 300);
+                }
             } else {
                 Swal.fire('Error', 'Paciente no encontrado.', 'error');
             }
