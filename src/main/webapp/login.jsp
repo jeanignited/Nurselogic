@@ -218,10 +218,12 @@
                     <div class="col-6"><input type="text" id="regApellidos" name="apellidos" class="form-control" placeholder="Apellidos" required autocomplete="off"></div>
                     <div class="col-12"><input type="email" name="correo" class="form-control" placeholder="Correo Electrónico" required autocomplete="nope"></div>
                     <div class="col-6">
-                        <input type="text" id="regCedula" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length===10) checkCedulaAPI(this.value);" required autocomplete="off">
-                        <div id="cedulaMsg" class="small mt-1 d-none"></div>
+                        <input type="text" id="regCedula" name="cedula" class="form-control" placeholder="Cédula (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, ''); if(this.value.length===10){ checkCedulaAPI(this.value); } else if(this.value.trim() === '') { let cm = document.getElementById('cedulaMsg'); cm.className='d-none'; cm.style.display='none'; document.getElementById('regClave').dispatchEvent(new Event('input')); }" required autocomplete="off">
                     </div>
                     <div class="col-6"><input type="text" name="telefono" class="form-control" placeholder="Teléfono (10 dígitos)" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required autocomplete="off"></div>
+                    <div class="col-12 mt-2">
+                        <div id="cedulaMsg" class="small d-none d-block w-100 text-center py-2 rounded-2"></div>
+                    </div>
                     <div class="col-12"><input type="text" name="direccion" class="form-control" placeholder="Dirección" required autocomplete="off"></div>
                     <div class="col-6"><input type="password" id="regClave" name="clave" class="form-control" placeholder="Crear Contraseña" required autocomplete="new-password"></div>
                     <div class="col-6"><input type="password" id="regConfirmar" class="form-control" placeholder="Confirmar" required autocomplete="new-password"></div>
@@ -392,7 +394,8 @@
     function checkCedulaAPI(cedula) {
         let msg = document.getElementById('cedulaMsg');
         let btn = document.getElementById('btnRegistrar');
-        msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-info';
+        msg.style.display = 'block';
+        msg.className = 'd-block w-100 text-center mt-0 py-2 rounded-2 fw-semibold text-info';
         msg.style.background = 'rgba(14, 165, 233, 0.1)';
         msg.style.border = '1px solid rgba(14, 165, 233, 0.2)';
         msg.style.fontSize = '0.75rem';
@@ -404,13 +407,13 @@
             .then(r => r.json())
             .then(data => {
                 if(data.userExists) {
-                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-bold text-danger';
+                    msg.className = 'd-block w-100 text-center mt-0 py-2 rounded-2 fw-bold text-danger';
                     msg.style.background = 'rgba(239, 68, 68, 0.1)';
                     msg.style.border = '1px solid rgba(239, 68, 68, 0.2)';
                     msg.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-1"></i>Cédula en uso.';
                     btn.disabled = true;
                 } else if(data.patientExists) {
-                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-success';
+                    msg.className = 'd-block w-100 text-center mt-0 py-2 rounded-2 fw-semibold text-success';
                     msg.style.background = 'rgba(16, 185, 129, 0.1)';
                     msg.style.border = '1px solid rgba(16, 185, 129, 0.2)';
                     msg.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Autocompletado.';
@@ -418,7 +421,7 @@
                     document.getElementById('regApellidos').value = data.apellidos;
                     document.getElementById('regClave').dispatchEvent(new Event('input'));
                 } else {
-                    msg.className = 'd-inline-block mt-2 px-2 py-1 rounded-2 fw-semibold text-success';
+                    msg.className = 'd-block w-100 text-center mt-0 py-2 rounded-2 fw-semibold text-success';
                     msg.style.background = 'rgba(16, 185, 129, 0.1)';
                     msg.style.border = '1px solid rgba(16, 185, 129, 0.2)';
                     msg.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Cédula disponible.';

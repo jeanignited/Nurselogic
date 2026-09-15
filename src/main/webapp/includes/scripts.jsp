@@ -104,6 +104,17 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
     ventana.document.close();
     setTimeout(() => { ventana.print(); ventana.close(); }, 500);
 }
+function mostrarAlertaSoporte() {
+    Swal.fire({
+        title: '¿Necesitas ayuda con NurseLogic?',
+        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
+        icon: 'info',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: 'var(--accent)'
+    });
+}
 </script>
 
 <script>
@@ -4050,6 +4061,17 @@ function imprimirHistorialMedico(modalId = '#modalVerDiagnostico') {
     ventana.document.write('</div></body></html>');
     ventana.document.close();
     setTimeout(() => { ventana.print(); ventana.close(); }, 500);
+}
+function mostrarAlertaSoporte() {
+    Swal.fire({
+        title: '¿Necesitas ayuda con NurseLogic?',
+        html: 'Si tienes problemas con tu cuenta, dudas sobre tu historial médico o experimentas algún error, escríbenos a:<br><br><b>nurselogicsoporte@gmail.com</b><br><br>Nuestro equipo te contactará a la brevedad.',
+        icon: 'info',
+        background: 'var(--bg-panel)',
+        color: 'var(--text-color)',
+        confirmButtonText: 'Entendido',
+        confirmButtonColor: 'var(--accent)'
+    });
 }
 </script>
 
