@@ -2161,16 +2161,28 @@ function filtrarTicketsTI(checked) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     var formData = new URLSearchParams();
-                    formData.append("action", tipo === 'enfermedad' ? 'borrarEnfermedad' : 'borrarAlergia');
-                    formData.append("id", id);
+                    // El servlet AdminActionServlet espera "idAle" para alergias e "idEnf" para enfermedades
+                    if (tipo === 'enfermedad') {
+                        formData.append("action", "borrarEnfermedad");
+                        formData.append("idEnf", id);
+                    } else {
+                        formData.append("action", "borrarAlergia");
+                        formData.append("idAle", id);
+                    }
                     fetch('adminAction', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                         body: formData.toString()
                     }).then(function(response) {
+                        if (!response.ok) {
+                            Swal.fire({title: 'Error', text: 'No se pudo eliminar el elemento. Intente de nuevo.', icon: 'error', background: 'var(--bg-panel)', color: 'var(--text-color)'});
+                            return;
+                        }
                         Swal.fire({title: 'Eliminado', text: 'El elemento ha sido eliminado.', icon: 'success', background: 'var(--bg-panel)', color: 'var(--text-color)'}).then(() => {
                             window.location.href = "dashboard";
                         });
+                    }).catch(function() {
+                        Swal.fire({title: 'Error de red', text: 'No se pudo conectar con el servidor.', icon: 'error', background: 'var(--bg-panel)', color: 'var(--text-color)'});
                     });
                 }
             });
