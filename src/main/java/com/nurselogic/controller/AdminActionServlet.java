@@ -47,6 +47,8 @@ public class AdminActionServlet extends HttpServlet {
                     result = adminService.eliminarUsuario(id, isAdmin, correoActual);
                 } else if ("cita".equals(tipo)) {
                     result = adminService.eliminarCita(id, isAdmin);
+                } else if ("rol".equals(tipo)) {
+                    result = adminService.eliminarRol(Integer.parseInt(id), isAdmin);
                 }
             } else if ("editarRol".equals(action) && "usuario".equals(tipo)) {
                 String nuevoRol = request.getParameter("nuevoRol");

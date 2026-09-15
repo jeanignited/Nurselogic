@@ -123,6 +123,19 @@ public class AdminService {
         return new ActionResult(false, "El nombre del rol es obligatorio.");
     }
 
+    public ActionResult eliminarRol(int id, boolean isAdmin) {
+        if (!isAdmin) return new ActionResult(false, "Solo los administradores pueden eliminar roles.");
+        RolDAO rolDao = new RolDAO();
+        try {
+            if (rolDao.eliminarRol(id)) {
+                return new ActionResult(true, "Rol eliminado exitosamente.");
+            }
+            return new ActionResult(false, "No se encontro el rol.");
+        } catch (Exception e) {
+            return new ActionResult(false, e.getMessage());
+        }
+    }
+
     public ActionResult crearMedicamento(String nomMed, String stockMedStr, String precioMedStr) {
         if (nomMed != null && !nomMed.trim().isEmpty() && stockMedStr != null) {
             MedicamentoDAO mDao = new MedicamentoDAO();

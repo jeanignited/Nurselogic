@@ -100,6 +100,7 @@ public class DashboardServlet extends HttpServlet {
                     listaRoles.add(r.getNombre());
                 }
                 request.setAttribute("listaRoles", listaRoles);
+                request.setAttribute("listaRolesObj", rList);
             } catch (Exception e) {}
 
             // Lista de Medicamentos

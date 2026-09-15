@@ -37,7 +37,7 @@
                 <i class="bi bi-grid-1x2 text-primary"></i><span class="texto-nav">Dashboard</span>
             </a></li>
 
-            <% if(!isFarmaceutico) { %>
+            <% if(permUsuarios || isAdmin) { %>
             <li class="nav-item"><a class="nav-link" onclick="cambiarVista('estadisticas')">
                 <i class="bi bi-graph-up-arrow" style="color: #c084fc;"></i><span class="texto-nav">Estadisticas</span>
             </a></li>

@@ -111,13 +111,13 @@
                     </div>
 
                     <div class="mt-3 p-3 rounded" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05);">
-                        <label class="form-label small text-secondary fw-bold mb-3">
-                            <i class="bi bi-toggles me-1"></i>Asignación de Permisos
-                        </label>
                         <div class="row g-2">
 
                             <!-- COLUMNA IZQUIERDA — permisos CSV legacy -->
                             <div class="col-md-6">
+                                <p class="text-secondary small fw-bold mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
+                                    <i class="bi bi-toggles me-1"></i>Asignación de Permisos
+                                </p>
                                 <div class="form-check form-switch mb-2">
                                     <input class="form-check-input perm-checkbox" type="checkbox"
                                            id="perm_inventario" name="permiso" value="Inventario" autocomplete="off">
@@ -164,7 +164,7 @@
 
                             <!-- COLUMNA DERECHA — 5 permisos booleanos NUEVOS -->
                             <div class="col-md-6">
-                                <p class="text-secondary small fw-semibold mb-2" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
+                                <p class="text-secondary small fw-bold mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:4px;">
                                     Módulos del Sistema
                                 </p>
                                 <div class="form-check form-switch mb-2">
