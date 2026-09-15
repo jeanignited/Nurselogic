@@ -1025,7 +1025,7 @@
           <h5 class="fw-bold m-0 mt-1 text-light" id="fichaNombre">---</h5>
           <small class="text-secondary" id="fichaInfo">Cédula: -- | Nacimiento: -- | Sexo: --</small>
         </div>
-        <button type="button" class="btn-close btn-close-white align-self-start" onclick="cerrarModalFicha()"></button>
+        <button type="button" class="btn-close btn-close-white align-self-start" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body p-4">
         
@@ -1086,7 +1086,7 @@
       <div class="modal-footer border-0 pt-0">
         <button type="button" class="btn btn-outline-info rounded-pill px-4 me-auto" onclick="imprimirFichaMedica('ID_PACIENTE')" id="btnImprimirFicha"><i class="bi bi-printer"></i> Imprimir</button>
         <button type="button" class="btn btn-outline-warning rounded-pill px-4" onclick="editarPacienteDesdeFicha()"><i class="bi bi-pencil-square me-1"></i>Editar Paciente</button>
-        <button type="button" class="btn btn-secondary rounded-pill px-4" onclick="cerrarModalFicha()">Cerrar</button>
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cerrar</button>
       </div>
     </div>
   </div>

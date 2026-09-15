@@ -4334,5 +4334,19 @@ document.addEventListener("DOMContentLoaded", function() {
             };
         })();
 
+        // Failsafe Global: Eliminar backdrops fantasmas y limpiar body al cerrar cualquier modal
+        document.addEventListener('hidden.bs.modal', function (event) {
+            // Eliminar cualquier backdrop residual
+            let backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(function(backdrop) {
+                backdrop.remove();
+            });
+            // Remover la clase que bloquea el scroll en el body
+            document.body.classList.remove('modal-open');
+            // Limpiar estilos en línea residuales del body (padding y overflow)
+            document.body.style.paddingRight = '';
+            document.body.style.overflow = '';
+        });
+
 </script>
 
