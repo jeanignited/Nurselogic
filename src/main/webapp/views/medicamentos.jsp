@@ -278,6 +278,61 @@ out.print("</div>");
 
         </div>
 
+        <%-- ═══ PANEL FLOTANTE DE CARRITO DE DESPACHO (visible cuando hay items) ═══ --%>
+        <div id="carritoDespachoPanel" class="d-none"
+             style="position: fixed; right: 20px; bottom: 80px; width: 360px; z-index: 1045;
+                    background: var(--bg-panel); backdrop-filter: blur(14px);
+                    border: 1px solid rgba(16,185,129,0.4); border-radius: 14px;
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.35); transition: all 0.3s ease;">
+
+            <!-- Header del panel -->
+            <div class="d-flex justify-content-between align-items-center px-4 py-3"
+                 style="border-bottom: 1px solid rgba(16,185,129,0.25); cursor: pointer;"
+                 onclick="toggleCarritoPanel()">
+                <span class="fw-bold text-success fs-6">
+                    <i class="bi bi-cart-check-fill me-2"></i>Carrito de Despacho
+                    <span id="carritoPanelBadge" class="badge bg-success rounded-pill ms-2 fs-7">0</span>
+                </span>
+                <i class="bi bi-chevron-up text-secondary" id="carritoPanelChevron"></i>
+            </div>
+
+            <!-- Cuerpo colapsable -->
+            <div id="carritoPanelBody" style="max-height: 340px; overflow-y: auto;">
+                <table class="table m-0" style="font-size: 0.85rem;">
+                    <thead style="position: sticky; top: 0; background: var(--bg-panel); z-index: 1;">
+                        <tr>
+                            <th class="ps-3 text-secondary fw-semibold py-2">Producto</th>
+                            <th class="text-secondary fw-semibold py-2 text-center">Cant.</th>
+                            <th class="text-secondary fw-semibold py-2 text-end pe-3">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carritoPanelTbody">
+                        <tr>
+                            <td colspan="3" class="text-center text-secondary py-3 fst-italic">Carrito vacío</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer con total y botones -->
+            <div class="px-4 py-3" style="border-top: 1px solid rgba(16,185,129,0.25);">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-secondary small fw-semibold">TOTAL</span>
+                    <span class="fw-bold fs-5 text-success">$<span id="carritoPanelTotal">0.00</span></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-danger btn-sm flex-grow-1 rounded-pill"
+                            onclick="vaciarCarritoPanel()">
+                        <i class="bi bi-trash me-1"></i>Vaciar
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm flex-grow-1 rounded-pill fw-bold"
+                            onclick="abrirModalCarrito()">
+                        <i class="bi bi-receipt me-1"></i>Finalizar Venta
+                    </button>
+                </div>
+            </div>
+        </div>
+
 
 
 

@@ -51,14 +51,14 @@
                 permDirPac      = rolObj.isPermDirectorioPacientes();
                 permCatClinicos = rolObj.isPermCatalogosPersonal();
                 permSoporteTI   = rolObj.isPermSoporteTI();
-                // String CSV legacy — compatibilidad con permisos ya almacenados
-                String p = rolObj.getPermisos() != null ? rolObj.getPermisos() : "";
-                if (p.contains("Admision"))   permPac        = true;
-                if (p.contains("Inventario")) { permMed = true; canManageStock = true; }
-                if (p.contains("Cat\u00e1logos") || p.contains("Catalogos")) permCat = true;
-                if (p.contains("Reportes"))   canSellStock   = true;
-                if (p.contains("Citas"))      permCitas      = true;
-                if (p.contains("Usuarios"))   permUsuarios   = true;
+                // String CSV — compatible con español y SCREAMING_SNAKE_CASE (GESTION_MEDICAMENTOS, etc.)
+                String p = rolObj.getPermisos() != null ? rolObj.getPermisos().toUpperCase() : "";
+                if (p.contains("ADMISION")    || p.contains("GESTION_PACIENTES")   || p.contains("DIRECTORIO"))   permPac      = true;
+                if (p.contains("INVENTARIO")  || p.contains("GESTION_MEDICAMENTOS") || p.contains("FARMACIA"))    { permMed = true; canManageStock = true; }
+                if (p.contains("CAT")         || p.contains("GESTION_CATALOGOS"))   permCat        = true;
+                if (p.contains("REPORTES")    || p.contains("GESTION_VENTAS")      || p.contains("VENTA"))        canSellStock = true;
+                if (p.contains("CITAS")       || p.contains("AGENDAR")             || p.contains("AGENDA"))       permCitas    = true;
+                if (p.contains("USUARIOS")    || p.contains("GESTION_USUARIOS")    || p.contains("PERSONAL"))     permUsuarios = true;
                 // Fallback: si permisos granulares activos, activar también los legacy
                 if (permDirPac)      permPac      = true;
                 if (permRepVentas)   canSellStock = true;
@@ -106,6 +106,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- TomSelect — buscador + scroll para desplegables, sin dependencia jQuery -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
     <style>
         :root { --bg-main:#0f172a; --bg-panel:rgba(30,41,59,0.7); --text-color:#f8fafc; --accent:#3b82f6; --sidebar-w:260px; --glass-border:1px solid rgba(255,255,255,0.1); }
         html[data-bs-theme="light"] { --bg-main:#ebf0f6; --bg-panel:rgba(255,255,255,0.55); --text-color:#1e293b; --glass-border:1px solid rgba(0,0,0,0.08); }
@@ -181,6 +184,40 @@
               .badge { color: black !important; border: 1px solid black !important; background: transparent !important; }
               body { color: black !important; }
           }
+
+        /* ── TomSelect: integración con el tema dark/light de NurseLogic ── */
+        .ts-wrapper .ts-control {
+            background: rgba(15,23,42,0.6) !important;
+            border: var(--glass-border) !important;
+            color: var(--text-color) !important;
+            border-radius: 8px !important;
+            min-height: 42px;
+        }
+        .ts-wrapper .ts-control:focus-within {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15) !important;
+        }
+        .ts-wrapper .ts-dropdown {
+            background: var(--bg-panel) !important;
+            border: var(--glass-border) !important;
+            backdrop-filter: blur(12px);
+            color: var(--text-color) !important;
+        }
+        .ts-wrapper .ts-dropdown .option { color: var(--text-color) !important; }
+        .ts-wrapper .ts-dropdown .option.active,
+        .ts-wrapper .ts-dropdown .option:hover { background: rgba(59,130,246,0.2) !important; color: #fff !important; }
+        .ts-wrapper .ts-dropdown .option.selected { background: rgba(59,130,246,0.35) !important; }
+        .ts-wrapper .ts-control .item {
+            background: rgba(59,130,246,0.25) !important;
+            border: 1px solid rgba(59,130,246,0.4) !important;
+            color: #93c5fd !important;
+            border-radius: 6px !important;
+        }
+        html[data-bs-theme="light"] .ts-wrapper .ts-control { background: #ffffff !important; color: #0f172a !important; }
+        html[data-bs-theme="light"] .ts-wrapper .ts-dropdown { background: #f8fafc !important; color: #0f172a !important; }
+        html[data-bs-theme="light"] .ts-wrapper .ts-dropdown .option { color: #0f172a !important; }
+        html[data-bs-theme="light"] .ts-wrapper .ts-control .item { background: rgba(59,130,246,0.1) !important; color: var(--accent) !important; }
+        /* ─────────────────────────────────────────────────────────────────── */
 </style>
 
     <script>

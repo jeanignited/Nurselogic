@@ -312,15 +312,17 @@ public class DashboardServlet extends HttpServlet {
                         permCatClinicos = rolObj.isPermCatalogosPersonal();
                         permSoporteTI   = rolObj.isPermSoporteTI();
 
-                        // Compatibilidad con string CSV legacy
-                        String p = rolObj.getPermisos() != null ? rolObj.getPermisos() : "";
-                        permPac        = p.contains("Admision")   || permDirPac;
-                        permMed        = p.contains("Inventario") || isFarmaceutico;
-                        permCat        = p.contains("Catálogos")  || permCatClinicos;
-                        canSellStock   = p.contains("Reportes")   || isFarmaceutico || permRepVentas;
-                        canManageStock = p.contains("Inventario") || isFarmaceutico;
-                        permCitas      = p.contains("Citas");
-                        permUsuarios   = p.contains("Usuarios");
+                        // Compatibilidad con string CSV legacy (español y SCREAMING_SNAKE_CASE)
+                        String p = rolObj.getPermisos() != null ? rolObj.getPermisos().toUpperCase() : "";
+                        // Normalizar tokens en español para comparación uniforme
+                        // "Inventario" → INVENTARIO, "Catálogos" → CATALOGOS, etc.
+                        permPac        = p.contains("ADMISION")               || p.contains("GESTION_PACIENTES")   || p.contains("DIRECTORIO")   || permDirPac;
+                        permMed        = p.contains("INVENTARIO")              || p.contains("GESTION_MEDICAMENTOS") || p.contains("FARMACIA")      || isFarmaceutico;
+                        permCat        = p.contains("CAT")                     || p.contains("GESTION_CATALOGOS")   || p.contains("CATALOGOS")     || permCatClinicos;
+                        canSellStock   = p.contains("REPORTES")               || p.contains("GESTION_VENTAS")      || p.contains("VENTA")         || isFarmaceutico || permRepVentas;
+                        canManageStock = p.contains("INVENTARIO")              || p.contains("GESTION_MEDICAMENTOS") || p.contains("BODEGA")        || isFarmaceutico;
+                        permCitas      = p.contains("CITAS")                  || p.contains("AGENDAR")             || p.contains("AGENDA");
+                        permUsuarios   = p.contains("USUARIOS")               || p.contains("GESTION_USUARIOS")    || p.contains("PERSONAL");
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();

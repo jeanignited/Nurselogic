@@ -4153,5 +4153,161 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         }
 
+        function initTomSelects() {
+            if (typeof TomSelect === 'undefined') return;
+
+            var tsCommonConfig = {
+                maxOptions: 200,
+                allowEmptyOption: true,
+                render: {
+                    no_results: function(data, escape) {
+                        return '<div class="no-results">Sin resultados para "' + escape(data.input) + '"</div>';
+                    }
+                }
+            };
+
+            // 1. Selector de Especialidad (modal Asignar Especialidad)
+            var elEsp = document.getElementById('selectEspecialidadModal');
+            if (elEsp && !elEsp.tomselect) {
+                new TomSelect('#selectEspecialidadModal', Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar especialidad...',
+                    maxItems: 1
+                }));
+            }
+
+            // 2. Enfermedades Preexistentes — Consulta Médica Avanzada
+            var elEnf = document.getElementById('atender_enfermedad');
+            if (elEnf && !elEnf.tomselect) {
+                new TomSelect('#atender_enfermedad', Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar enfermedades...',
+                    maxItems: null,
+                    plugins: ['remove_button', 'clear_button'],
+                    persist: false
+                }));
+            }
+
+            // 3. Alergias Conocidas — Consulta Médica Avanzada
+            var elAle = document.getElementById('atender_alergias');
+            if (elAle && !elAle.tomselect) {
+                new TomSelect('#atender_alergias', Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar alergias...',
+                    maxItems: null,
+                    plugins: ['remove_button', 'clear_button'],
+                    persist: false
+                }));
+            }
+
+            // 4. Selector de Rol (modal Cambiar Rol)
+            var elRol = document.getElementById('rolSelectModal');
+            if (elRol && !elRol.tomselect) {
+                if (elRol.hasAttribute('size')) elRol.removeAttribute('size');
+                new TomSelect('#rolSelectModal', Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar rol...',
+                    maxItems: 1
+                }));
+            }
+
+            // 5. Enfermedades en form Nueva Admisión y Triage (inline en dashboard)
+            var elEnfAdm = document.querySelector('select[name="enfermedad"]:not(#atender_enfermedad)');
+            if (elEnfAdm && !elEnfAdm.tomselect) {
+                new TomSelect(elEnfAdm, Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar enfermedades preexistentes...',
+                    maxItems: null,
+                    plugins: ['remove_button', 'clear_button'],
+                    persist: false
+                }));
+            }
+
+            // 6. Alergias en form Nueva Admisión y Triage (inline en dashboard)
+            var elAleAdm = document.querySelector('select[name="alergias"]:not(#atender_alergias)');
+            if (elAleAdm && !elAleAdm.tomselect) {
+                new TomSelect(elAleAdm, Object.assign({}, tsCommonConfig, {
+                    placeholder: 'Buscar alergias conocidas...',
+                    maxItems: null,
+                    plugins: ['remove_button', 'clear_button'],
+                    persist: false
+                }));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initTomSelects();
+        });
+
+        document.addEventListener('shown.bs.modal', function(e) {
+            if (!e.target) return;
+            var relevantes = ['modalEspecialidad', 'modalAtender', 'modalRol'];
+            if (relevantes.indexOf(e.target.id) !== -1) {
+                initTomSelects();
+            }
+        });
+
+        function actualizarCarritoPanel() {
+            var panel = document.getElementById('carritoDespachoPanel');
+            var tbody = document.getElementById('carritoPanelTbody');
+            var totalEl = document.getElementById('carritoPanelTotal');
+            var badgeEl = document.getElementById('carritoPanelBadge');
+            if (!panel || !tbody) return;
+
+            var carritoArr = window.carritoVentas || [];
+            var totalItems = carritoArr.reduce(function(acc, i) { return acc + i.cantidad; }, 0);
+
+            if (totalItems === 0) {
+                panel.classList.add('d-none');
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-secondary py-3 fst-italic">Carrito vacío</td></tr>';
+                if (totalEl) totalEl.innerText = '0.00';
+                if (badgeEl) badgeEl.innerText = '0';
+                return;
+            }
+
+            panel.classList.remove('d-none');
+            if (badgeEl) badgeEl.innerText = totalItems;
+
+            var total = 0;
+            var rows = '';
+            carritoArr.forEach(function(item) {
+                var subt = item.precio * item.cantidad;
+                total += subt;
+                rows += '<tr>' +
+                    '<td class="ps-3 align-middle fw-semibold" style="max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="' + item.nombre + '">' + item.nombre + '</td>' +
+                    '<td class="align-middle text-center">' +
+                        '<div class="input-group input-group-sm justify-content-center" style="width:80px;margin:0 auto;">' +
+                            '<button class="btn btn-outline-secondary btn-sm px-1" onclick="cambiarCantidadCarrito(' + item.id + ',-1);actualizarCarritoPanel();" type="button">-</button>' +
+                            '<span class="form-control form-control-sm text-center bg-transparent border-secondary" style="min-width:28px;line-height:1.8;">' + item.cantidad + '</span>' +
+                            '<button class="btn btn-outline-secondary btn-sm px-1" onclick="cambiarCantidadCarrito(' + item.id + ',1);actualizarCarritoPanel();" type="button">+</button>' +
+                        '</div>' +
+                    '</td>' +
+                    '<td class="pe-3 align-middle text-end text-success fw-semibold">$' + subt.toFixed(2) + '</td>' +
+                    '</tr>';
+            });
+
+            tbody.innerHTML = rows;
+            if (totalEl) totalEl.innerText = total.toFixed(2);
+        }
+
+        function toggleCarritoPanel() {
+            var body = document.getElementById('carritoPanelBody');
+            var chevron = document.getElementById('carritoPanelChevron');
+            if (!body) return;
+            var oculto = body.style.display === 'none';
+            body.style.display = oculto ? '' : 'none';
+            if (chevron) chevron.className = oculto ? 'bi bi-chevron-up text-secondary' : 'bi bi-chevron-down text-secondary';
+        }
+
+        function vaciarCarritoPanel() {
+            window.carritoVentas = [];
+            actualizarCarritoPanel();
+            if (typeof actualizarBurbujaCarrito === 'function') actualizarBurbujaCarrito();
+        }
+
+        (function patchActualizarBurbuja() {
+            var orig = window.actualizarBurbujaCarrito;
+            if (!orig) { setTimeout(patchActualizarBurbuja, 200); return; }
+            window.actualizarBurbujaCarrito = function() {
+                orig.apply(this, arguments);
+                actualizarCarritoPanel();
+            };
+        })();
+
 </script>
 
