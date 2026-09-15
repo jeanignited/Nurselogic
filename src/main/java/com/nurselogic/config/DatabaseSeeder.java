@@ -63,7 +63,7 @@ public class DatabaseSeeder implements ServletContextListener {
                 em.persist(new Alergia("Mariscos", "Alto"));
             }
 
-            // Normalizar niveles de gravedad existentes en la BD a los 3 niveles estándar: Leve, Medio, Alto j
+            // Normalizar niveles de gravedad existentes en la BD a los 3 niveles estándar: Leve, Medio, Alto
             em.createQuery("UPDATE Alergia a SET a.nivelGravedad = 'Alto' WHERE a.nivelGravedad IN ('Severa', 'Severo', 'Alta', 'Anafilaxia')").executeUpdate();
             em.createQuery("UPDATE Alergia a SET a.nivelGravedad = 'Medio' WHERE a.nivelGravedad IN ('Media', 'Moderada', 'Moderado')").executeUpdate();
             em.createQuery("UPDATE Alergia a SET a.nivelGravedad = 'Leve' WHERE a.nivelGravedad IN ('Baja', 'Bajo')").executeUpdate();
