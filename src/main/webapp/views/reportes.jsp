@@ -17,7 +17,7 @@
                 <p class="text-secondary mt-1 mb-0">Sistema de Ticketing y Visualización de Reportes (Vista estilo cámaras de seguridad)</p>
             </div>
             <div class="d-flex flex-wrap align-items-center gap-3 w-100">
-                <div class="form-check form-switch d-flex align-items-center me-3">
+                <div class="form-check form-switch d-flex align-items-center me-auto">
                     <input class="form-check-input mt-0 me-2" type="checkbox" role="switch" id="switchOcultarResueltosTI" checked onchange="filtrarTicketsTI(this.checked)" style="cursor:pointer; transform: scale(1.2);">
                     <label class="form-check-label text-theme fw-semibold" for="switchOcultarResueltosTI" style="cursor:pointer;">Ocultar tickets atendidos/cerrados</label>
                 </div>
